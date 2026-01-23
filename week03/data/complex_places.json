@@ -1,0 +1,109 @@
+{
+  "meta": {
+    "version": "1.0",
+    "last_updated": "2024-01-15T10:30:00Z",
+    "author": "CS101 Course",
+    "description": "Sample place database for learning JSON"
+  },
+  "statistics": {
+    "total_places": 3,
+    "categories": {
+      "landmark": 1,
+      "restaurant": 1,
+      "market": 1
+    },
+    "average_rating": 4.7
+  },
+  "places": [
+    {
+      "id": "taipei-101",
+      "name": "Taipei 101",
+      "name_zh": "台北101",
+      "location": {
+        "coords": [25.0330, 121.5654],
+        "city": "Taipei",
+        "district": "Xinyi",
+        "country": "Taiwan"
+      },
+      "details": {
+        "rating": 4.7,
+        "review_count": 45000,
+        "price_level": 3,
+        "categories": ["landmark", "shopping", "observation"]
+      },
+      "hours": {
+        "sunday": {"open": "11:00", "close": "21:30"},
+        "monday": {"open": "11:00", "close": "21:30"},
+        "tuesday": {"open": "11:00", "close": "21:30"},
+        "wednesday": {"open": "11:00", "close": "21:30"},
+        "thursday": {"open": "11:00", "close": "21:30"},
+        "friday": {"open": "11:00", "close": "22:00"},
+        "saturday": {"open": "11:00", "close": "22:00"}
+      },
+      "contact": {
+        "phone": "+886-2-8101-8800",
+        "website": "https://www.taipei-101.com.tw"
+      }
+    },
+    {
+      "id": "din-tai-fung",
+      "name": "Din Tai Fung",
+      "name_zh": "鼎泰豐",
+      "location": {
+        "coords": [25.0339, 121.5645],
+        "city": "Taipei",
+        "district": "Xinyi",
+        "country": "Taiwan"
+      },
+      "details": {
+        "rating": 4.9,
+        "review_count": 28000,
+        "price_level": 2,
+        "categories": ["restaurant", "dumplings", "taiwanese"]
+      },
+      "hours": {
+        "sunday": {"open": "10:00", "close": "21:00"},
+        "monday": {"open": "10:00", "close": "21:00"},
+        "tuesday": {"open": "10:00", "close": "21:00"},
+        "wednesday": {"open": "10:00", "close": "21:00"},
+        "thursday": {"open": "10:00", "close": "21:00"},
+        "friday": {"open": "10:00", "close": "21:30"},
+        "saturday": {"open": "10:00", "close": "21:30"}
+      },
+      "contact": {
+        "phone": "+886-2-8101-8927",
+        "website": "https://www.dintaifung.com.tw"
+      }
+    },
+    {
+      "id": "shilin-market",
+      "name": "Shilin Night Market",
+      "name_zh": "士林夜市",
+      "location": {
+        "coords": [25.0878, 121.5241],
+        "city": "Taipei",
+        "district": "Shilin",
+        "country": "Taiwan"
+      },
+      "details": {
+        "rating": 4.5,
+        "review_count": 35000,
+        "price_level": 1,
+        "categories": ["market", "street food", "shopping"]
+      },
+      "hours": {
+        "sunday": {"open": "16:00", "close": "00:00"},
+        "monday": {"open": "16:00", "close": "00:00"},
+        "tuesday": {"open": "16:00", "close": "00:00"},
+        "wednesday": {"open": "16:00", "close": "00:00"},
+        "thursday": {"open": "16:00", "close": "00:00"},
+        "friday": {"open": "16:00", "close": "01:00"},
+        "saturday": {"open": "16:00", "close": "01:00"}
+      },
+      "contact": {
+        "phone": null,
+        "website": null
+      }
+    }
+  ]
+}

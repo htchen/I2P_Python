@@ -1,0 +1,62 @@
+{
+  "status": "OK",
+  "license": "Data © OpenStreetMap contributors, ODbL 1.0",
+  "total_results": 5,
+  "results": [
+    {
+      "place_id": 123456789,
+      "osm_type": "way",
+      "osm_id": 55555555,
+      "display_name": "Taipei 101, 7, Section 5, Xinyi Road, Xinyi District, Taipei City, 110, Taiwan",
+      "lat": "25.0329694",
+      "lon": "121.5654268",
+      "type": "attraction",
+      "importance": 0.8234,
+      "boundingbox": ["25.032", "25.034", "121.564", "121.567"]
+    },
+    {
+      "place_id": 234567890,
+      "osm_type": "node",
+      "osm_id": 66666666,
+      "display_name": "Din Tai Fung, Taipei 101 Mall, Xinyi District, Taipei City, 110, Taiwan",
+      "lat": "25.0339",
+      "lon": "121.5645",
+      "type": "restaurant",
+      "importance": 0.6512,
+      "boundingbox": ["25.033", "25.035", "121.563", "121.566"]
+    },
+    {
+      "place_id": 345678901,
+      "osm_type": "way",
+      "osm_id": 77777777,
+      "display_name": "Shilin Night Market, Shilin District, Taipei City, 111, Taiwan",
+      "lat": "25.0878",
+      "lon": "121.5241",
+      "type": "marketplace",
+      "importance": 0.7123,
+      "boundingbox": ["25.085", "25.090", "121.522", "121.527"]
+    },
+    {
+      "place_id": 456789012,
+      "osm_type": "way",
+      "osm_id": 88888888,
+      "display_name": "National Palace Museum, Zhishan Road, Shilin District, Taipei City, 111, Taiwan",
+      "lat": "25.1024",
+      "lon": "121.5485",
+      "type": "museum",
+      "importance": 0.7856,
+      "boundingbox": ["25.100", "25.105", "121.546", "121.551"]
+    },
+    {
+      "place_id": 567890123,
+      "osm_type": "node",
+      "osm_id": 99999999,
+      "display_name": "Elephant Mountain Trailhead, Xinyi District, Taipei City, 110, Taiwan",
+      "lat": "25.0271",
+      "lon": "121.5576",
+      "type": "viewpoint",
+      "importance": 0.5432,
+      "boundingbox": ["25.025", "25.030", "121.555", "121.560"]
+    }
+  ]
+}

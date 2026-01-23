@@ -1,0 +1,66 @@
+[
+  {
+    "name": "Taipei 101",
+    "coords": [25.0330, 121.5654],
+    "rating": 4.7,
+    "category": "landmark",
+    "tags": ["observation", "shopping", "dining"],
+    "address": "No. 7, Section 5, Xinyi Road, Xinyi District"
+  },
+  {
+    "name": "Din Tai Fung (Xinyi)",
+    "coords": [25.0339, 121.5645],
+    "rating": 4.9,
+    "category": "restaurant",
+    "tags": ["dumplings", "michelin", "taiwanese"],
+    "address": "Taipei 101 Mall, B1"
+  },
+  {
+    "name": "Shilin Night Market",
+    "coords": [25.0878, 121.5241],
+    "rating": 4.5,
+    "category": "market",
+    "tags": ["night market", "street food", "shopping"],
+    "address": "Shilin District"
+  },
+  {
+    "name": "National Palace Museum",
+    "coords": [25.1024, 121.5485],
+    "rating": 4.6,
+    "category": "museum",
+    "tags": ["art", "history", "culture"],
+    "address": "No. 221, Section 2, Zhishan Road, Shilin District"
+  },
+  {
+    "name": "Elephant Mountain",
+    "coords": [25.0271, 121.5576],
+    "rating": 4.6,
+    "category": "nature",
+    "tags": ["hiking", "viewpoint", "photography"],
+    "address": "Xinyi District"
+  },
+  {
+    "name": "Raohe Street Night Market",
+    "coords": [25.0504, 121.5775],
+    "rating": 4.4,
+    "category": "market",
+    "tags": ["night market", "street food", "local"],
+    "address": "Raohe Street, Songshan District"
+  },
+  {
+    "name": "Chiang Kai-shek Memorial Hall",
+    "coords": [25.0347, 121.5220],
+    "rating": 4.5,
+    "category": "landmark",
+    "tags": ["memorial", "history", "architecture"],
+    "address": "No. 21, Zhongshan South Road, Zhongzheng District"
+  },
+  {
+    "name": "Eslite Bookstore (Dunnan)",
+    "coords": [25.0398, 121.5472],
+    "rating": 4.4,
+    "category": "shopping",
+    "tags": ["books", "24h", "culture"],
+    "address": "No. 245, Section 1, Dunhua South Road, Da'an District"
+  }
+]
