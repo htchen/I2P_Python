@@ -40,31 +40,11 @@ Every week introduces a new Python concept specifically required to build the ne
 
 **Theme:** "Where am I?" — Python Basics & Geodata
 
-#### Week 1-1: Variables & The Coordinate System
-- **Concept:** Variables, Floats, Tuples (Immutable data)
-- **Project Task:** Create a script to store specific locations as `(latitude, longitude)` tuples. Print them out.
-
-#### Week 1-2: Functions & Distance Logic
-- **Concept:** Math module, Defining Functions, Arguments
-- **Project Task:** Implement the Haversine Formula (calculating distance between two lat/long points on a sphere) as a Python function.
-- **CS Concept:** Abstraction (hiding complex math behind a function call)
-
-#### Week 2-1: Lists, Loops & The Route
-- **Concept:** Lists, `for` loops, `range`, `zip`, `map`, `filter`
-- **Project Task:** Create a list of 5 coordinate tuples. Write a loop that calculates the total distance of the path connecting them sequentially.
-- **Drill:** Complete P01–P10 (Lists) from *99 Problems in Python* to master indexing and list manipulation.
-
-#### Week 2-2: Dictionaries & Storing "Places"
-- **Concept:** Dictionaries (Key-Value pairs), Nested structures
-- **Project Task:** Move from simple tuples to storing complex data:
-  ```python
-  place = {"name": "Joe's Pizza", "coords": (40.71, -74.00), "rating": 4.5}
-  ```
-- **Drill:** Complete P11–P15 (Run-length encoding/Data compression). These problems teach students how to process lists and look for patterns.
-
-#### Week 3: JSON & File I/O
-- **Concept:** JSON format, Reading/Writing files
-- **Project Task:** Save your database of "favorite places" to a `.json` file and write a script to load it back.
+| Week | Lecture | Lab |
+|------|---------|-----|
+| 1 (2/24 Tue., 2/26 Thu.) | **Variables, Coordinates & Functions** — Variables, Floats, Tuples, Math module, Defining Functions. Store locations as `(lat, long)` tuples and implement the Haversine Formula. | |
+| 2 (3/3 Tue., 3/5 Thu.) | **Lists, Loops & Dictionaries** — Lists, `for` loops, `range`, `zip`, `map`, `filter`, Dictionaries, Nested structures. Calculate path distances and store complex place data. | |
+| 3 (3/10 Tue., 3/12 Thu.) | **JSON & File I/O** — JSON format, Reading/Writing files. Save and load a database of "favorite places" to/from a `.json` file. | |
 
 ---
 
@@ -72,23 +52,13 @@ Every week introduces a new Python concept specifically required to build the ne
 
 **Theme:** "Fetching the World" — APIs, Network, and Parsing
 
-#### Week 4: HTTP Requests & API Keys
-- **Concept:** The Request/Response cycle, Status Codes (200 vs 403), User-Agent Headers
-- **Project Task:** Make specific calls to `https://nominatim.openstreetmap.org` using the `requests` library. Learn why OSM requires a valid Email/User-Agent to prevent banning.
-
-#### Week 5: The Nominatim API (Geocoding)
-- **Concept:** Parsing complex nested JSON responses, Error Handling (`try/except`)
-- **Project Task:** Build a CLI tool: User types "Empire State Building", script returns `(40.748, -73.985)` using the OSM free search endpoint.
-
-#### Week 6: Searching for Places (Lazy Loading)
-- **Concept:** Query parameters, Pagination, Lazy Evaluation (Generators)
-- **Project Task:** Script that asks "What do you want to eat?". Use a Generator (`yield`) to handle API pagination, fetching results one page at a time to avoid memory overload.
-
-#### Week 7: OSRM API (Real Routing)
-- **Concept:** 2D Lists (Matrices), Cost comparison
-- **Project Task:** Compare "Haversine distance" (straight line) vs "OSRM Distance" (walking time). Fetch route geometry (JSON) from the OSRM public demo server.
-
-#### Week 8: Midterm Exam 1 (Tue. & Thu.)
+| Week | Lecture | Lab |
+|------|---------|-----|
+| 4 (3/17 Tue., 3/19 Thu.) | **HTTP Requests & API Keys** — Request/Response cycle, Status Codes (200 vs 403), User-Agent Headers. Make calls to Nominatim API using `requests`. | |
+| 5 (3/24 Tue., 3/26 Thu.) | **The Nominatim API (Geocoding)** — Parsing nested JSON, Error Handling (`try/except`). Build a CLI geocoding tool. | |
+| 6 (3/31 Tue., 4/2 Thu.) | **Searching for Places (Lazy Loading)** — Query parameters, Pagination, Generators (`yield`). Handle API pagination efficiently. | |
+| 7 (4/7 Tue., 4/9 Thu.) | **Midterm Exam 1 (Tue. & Thu.)** | |
+| 8 (4/14 Tue., 4/16 Thu.) | **OSRM API (Real Routing)** — 2D Lists (Matrices), Cost comparison. Compare Haversine vs OSRM distance, fetch route geometry. | |
 
 ---
 
@@ -96,21 +66,12 @@ Every week introduces a new Python concept specifically required to build the ne
 
 **Theme:** "Making Smart Decisions" — CS Fundamentals
 
-#### Week 9: Functional Patterns & Sorting
-- **Concept:** Functional Programming (`map`, `filter`), Lambda functions, Immutability
-- **Project Task:** Sort the downloaded Places by Rating (High→Low). Use `filter()` or List Comprehensions to purely remove any place further than a 15-minute walk without modifying the original list.
-- **Drill:** Complete P46–P50 (Logic & Codes) from *99 Problems*. Understanding truth tables helps with writing complex filter conditions.
-
-#### Week 10: The "Traveling Salesperson" (Graph Theory Lite)
-- **Concept:** Permutations, Brute Force optimization
-- **Project Task:** Given 3 selected restaurants, find the order of visitation that results in the shortest total walking time.
-- **Drill:** Review P80–P86 (Graphs) from *99 Problems*. Visualizing nodes and edges is critical for understanding routing logic.
-
-#### Week 11: Midterm Exam 2 (Tue. & Thu.)
-
-#### Week 12: Refactoring: OOP & Decorators
-- **Concept:** Classes, Methods, Decorators
-- **Project Task:** Refactor the messy code into a `Place` class. Create a `@rate_limit` decorator to ensure your API calls sleep for 1 second between requests (crucial for OSM compliance).
+| Week | Lecture | Lab |
+|------|---------|-----|
+| 9 (4/21 Tue., 4/23 Thu.) | **Functional Patterns & Sorting** — Functional Programming (`map`, `filter`), Lambda functions, Immutability. Sort places by rating, filter by walk time. | |
+| 10 (4/28 Tue., 4/30 Thu.) | **The "Traveling Salesperson" (Graph Theory Lite)** — Permutations, Brute Force optimization. Find optimal visitation order for shortest walking time. | |
+| 11 (5/5 Tue., 5/7 Thu.) | **Midterm Exam 2 (Tue. & Thu.)** | |
+| 12 (5/12 Tue., 5/14 Thu.) | **Refactoring: OOP & Decorators** — Classes, Methods, Decorators. Create a `Place` class and `@rate_limit` decorator. | |
 
 ---
 
@@ -118,18 +79,12 @@ Every week introduces a new Python concept specifically required to build the ne
 
 **Theme:** "Showing the User" — Web Frameworks & Final Project
 
-#### Week 13: Introduction to Flask (Web Server)
-- **Concept:** Routes, Templates, HTML basics
-- **Project Task:** "Hello World" web server. Passing Python variables to an HTML page using Jinja2.
-
-#### Week 14: Interactive Maps with Folium
-- **Concept:** Python-to-JS transpilation (Folium/Leaflet)
-- **Project Task:** Use the `folium` library to generate an interactive map HTML file. Add markers for your found places and draw lines for the calculated route.
-
-#### Week 15: Final Integration Sprint
-- **Focus:** Connecting the User Input Form → Flask → Nominatim API → Sorting Logic → Folium Map Display
-
-#### Week 16: Final Demo Day
+| Week | Lecture | Lab |
+|------|---------|-----|
+| 13 (5/19 Tue., 5/21 Thu.) | **Introduction to Flask (Web Server)** — Routes, Templates, HTML basics. Build a "Hello World" web server with Jinja2 templates. | |
+| 14 (5/26 Tue., 5/28 Thu.) | **Interactive Maps with Folium** — Python-to-JS transpilation (Folium/Leaflet). Generate interactive map HTML with markers and routes. | |
+| 15 (6/2 Tue., 6/4 Thu.) | **Final Integration Sprint** — Connect User Input Form → Flask → Nominatim API → Sorting Logic → Folium Map Display. | |
+| 16 (6/9 Tue., 6/11 Thu.) | **Final Demo Day** | |
 
 ---
 

@@ -1,4 +1,4 @@
-# Week 7 Lab: The OSRM API (Real Routing)
+# Week 8 Lab: The OSRM API (Real Routing)
 
 ## Lab Overview
 
@@ -7,7 +7,7 @@ In this lab, you'll practice working with the OSRM API to calculate real driving
 **Time:** 90 minutes
 
 ### Prerequisites
-- Completed Week 7 lecture
+- Completed Week 8 lecture
 - Understanding of HTTP requests and JSON
 - Familiarity with 2D lists (matrices)
 
@@ -25,8 +25,8 @@ In this lab, you'll practice working with the OSRM API to calculate real driving
 Create your working file:
 
 ```bash
-cd week07/labs
-cp week07_starter.py my_solution.py
+cd week08/labs
+cp week08_starter.py my_solution.py
 ```
 
 Install required packages (if not already installed):
@@ -816,4 +816,4 @@ time.sleep(1)  # Wait 1 second between requests
 
 ---
 
-*End of Week 7 Lab*
+*End of Week 8 Lab*

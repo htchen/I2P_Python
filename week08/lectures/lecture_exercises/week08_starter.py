@@ -1,10 +1,10 @@
 """
-Week 7 Lab: The OSRM API (Real Routing) - Starter Code
+Week 8 Lab: The OSRM API (Real Routing) - Starter Code
 
 Complete the TODO sections to implement route analysis functionality.
 
-Run tests: python week07_starter.py --test
-Run CLI:   python week07_starter.py
+Run tests: python week08_starter.py --test
+Run CLI:   python week08_starter.py
 """
 
 import math
@@ -505,7 +505,7 @@ def test_comparison():
 def run_all_tests():
     """Run all tests."""
     print("=" * 60)
-    print("Running Week 7 Lab Tests")
+    print("Running Week 8 Lab Tests")
     print("=" * 60)
 
     test_haversine()
