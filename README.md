@@ -42,11 +42,11 @@ Every week introduces a new Python concept specifically required to build the ne
 
 | Week | Lecture | Lab |
 |------|---------|-----|
-| 1-1 | **Variables & The Coordinate System** — Variables, Floats, Tuples (Immutable data). Create a script to store specific locations as `(latitude, longitude)` tuples. | |
-| 1-2 | **Functions & Distance Logic** — Math module, Defining Functions, Arguments. Implement the Haversine Formula as a Python function. | |
-| 2-1 | **Lists, Loops & The Route** — Lists, `for` loops, `range`, `zip`, `map`, `filter`. Calculate total distance of a path connecting coordinates sequentially. | |
-| 2-2 | **Dictionaries & Storing "Places"** — Dictionaries (Key-Value pairs), Nested structures. Store complex place data with name, coords, and rating. | |
-| 3 | **JSON & File I/O** — JSON format, Reading/Writing files. Save and load a database of "favorite places" to/from a `.json` file. | |
+| 1-1 (2/24 Tue.) | **Variables & The Coordinate System** — Variables, Floats, Tuples (Immutable data). Create a script to store specific locations as `(latitude, longitude)` tuples. | |
+| 1-2 (2/26 Thu.) | **Functions & Distance Logic** — Math module, Defining Functions, Arguments. Implement the Haversine Formula as a Python function. | |
+| 2-1 (3/3 Tue.) | **Lists, Loops & The Route** — Lists, `for` loops, `range`, `zip`, `map`, `filter`. Calculate total distance of a path connecting coordinates sequentially. | |
+| 2-2 (3/5 Thu.) | **Dictionaries & Storing "Places"** — Dictionaries (Key-Value pairs), Nested structures. Store complex place data with name, coords, and rating. | |
+| 3 (3/10 Tue., 3/12 Thu.) | **JSON & File I/O** — JSON format, Reading/Writing files. Save and load a database of "favorite places" to/from a `.json` file. | |
 
 ---
 
@@ -56,11 +56,11 @@ Every week introduces a new Python concept specifically required to build the ne
 
 | Week | Lecture | Lab |
 |------|---------|-----|
-| 4 | **HTTP Requests & API Keys** — Request/Response cycle, Status Codes (200 vs 403), User-Agent Headers. Make calls to Nominatim API using `requests`. | |
-| 5 | **The Nominatim API (Geocoding)** — Parsing nested JSON, Error Handling (`try/except`). Build a CLI geocoding tool. | |
-| 6 | **Searching for Places (Lazy Loading)** — Query parameters, Pagination, Generators (`yield`). Handle API pagination efficiently. | |
-| 7 | **Midterm Exam 1 (Tue. & Thu.)** | |
-| 8 | **OSRM API (Real Routing)** — 2D Lists (Matrices), Cost comparison. Compare Haversine vs OSRM distance, fetch route geometry. | |
+| 4 (3/17 Tue., 3/19 Thu.) | **HTTP Requests & API Keys** — Request/Response cycle, Status Codes (200 vs 403), User-Agent Headers. Make calls to Nominatim API using `requests`. | |
+| 5 (3/24 Tue., 3/26 Thu.) | **The Nominatim API (Geocoding)** — Parsing nested JSON, Error Handling (`try/except`). Build a CLI geocoding tool. | |
+| 6 (3/31 Tue., 4/2 Thu.) | **Searching for Places (Lazy Loading)** — Query parameters, Pagination, Generators (`yield`). Handle API pagination efficiently. | |
+| 7 (4/7 Tue., 4/9 Thu.) | **Midterm Exam 1 (Tue. & Thu.)** | |
+| 8 (4/14 Tue., 4/16 Thu.) | **OSRM API (Real Routing)** — 2D Lists (Matrices), Cost comparison. Compare Haversine vs OSRM distance, fetch route geometry. | |
 
 ---
 
@@ -70,10 +70,10 @@ Every week introduces a new Python concept specifically required to build the ne
 
 | Week | Lecture | Lab |
 |------|---------|-----|
-| 9 | **Functional Patterns & Sorting** — Functional Programming (`map`, `filter`), Lambda functions, Immutability. Sort places by rating, filter by walk time. | |
-| 10 | **The "Traveling Salesperson" (Graph Theory Lite)** — Permutations, Brute Force optimization. Find optimal visitation order for shortest walking time. | |
-| 11 | **Midterm Exam 2 (Tue. & Thu.)** | |
-| 12 | **Refactoring: OOP & Decorators** — Classes, Methods, Decorators. Create a `Place` class and `@rate_limit` decorator. | |
+| 9 (4/21 Tue., 4/23 Thu.) | **Functional Patterns & Sorting** — Functional Programming (`map`, `filter`), Lambda functions, Immutability. Sort places by rating, filter by walk time. | |
+| 10 (4/28 Tue., 4/30 Thu.) | **The "Traveling Salesperson" (Graph Theory Lite)** — Permutations, Brute Force optimization. Find optimal visitation order for shortest walking time. | |
+| 11 (5/5 Tue., 5/7 Thu.) | **Midterm Exam 2 (Tue. & Thu.)** | |
+| 12 (5/12 Tue., 5/14 Thu.) | **Refactoring: OOP & Decorators** — Classes, Methods, Decorators. Create a `Place` class and `@rate_limit` decorator. | |
 
 ---
 
@@ -83,10 +83,10 @@ Every week introduces a new Python concept specifically required to build the ne
 
 | Week | Lecture | Lab |
 |------|---------|-----|
-| 13 | **Introduction to Flask (Web Server)** — Routes, Templates, HTML basics. Build a "Hello World" web server with Jinja2 templates. | |
-| 14 | **Interactive Maps with Folium** — Python-to-JS transpilation (Folium/Leaflet). Generate interactive map HTML with markers and routes. | |
-| 15 | **Final Integration Sprint** — Connect User Input Form → Flask → Nominatim API → Sorting Logic → Folium Map Display. | |
-| 16 | **Final Demo Day** | |
+| 13 (5/19 Tue., 5/21 Thu.) | **Introduction to Flask (Web Server)** — Routes, Templates, HTML basics. Build a "Hello World" web server with Jinja2 templates. | |
+| 14 (5/26 Tue., 5/28 Thu.) | **Interactive Maps with Folium** — Python-to-JS transpilation (Folium/Leaflet). Generate interactive map HTML with markers and routes. | |
+| 15 (6/2 Tue., 6/4 Thu.) | **Final Integration Sprint** — Connect User Input Form → Flask → Nominatim API → Sorting Logic → Folium Map Display. | |
+| 16 (6/9 Tue., 6/11 Thu.) | **Final Demo Day** | |
 
 ---
 
