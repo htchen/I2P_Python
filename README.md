@@ -42,10 +42,8 @@ Every week introduces a new Python concept specifically required to build the ne
 
 | Week | Lecture | Lab |
 |------|---------|-----|
-| 1-1 (2/24 Tue.) | **Variables & The Coordinate System** — Variables, Floats, Tuples (Immutable data). Create a script to store specific locations as `(latitude, longitude)` tuples. | |
-| 1-2 (2/26 Thu.) | **Functions & Distance Logic** — Math module, Defining Functions, Arguments. Implement the Haversine Formula as a Python function. | |
-| 2-1 (3/3 Tue.) | **Lists, Loops & The Route** — Lists, `for` loops, `range`, `zip`, `map`, `filter`. Calculate total distance of a path connecting coordinates sequentially. | |
-| 2-2 (3/5 Thu.) | **Dictionaries & Storing "Places"** — Dictionaries (Key-Value pairs), Nested structures. Store complex place data with name, coords, and rating. | |
+| 1 (2/24 Tue., 2/26 Thu.) | **Variables, Coordinates & Functions** — Variables, Floats, Tuples, Math module, Defining Functions. Store locations as `(lat, long)` tuples and implement the Haversine Formula. | |
+| 2 (3/3 Tue., 3/5 Thu.) | **Lists, Loops & Dictionaries** — Lists, `for` loops, `range`, `zip`, `map`, `filter`, Dictionaries, Nested structures. Calculate path distances and store complex place data. | |
 | 3 (3/10 Tue., 3/12 Thu.) | **JSON & File I/O** — JSON format, Reading/Writing files. Save and load a database of "favorite places" to/from a `.json` file. | |
 
 ---
