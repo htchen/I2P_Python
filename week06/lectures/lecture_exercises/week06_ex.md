@@ -227,123 +227,116 @@ if __name__ == "__main__":
 
 ---
 
-## Exercise 3: Pagination Calculator (10 minutes)
+## Exercise 3: API Result Handling (10 minutes)
 
 ### Task
-Create functions to calculate pagination parameters.
+Create functions to work with Nominatim's result exclusion pattern.
 
 ### Requirements
-1. Calculate offset from page number
-2. Calculate page number from offset
-3. Calculate total pages needed
+1. Extract place IDs from results for exclusion
+2. Build the exclude_place_ids parameter string
+3. Understand Nominatim's limit (max 40)
 
 ### Starter Code
 
 ```python
-def calculate_offset(page: int, page_size: int) -> int:
+def extract_place_ids(results: list) -> list:
     """
-    Calculate the offset for a given page number.
+    Extract place IDs from API results.
 
     Args:
-        page: Page number (1-indexed)
-        page_size: Items per page
+        results: List of place dictionaries from Nominatim
 
     Returns:
-        Offset value for API request
+        List of place ID integers
 
     Example:
-        >>> calculate_offset(1, 10)
-        0
-        >>> calculate_offset(3, 10)
-        20
+        >>> results = [{"place_id": 101}, {"place_id": 102}]
+        >>> extract_place_ids(results)
+        [101, 102]
     """
     # TODO: Implement this function
     pass
 
 
-def calculate_page(offset: int, page_size: int) -> int:
+def build_exclude_param(place_ids: list) -> str:
     """
-    Calculate the page number from an offset.
+    Build the exclude_place_ids parameter string.
 
     Args:
-        offset: The offset value
-        page_size: Items per page
+        place_ids: List of place IDs to exclude
 
     Returns:
-        Page number (1-indexed)
+        Comma-separated string of place IDs
 
     Example:
-        >>> calculate_page(0, 10)
-        1
-        >>> calculate_page(25, 10)
-        3
+        >>> build_exclude_param([101, 102, 103])
+        '101,102,103'
     """
     # TODO: Implement this function
     pass
 
 
-def calculate_total_pages(total_items: int, page_size: int) -> int:
+def get_safe_limit(requested: int) -> int:
     """
-    Calculate total number of pages needed.
+    Return a safe limit value for Nominatim (max 40).
 
     Args:
-        total_items: Total number of items
-        page_size: Items per page
+        requested: The requested limit
 
     Returns:
-        Number of pages (rounded up)
+        The safe limit (capped at 40)
 
     Example:
-        >>> calculate_total_pages(25, 10)
-        3
-        >>> calculate_total_pages(30, 10)
-        3
+        >>> get_safe_limit(10)
+        10
+        >>> get_safe_limit(50)
+        40
     """
     # TODO: Implement this function
     pass
 
 
 # Tests
-def test_pagination():
-    print("Testing pagination functions...")
+def test_result_handling():
+    print("Testing result handling functions...")
 
-    # Test offset
-    assert calculate_offset(1, 10) == 0, "offset page 1 failed"
-    assert calculate_offset(2, 10) == 10, "offset page 2 failed"
-    assert calculate_offset(5, 20) == 80, "offset page 5 failed"
-    print("  calculate_offset: PASS")
+    # Test extract_place_ids
+    results = [{"place_id": 101, "name": "A"}, {"place_id": 102, "name": "B"}]
+    assert extract_place_ids(results) == [101, 102], "extract_place_ids failed"
+    print("  extract_place_ids: PASS")
 
-    # Test page from offset
-    assert calculate_page(0, 10) == 1, "page from 0 failed"
-    assert calculate_page(10, 10) == 2, "page from 10 failed"
-    assert calculate_page(25, 10) == 3, "page from 25 failed"
-    print("  calculate_page: PASS")
+    # Test build_exclude_param
+    assert build_exclude_param([101, 102, 103]) == "101,102,103", "build_exclude_param failed"
+    assert build_exclude_param([]) == "", "empty list failed"
+    print("  build_exclude_param: PASS")
 
-    # Test total pages
-    assert calculate_total_pages(25, 10) == 3, "total 25/10 failed"
-    assert calculate_total_pages(30, 10) == 3, "total 30/10 failed"
-    assert calculate_total_pages(31, 10) == 4, "total 31/10 failed"
-    print("  calculate_total_pages: PASS")
+    # Test get_safe_limit
+    assert get_safe_limit(10) == 10, "limit 10 failed"
+    assert get_safe_limit(50) == 40, "limit 50 should be 40"
+    assert get_safe_limit(40) == 40, "limit 40 failed"
+    print("  get_safe_limit: PASS")
 
-    print("All pagination tests passed!")
+    print("All result handling tests passed!")
 
 
 if __name__ == "__main__":
-    test_pagination()
+    test_result_handling()
 ```
 
 ---
 
-## Exercise 4: Paginated API Generator (20 minutes)
+## Exercise 4: Lazy API Generator (20 minutes)
 
 ### Task
-Create a generator that fetches paginated results from Nominatim.
+Create a generator that fetches results from Nominatim using `exclude_place_ids`.
 
 ### Requirements
-1. Fetch results page by page
-2. Yield results one at a time
-3. Stop when no more results
-4. Implement rate limiting
+1. Fetch results batch by batch
+2. Use `exclude_place_ids` to get additional results
+3. Yield results one at a time
+4. Stop when no more results
+5. Implement rate limiting
 
 ### Starter Code
 
@@ -351,18 +344,18 @@ Create a generator that fetches paginated results from Nominatim.
 import requests
 import time
 
-def search_places_paginated(
+def search_places_lazy(
     query: str,
-    page_size: int = 10,
-    max_pages: int = 5
+    batch_size: int = 10,
+    max_batches: int = 5
 ):
     """
-    Generator that fetches places page by page.
+    Generator that fetches places batch by batch.
 
     Args:
         query: Search query
-        page_size: Results per page (max 50 for Nominatim)
-        max_pages: Maximum pages to fetch
+        batch_size: Results per batch (max 40 for Nominatim)
+        max_batches: Maximum batches to fetch
 
     Yields:
         Dictionary with place information:
@@ -374,21 +367,23 @@ def search_places_paginated(
     url = "https://nominatim.openstreetmap.org/search"
     headers = {"User-Agent": "CS101-Lab/1.0 (student@example.com)"}
 
-    # TODO: Implement the paginated generator
-    # 1. Loop through pages (up to max_pages)
-    # 2. Fetch each page with correct offset
-    # 3. Yield each result one at a time
-    # 4. Stop if no results returned
-    # 5. Add rate limiting (1 second between requests)
+    # TODO: Implement the lazy generator
+    # 1. Keep track of place_ids we've seen (for exclusion)
+    # 2. Loop through batches (up to max_batches)
+    # 3. Build params with 'exclude_place_ids' if we have previous results
+    # 4. Fetch batch and yield each result one at a time
+    # 5. Add each place_id to our exclusion list
+    # 6. Stop if no results returned
+    # 7. Add rate limiting (1 second between requests)
 
     pass
 
 
 # Test the generator
-def test_paginated_search():
-    print("Testing paginated search...")
+def test_lazy_search():
+    print("Testing lazy search...")
 
-    search = search_places_paginated("cafe taipei", page_size=5, max_pages=2)
+    search = search_places_lazy("cafe taipei", batch_size=5, max_batches=2)
 
     results = []
     for i, place in enumerate(search):
@@ -403,11 +398,11 @@ def test_paginated_search():
     assert isinstance(results[0]["lat"], float), "lat should be float"
 
     print(f"\n  Got {len(results)} results")
-    print("  paginated_search: PASS")
+    print("  lazy_search: PASS")
 
 
 if __name__ == "__main__":
-    test_paginated_search()
+    test_lazy_search()
 ```
 
 ---
@@ -422,6 +417,7 @@ Create an advanced search generator with filtering capabilities.
 2. Support bounding box filtering
 3. Filter results by type
 4. Limit total results
+5. Use `exclude_place_ids` for fetching more results
 
 ### Starter Code
 
@@ -435,7 +431,7 @@ def search_places_advanced(
     country: Optional[str] = None,
     place_type: Optional[str] = None,
     max_results: Optional[int] = None,
-    page_size: int = 10
+    batch_size: int = 10
 ) -> Generator[dict, None, None]:
     """
     Advanced place search with filtering.
@@ -445,7 +441,7 @@ def search_places_advanced(
         country: ISO country code (e.g., "tw", "jp")
         place_type: Filter by type (e.g., "cafe", "restaurant")
         max_results: Maximum results to yield
-        page_size: Results per API call
+        batch_size: Results per API call (max 40)
 
     Yields:
         Dictionary with place info
@@ -454,11 +450,14 @@ def search_places_advanced(
     headers = {"User-Agent": "CS101-Lab/1.0 (student@example.com)"}
 
     # TODO: Implement advanced search generator
-    # 1. Build params with optional country filter
-    # 2. Track count of yielded results
-    # 3. Filter by place_type if specified
-    # 4. Stop when max_results reached
-    # 5. Implement proper pagination
+    # 1. Keep track of exclude_ids for getting more results
+    # 2. Build params with optional country filter
+    # 3. Use min(batch_size, 40) for limit (Nominatim max is 40)
+    # 4. Add exclude_place_ids param if we have previous results
+    # 5. Track count of yielded results
+    # 6. Filter by place_type if specified
+    # 7. Stop when max_results reached
+    # 8. Add rate limiting between batches
 
     pass
 
@@ -542,17 +541,19 @@ def search_food(food_type: str, location: str) -> Generator[dict, None, None]:
     url = "https://nominatim.openstreetmap.org/search"
     headers = {"User-Agent": "CS101-FoodSearch/1.0 (student@example.com)"}
 
-    offset = 0
-    page_size = 10
+    exclude_ids = []
+    batch_size = 10
 
     while True:
         params = {
             "q": query,
             "format": "json",
-            "limit": page_size,
-            "offset": offset,
+            "limit": min(batch_size, 40),  # Nominatim max is 40
             "addressdetails": 1
         }
+
+        if exclude_ids:
+            params["exclude_place_ids"] = ",".join(map(str, exclude_ids))
 
         try:
             response = requests.get(url, params=params, headers=headers, timeout=10)
@@ -568,6 +569,7 @@ def search_food(food_type: str, location: str) -> Generator[dict, None, None]:
 
             for place in results:
                 address = place.get("address", {})
+                exclude_ids.append(place["place_id"])  # Track for exclusion
                 yield {
                     "name": place.get("name", "Unknown"),
                     "display_name": place.get("display_name", ""),
@@ -578,7 +580,6 @@ def search_food(food_type: str, location: str) -> Generator[dict, None, None]:
                     "city": address.get("city", address.get("town", ""))
                 }
 
-            offset += page_size
             time.sleep(1)
 
         except requests.RequestException as e:
@@ -742,7 +743,7 @@ def demo_pipeline():
     """Demonstrate the generator pipeline."""
 
     # Create a search
-    search = search_places_paginated("museum", page_size=10, max_pages=3)
+    search = search_places_lazy("museum", batch_size=10, max_batches=3)
 
     # Filter to only art museums
     art_museums = filter_generator(

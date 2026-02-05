@@ -150,89 +150,83 @@ def take_while(predicate: Callable[[T], bool], iterable: Iterable[T]) -> Generat
 
 
 # =============================================================================
-# Exercise 3: Pagination Calculator
+# Exercise 3: API Result Handling
 # =============================================================================
 
-def calculate_offset(page: int, page_size: int) -> int:
+def extract_place_ids(results: list) -> list:
     """
-    Calculate the offset for a given page number.
+    Extract place IDs from API results.
 
     Args:
-        page: Page number (1-indexed)
-        page_size: Items per page
+        results: List of place dictionaries from Nominatim
 
     Returns:
-        Offset value for API request
+        List of place ID integers
 
     Example:
-        >>> calculate_offset(1, 10)
-        0
-        >>> calculate_offset(3, 10)
-        20
+        >>> results = [{"place_id": 101}, {"place_id": 102}]
+        >>> extract_place_ids(results)
+        [101, 102]
     """
     # TODO: Implement this function
     pass
 
 
-def calculate_page(offset: int, page_size: int) -> int:
+def build_exclude_param(place_ids: list) -> str:
     """
-    Calculate the page number from an offset.
+    Build the exclude_place_ids parameter string.
 
     Args:
-        offset: The offset value
-        page_size: Items per page
+        place_ids: List of place IDs to exclude
 
     Returns:
-        Page number (1-indexed)
+        Comma-separated string of place IDs
 
     Example:
-        >>> calculate_page(0, 10)
-        1
-        >>> calculate_page(25, 10)
-        3
+        >>> build_exclude_param([101, 102, 103])
+        '101,102,103'
     """
     # TODO: Implement this function
     pass
 
 
-def calculate_total_pages(total_items: int, page_size: int) -> int:
+def get_safe_limit(requested: int) -> int:
     """
-    Calculate total number of pages needed.
+    Return a safe limit value for Nominatim (max 40).
 
     Args:
-        total_items: Total number of items
-        page_size: Items per page
+        requested: The requested limit
 
     Returns:
-        Number of pages (rounded up)
+        The safe limit (capped at 40)
 
     Example:
-        >>> calculate_total_pages(25, 10)
-        3
-        >>> calculate_total_pages(30, 10)
-        3
+        >>> get_safe_limit(10)
+        10
+        >>> get_safe_limit(50)
+        40
     """
     # TODO: Implement this function
-    # Hint: Use math.ceil for rounding up
+    # Hint: Use min() to cap the value
     pass
 
 
 # =============================================================================
-# Exercise 4: Paginated API Generator
+# Exercise 4: Lazy API Generator
 # =============================================================================
 
 def search_places_paginated(
     query: str,
-    page_size: int = 10,
-    max_pages: int = 5
+    batch_size: int = 10,
+    max_batches: int = 5
 ) -> Generator[dict, None, None]:
     """
-    Generator that fetches places page by page.
+    Generator that fetches places batch by batch using exclude_place_ids.
 
     Args:
         query: Search query
-        page_size: Results per page (max 50 for Nominatim)
-        max_pages: Maximum pages to fetch
+        batch_size: Results per batch (max 40 for Nominatim)
+        max_batches: Maximum batches to fetch
 
     Yields:
         Dictionary with place information:
@@ -244,14 +238,16 @@ def search_places_paginated(
     url = f"{BASE_URL}/search"
     headers = {"User-Agent": USER_AGENT}
 
-    # TODO: Implement the paginated generator
-    # 1. Loop through pages (0 to max_pages-1)
-    # 2. Calculate offset for each page
-    # 3. Make API request with params: q, format, limit, offset
-    # 4. Handle errors (return on failure)
-    # 5. If no results, return (stop generator)
-    # 6. Yield each result as a dict with name, lat, lon, type
-    # 7. Add time.sleep(1) between pages for rate limiting
+    # TODO: Implement the lazy generator
+    # 1. Create an empty list to track exclude_ids
+    # 2. Loop through batches (0 to max_batches-1)
+    # 3. Build params: q, format, limit (use min(batch_size, 40))
+    # 4. If exclude_ids is not empty, add exclude_place_ids param
+    # 5. Make API request
+    # 6. Handle errors (return on failure)
+    # 7. If no results, return (stop generator)
+    # 8. For each result: add place_id to exclude_ids, then yield dict
+    # 9. Add time.sleep(1) between batches for rate limiting
 
     pass
 
@@ -265,7 +261,7 @@ def search_places_advanced(
     country: Optional[str] = None,
     place_type: Optional[str] = None,
     max_results: Optional[int] = None,
-    page_size: int = 10
+    batch_size: int = 10
 ) -> Generator[dict, None, None]:
     """
     Advanced place search with filtering.
@@ -275,7 +271,7 @@ def search_places_advanced(
         country: ISO country code (e.g., "tw", "jp")
         place_type: Filter by type (e.g., "cafe", "restaurant")
         max_results: Maximum results to yield
-        page_size: Results per API call
+        batch_size: Results per API call (max 40)
 
     Yields:
         Dictionary with place info
@@ -283,17 +279,20 @@ def search_places_advanced(
     url = f"{BASE_URL}/search"
     headers = {"User-Agent": USER_AGENT}
 
-    offset = 0
+    exclude_ids = []
     count = 0
 
     # TODO: Implement advanced search generator
     # 1. Build params with optional countrycodes filter
-    # 2. Loop until no more results or max_results reached
-    # 3. For each result:
+    # 2. Use min(batch_size, 40) for limit (Nominatim max is 40)
+    # 3. Add exclude_place_ids if we have previous results
+    # 4. Loop until no more results or max_results reached
+    # 5. For each result:
+    #    - Add place_id to exclude_ids
     #    - If place_type specified, check if type matches (partial match)
     #    - If max_results specified, stop when count reaches it
     #    - Yield the place info
-    # 4. Increment offset and add rate limiting
+    # 6. Add rate limiting between batches
 
     pass
 
@@ -317,17 +316,19 @@ def search_food(food_type: str, location: str) -> Generator[dict, None, None]:
     url = f"{BASE_URL}/search"
     headers = {"User-Agent": USER_AGENT}
 
-    offset = 0
-    page_size = 10
+    exclude_ids = []
+    batch_size = 10
 
     while True:
         params = {
             "q": query,
             "format": "json",
-            "limit": page_size,
-            "offset": offset,
+            "limit": min(batch_size, 40),  # Nominatim max is 40
             "addressdetails": 1
         }
+
+        if exclude_ids:
+            params["exclude_place_ids"] = ",".join(map(str, exclude_ids))
 
         try:
             response = requests.get(url, params=params, headers=headers, timeout=10)
@@ -342,6 +343,7 @@ def search_food(food_type: str, location: str) -> Generator[dict, None, None]:
 
             for place in results:
                 address = place.get("address", {})
+                exclude_ids.append(place["place_id"])  # Track for exclusion
                 yield {
                     "name": place.get("name", place.get("display_name", "Unknown")),
                     "display_name": place.get("display_name", ""),
@@ -352,7 +354,6 @@ def search_food(food_type: str, location: str) -> Generator[dict, None, None]:
                     "city": address.get("city", address.get("town", ""))
                 }
 
-            offset += page_size
             time.sleep(1)
 
         except requests.RequestException as e:
@@ -533,64 +534,62 @@ def test_exercise_2():
 
 
 def test_exercise_3():
-    """Test pagination functions."""
+    """Test result handling functions."""
     print("\n" + "="*60)
-    print("Testing Exercise 3: Pagination")
+    print("Testing Exercise 3: Result Handling")
     print("="*60)
 
     tests_passed = 0
     total_tests = 3
 
-    # Test calculate_offset
+    # Test extract_place_ids
     try:
-        if (calculate_offset(1, 10) == 0 and
-            calculate_offset(2, 10) == 10 and
-            calculate_offset(5, 20) == 80):
-            print("  calculate_offset: PASS")
+        results = [{"place_id": 101, "name": "A"}, {"place_id": 102, "name": "B"}]
+        if extract_place_ids(results) == [101, 102]:
+            print("  extract_place_ids: PASS")
             tests_passed += 1
         else:
-            print("  calculate_offset: FAIL")
+            print("  extract_place_ids: FAIL")
     except Exception as e:
-        print(f"  calculate_offset: FAIL - {e}")
+        print(f"  extract_place_ids: FAIL - {e}")
 
-    # Test calculate_page
+    # Test build_exclude_param
     try:
-        if (calculate_page(0, 10) == 1 and
-            calculate_page(10, 10) == 2 and
-            calculate_page(25, 10) == 3):
-            print("  calculate_page: PASS")
+        if (build_exclude_param([101, 102, 103]) == "101,102,103" and
+            build_exclude_param([]) == ""):
+            print("  build_exclude_param: PASS")
             tests_passed += 1
         else:
-            print("  calculate_page: FAIL")
+            print("  build_exclude_param: FAIL")
     except Exception as e:
-        print(f"  calculate_page: FAIL - {e}")
+        print(f"  build_exclude_param: FAIL - {e}")
 
-    # Test calculate_total_pages
+    # Test get_safe_limit
     try:
-        if (calculate_total_pages(25, 10) == 3 and
-            calculate_total_pages(30, 10) == 3 and
-            calculate_total_pages(31, 10) == 4):
-            print("  calculate_total_pages: PASS")
+        if (get_safe_limit(10) == 10 and
+            get_safe_limit(50) == 40 and
+            get_safe_limit(40) == 40):
+            print("  get_safe_limit: PASS")
             tests_passed += 1
         else:
-            print("  calculate_total_pages: FAIL")
+            print("  get_safe_limit: FAIL")
     except Exception as e:
-        print(f"  calculate_total_pages: FAIL - {e}")
+        print(f"  get_safe_limit: FAIL - {e}")
 
     print(f"\n  Result: {tests_passed}/{total_tests} tests passed")
     return tests_passed == total_tests
 
 
 def test_exercise_4():
-    """Test paginated search."""
+    """Test lazy search."""
     print("\n" + "="*60)
-    print("Testing Exercise 4: Paginated Search")
+    print("Testing Exercise 4: Lazy Search")
     print("="*60)
 
     print("  Making API request (this may take a few seconds)...")
 
     try:
-        search = search_places_paginated("cafe taipei", page_size=5, max_pages=1)
+        search = search_places_paginated("cafe taipei", batch_size=5, max_batches=1)
 
         results = []
         for i, place in enumerate(search):
@@ -600,14 +599,14 @@ def test_exercise_4():
                 break
 
         if len(results) > 0 and "name" in results[0] and "lat" in results[0]:
-            print(f"\n  paginated_search: PASS ({len(results)} results)")
+            print(f"\n  lazy_search: PASS ({len(results)} results)")
             return True
         else:
-            print("  paginated_search: FAIL - invalid results")
+            print("  lazy_search: FAIL - invalid results")
             return False
 
     except Exception as e:
-        print(f"  paginated_search: FAIL - {e}")
+        print(f"  lazy_search: FAIL - {e}")
         return False
 
 

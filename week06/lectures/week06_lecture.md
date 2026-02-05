@@ -85,12 +85,14 @@ print(response.url)
 | `viewbox` | Bounding box (lon1,lat1,lon2,lat2) | `"121.4,24.9,121.7,25.2"` |
 | `bounded` | Strict viewbox (0 or 1) | `1` |
 
-### Pagination Parameters
+### Result Limiting Parameters
 
 | Parameter | Description | Example |
 |-----------|-------------|---------|
-| `limit` | Results per page | `10` |
-| `offset` | Skip first N results | `20` (for page 3) |
+| `limit` | Max results (1-40) | `10` |
+| `exclude_place_ids` | Exclude previous results | `"123,456,789"` |
+
+> **Note:** Nominatim does not support traditional offset-based pagination. To get additional results, use `exclude_place_ids` to exclude previously returned results.
 
 ### Example: Search Coffee Shops in Taipei
 
@@ -126,78 +128,83 @@ for place in results[:5]:
 
 ---
 
-## 1.3 Understanding Pagination
+## 1.3 Understanding Result Limiting
 
 ### The Problem: Large Result Sets
 
-When you search for something popular like "restaurant taipei", there could be thousands of results. Loading all at once:
+When you search for something popular like "restaurant taipei", there could be many matching results. Loading all at once:
 
 1. **Slow** - User waits for everything to load
 2. **Memory intensive** - All results stored in memory
 3. **Wasteful** - User might only need first 10
 
-### The Solution: Pagination
+### How Nominatim Handles Results
 
-Break results into **pages**:
+Unlike many REST APIs, **Nominatim does not support traditional offset-based pagination**. Instead:
+
+- The `limit` parameter controls how many results to return (max 40)
+- To get additional results, use `exclude_place_ids` to exclude previously returned results
+- Nominatim returns the **best matching results**, not a complete list
 
 ```
-Page 1: Results 1-10   (offset=0,  limit=10)
-Page 2: Results 11-20  (offset=10, limit=10)
-Page 3: Results 21-30  (offset=20, limit=10)
+Request 1: limit=10                           → Results 1-10
+Request 2: limit=10, exclude_place_ids=...    → Results 11-20
+Request 3: limit=10, exclude_place_ids=...    → Results 21-30
 ...
 ```
 
-### Calculating Offset
+### Collecting Place IDs for Exclusion
 
 ```python
-def calculate_offset(page_number: int, page_size: int) -> int:
+def get_place_ids(results: list) -> str:
     """
-    Calculate the offset for a given page.
+    Extract place IDs from results for exclusion in next request.
 
     Args:
-        page_number: 1-indexed page number
-        page_size: Number of results per page
+        results: List of place dictionaries from API
 
     Returns:
-        Offset value for API request
+        Comma-separated string of place IDs
     """
-    return (page_number - 1) * page_size
+    return ",".join(str(place["place_id"]) for place in results)
 
 
-# Examples:
-print(calculate_offset(1, 10))  # 0  (first page)
-print(calculate_offset(2, 10))  # 10 (second page)
-print(calculate_offset(3, 10))  # 20 (third page)
+# Example usage:
+# first_results = [...from API...]
+# place_ids = get_place_ids(first_results)
+# Next request: params["exclude_place_ids"] = place_ids
 ```
 
 ---
 
-## 1.4 Implementing Basic Pagination
+## 1.4 Implementing Result Fetching with Exclusion
 
 ```python
 import requests
 import time
 
-def fetch_page(query: str, page: int, page_size: int = 10) -> list:
+def fetch_results(query: str, exclude_ids: str = None, limit: int = 10) -> list:
     """
-    Fetch a single page of search results.
+    Fetch search results, optionally excluding previous results.
 
     Args:
         query: Search query
-        page: Page number (1-indexed)
-        page_size: Results per page
+        exclude_ids: Comma-separated place IDs to exclude
+        limit: Max results (1-40)
 
     Returns:
-        List of results for this page
+        List of results
     """
     url = "https://nominatim.openstreetmap.org/search"
 
     params = {
         "q": query,
         "format": "json",
-        "limit": page_size,
-        "offset": (page - 1) * page_size
+        "limit": min(limit, 40)  # Nominatim max is 40
     }
+
+    if exclude_ids:
+        params["exclude_place_ids"] = exclude_ids
 
     headers = {"User-Agent": "CS101/1.0 (test@example.com)"}
 
@@ -208,23 +215,25 @@ def fetch_page(query: str, page: int, page_size: int = 10) -> list:
     return []
 
 
-def fetch_all_results(query: str, max_pages: int = 5) -> list:
+def fetch_multiple_batches(query: str, max_batches: int = 5, batch_size: int = 10) -> list:
     """
-    Fetch multiple pages of results.
+    Fetch multiple batches of results using exclude_place_ids.
 
     Args:
         query: Search query
-        max_pages: Maximum pages to fetch
+        max_batches: Maximum batches to fetch
+        batch_size: Results per batch
 
     Returns:
         Combined list of all results
     """
     all_results = []
+    exclude_ids = None
 
-    for page in range(1, max_pages + 1):
-        print(f"Fetching page {page}...")
+    for batch in range(1, max_batches + 1):
+        print(f"Fetching batch {batch}...")
 
-        results = fetch_page(query, page)
+        results = fetch_results(query, exclude_ids, batch_size)
 
         if not results:
             print("No more results")
@@ -233,70 +242,72 @@ def fetch_all_results(query: str, max_pages: int = 5) -> list:
         all_results.extend(results)
         print(f"  Got {len(results)} results (total: {len(all_results)})")
 
+        # Collect place IDs for exclusion in next request
+        new_ids = [str(r["place_id"]) for r in results]
+        if exclude_ids:
+            exclude_ids = exclude_ids + "," + ",".join(new_ids)
+        else:
+            exclude_ids = ",".join(new_ids)
+
         time.sleep(1)  # Rate limiting
 
     return all_results
 
 
 # Usage
-results = fetch_all_results("cafe taipei", max_pages=3)
+results = fetch_multiple_batches("cafe taipei", max_batches=3)
 print(f"\nTotal results: {len(results)}")
 ```
 
 ### The Problem with This Approach
 
 ```python
-# This fetches ALL pages upfront, even if we only need a few results
-all_results = fetch_all_results("restaurant taipei", max_pages=10)
+# This fetches ALL batches upfront, even if we only need a few results
+all_results = fetch_multiple_batches("restaurant taipei", max_batches=10)
 
 # But maybe we only wanted the first 3!
 for result in all_results[:3]:
     print(result["display_name"])
 
-# We wasted 9 API calls and lots of memory!
+# We wasted API calls and memory!
 ```
 
 **Solution: Lazy Evaluation with Generators**
 
 ---
 
-## 1.5 Mini-Exercise 1: Pagination Math
+## 1.5 Mini-Exercise 1: Understanding Result Exclusion
 
-Calculate the correct offset and which results you'll get:
+Answer these questions about Nominatim's result handling:
 
 ```python
-page_size = 10
+# Question 1: What's the maximum value for the 'limit' parameter?
+max_limit = ?
 
-# Question 1: What's the offset for page 5?
-offset_page_5 = ?
+# Question 2: You made a request and got 10 results with place_ids:
+# [101, 102, 103, 104, 105, 106, 107, 108, 109, 110]
+# What parameter do you add to get the NEXT 10 results?
+next_request_param = ?
 
-# Question 2: If you have offset=35 and limit=10, which results do you get?
-# Results ? through ?
-
-# Question 3: You want results 51-60. What page and offset?
-page = ?
-offset = ?
+# Question 3: Why doesn't Nominatim support traditional offset pagination?
+# (Think about what Nominatim is designed for)
 ```
 
 <details>
 <summary>Solution</summary>
 
 ```python
-page_size = 10
+# Question 1: Maximum limit
+max_limit = 40  # Nominatim's maximum is 40 results per request
 
-# Question 1: Offset for page 5
-offset_page_5 = (5 - 1) * 10  # = 40
-print(f"Page 5 offset: {offset_page_5}")
+# Question 2: Exclude previous results
+# Add this parameter to your next request:
+next_request_param = {"exclude_place_ids": "101,102,103,104,105,106,107,108,109,110"}
 
-# Question 2: offset=35, limit=10
-# Results 36 through 45 (offset is 0-indexed)
-print("Results 36-45")
-
-# Question 3: Results 51-60
-# That's page 6 (since 51/10 = 5.1, round up to 6)
-page = 6
-offset = (6 - 1) * 10  # = 50
-print(f"Page {page}, offset {offset}")
+# Question 3: Why no offset pagination?
+# Nominatim is designed for GEOCODING (finding best matches for a query),
+# not for downloading complete datasets. It returns the most relevant
+# results first. For bulk data, use the Overpass API instead.
 ```
 
 </details>
@@ -662,20 +673,20 @@ We want to search for places, but:
 
 ---
 
-## 3.2 Basic Paginated Search Generator
+## 3.2 Basic Lazy Search Generator
 
 ```python
 import requests
 import time
 
-def search_places(query: str, page_size: int = 10):
+def search_places(query: str, batch_size: int = 10):
     """
     Generator that yields places one at a time,
-    fetching new pages only when needed.
+    fetching new batches only when needed.
 
     Args:
         query: Search query
-        page_size: Results per API call
+        batch_size: Results per API call (max 40)
 
     Yields:
         Dictionary with place info
@@ -683,18 +694,22 @@ def search_places(query: str, page_size: int = 10):
     url = "https://nominatim.openstreetmap.org/search"
     headers = {"User-Agent": "CS101/1.0 (test@example.com)"}
 
-    offset = 0
+    exclude_ids = []  # Track place IDs we've already seen
 
     while True:
-        # Fetch next page
-        print(f"  [Fetching page at offset {offset}...]")
-
+        # Build parameters
         params = {
             "q": query,
             "format": "json",
-            "limit": page_size,
-            "offset": offset
+            "limit": min(batch_size, 40)  # Nominatim max is 40
         }
+
+        # Exclude previously returned results
+        if exclude_ids:
+            params["exclude_place_ids"] = ",".join(map(str, exclude_ids))
+            print(f"  [Fetching next batch, excluding {len(exclude_ids)} previous results...]")
+        else:
+            print(f"  [Fetching first batch...]")
 
         response = requests.get(url, params=params, headers=headers, timeout=10)
 
@@ -708,6 +723,7 @@ def search_places(query: str, page_size: int = 10):
 
         # Yield each result one at a time
         for place in results:
+            exclude_ids.append(place["place_id"])  # Remember this ID
             yield {
                 "name": place.get("display_name", "Unknown"),
                 "lat": float(place.get("lat", 0)),
@@ -715,7 +731,6 @@ def search_places(query: str, page_size: int = 10):
                 "type": place.get("type", "unknown")
             }
 
-        offset += page_size
         time.sleep(1)  # Rate limiting
 
 
@@ -727,7 +742,7 @@ print("\nGetting first 3 results:")
 for i, place in enumerate(search):
     print(f"{i+1}. {place['name'][:50]}...")
     if i >= 2:
-        break  # Stop after 3 - no extra pages fetched!
+        break  # Stop after 3 - no extra batches fetched!
 ```
 
 ---
@@ -743,7 +758,7 @@ def search_places_advanced(
     query: str,
     country: str = None,
     viewbox: tuple = None,
-    page_size: int = 10,
+    batch_size: int = 10,
     max_results: int = None
 ) -> Generator[dict, None, None]:
     """
@@ -753,7 +768,7 @@ def search_places_advanced(
         query: Search query
         country: ISO country code (e.g., "tw")
         viewbox: Bounding box as (west, south, east, north)
-        page_size: Results per API call
+        batch_size: Results per API call (max 40)
         max_results: Maximum total results (None for unlimited)
 
     Yields:
@@ -762,7 +777,7 @@ def search_places_advanced(
     url = "https://nominatim.openstreetmap.org/search"
     headers = {"User-Agent": "CS101/1.0 (test@example.com)"}
 
-    offset = 0
+    exclude_ids = []
     count = 0
 
     while True:
@@ -774,10 +789,13 @@ def search_places_advanced(
         params = {
             "q": query,
             "format": "json",
-            "limit": page_size,
-            "offset": offset,
+            "limit": min(batch_size, 40),  # Nominatim max is 40
             "addressdetails": 1
         }
+
+        # Exclude previously returned results
+        if exclude_ids:
+            params["exclude_place_ids"] = ",".join(map(str, exclude_ids))
 
         if country:
             params["countrycodes"] = country
@@ -786,7 +804,7 @@ def search_places_advanced(
             params["viewbox"] = f"{viewbox[0]},{viewbox[1]},{viewbox[2]},{viewbox[3]}"
             params["bounded"] = 1
 
-        # Fetch page
+        # Fetch batch
         try:
             response = requests.get(url, params=params, headers=headers, timeout=10)
 
@@ -813,6 +831,8 @@ def search_places_advanced(
             if max_results and count >= max_results:
                 return
 
+            exclude_ids.append(place["place_id"])  # Track for exclusion
+
             yield {
                 "name": place.get("display_name", "Unknown"),
                 "lat": float(place.get("lat", 0)),
@@ -823,7 +843,6 @@ def search_places_advanced(
 
             count += 1
 
-        offset += page_size
         time.sleep(1)  # Rate limiting
 
 
@@ -923,7 +942,7 @@ from typing import Generator
 def search_food(
     food_type: str,
     location: str,
-    page_size: int = 10
+    batch_size: int = 10
 ) -> Generator[dict, None, None]:
     """
     Search for food/restaurants lazily.
@@ -931,7 +950,7 @@ def search_food(
     Args:
         food_type: Type of food (pizza, sushi, etc.)
         location: Location to search in
-        page_size: Results per page
+        batch_size: Results per API call (max 40)
 
     Yields:
         Restaurant/food place information
@@ -940,16 +959,18 @@ def search_food(
     url = "https://nominatim.openstreetmap.org/search"
     headers = {"User-Agent": "CS101-FoodSearch/1.0 (cs101@example.com)"}
 
-    offset = 0
+    exclude_ids = []
 
     while True:
         params = {
             "q": query,
             "format": "json",
-            "limit": page_size,
-            "offset": offset,
+            "limit": min(batch_size, 40),  # Nominatim max is 40
             "addressdetails": 1
         }
+
+        if exclude_ids:
+            params["exclude_place_ids"] = ",".join(map(str, exclude_ids))
 
         try:
             response = requests.get(url, params=params, headers=headers, timeout=10)
@@ -965,6 +986,7 @@ def search_food(
             for place in results:
                 # Extract useful info
                 address = place.get("address", {})
+                exclude_ids.append(place["place_id"])  # Track for exclusion
 
                 yield {
                     "name": place.get("name", place.get("display_name", "Unknown")),
@@ -976,7 +998,6 @@ def search_food(
                     "district": address.get("suburb", address.get("district", ""))
                 }
 
-            offset += page_size
             time.sleep(1)
 
         except requests.RequestException:
@@ -1184,10 +1205,11 @@ if collected_results:
 
 ## 3.8 Summary: Key Takeaways
 
-### Pagination
-- Break large result sets into pages
-- Use `limit` and `offset` parameters
-- Calculate offset: `(page - 1) * page_size`
+### Fetching More Results (Nominatim)
+- Use `limit` parameter (max 40) to control batch size
+- Use `exclude_place_ids` to get additional results
+- Track returned place IDs and exclude them in next request
+- Note: Nominatim does NOT support traditional offset pagination
 
 ### Generators
 - Use `yield` instead of `return`
@@ -1201,10 +1223,14 @@ if collected_results:
 def my_generator():
     yield value
 
-# Generator with parameters
-def paginated_search(query, page_size=10):
+# Generator with lazy fetching
+def lazy_search(query, batch_size=10):
+    exclude_ids = []
     while has_more:
-        yield from fetch_page()
+        results = fetch_batch(exclude_ids)
+        for item in results:
+            exclude_ids.append(item["id"])
+            yield item
 
 # Generator expression
 gen = (x**2 for x in range(10))
@@ -1217,11 +1243,12 @@ for item in generator:
 ```
 
 ### Best Practices
-1. Use generators for API pagination
+1. Use generators for lazy data fetching
 2. Implement rate limiting inside the generator
 3. Handle errors gracefully (don't crash mid-iteration)
 4. Provide clear stopping conditions
 5. Document what the generator yields
+6. For Nominatim: use `exclude_place_ids`, not offset (which doesn't exist)
 
 ---
 

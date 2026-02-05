@@ -229,52 +229,63 @@ def example_generator_expressions():
 
 
 # =============================================================================
-# Example 8: Pagination Basics
+# Example 8: Result Exclusion Basics
 # =============================================================================
 
 def example_pagination():
-    """Demonstrate pagination concepts."""
+    """Demonstrate Nominatim result exclusion concepts."""
     print("\n" + "="*60)
-    print("Example 8: Pagination Basics")
+    print("Example 8: Result Exclusion (Nominatim API)")
     print("="*60)
 
-    def calculate_offset(page: int, page_size: int) -> int:
-        return (page - 1) * page_size
+    print("\nNominatim API Key Facts:")
+    print("  - Maximum 'limit' value: 40")
+    print("  - No 'offset' parameter (doesn't exist!)")
+    print("  - Use 'exclude_place_ids' to get more results")
 
-    print("\nWith page_size = 10:")
-    for page in range(1, 6):
-        offset = calculate_offset(page, 10)
-        start = offset + 1
-        end = offset + 10
-        print(f"  Page {page}: offset={offset}, results {start}-{end}")
+    print("\nHow to get multiple batches:")
+    print("  Batch 1: params = {'limit': 10}")
+    print("           -> Returns results with place_ids: 101,102,103...")
+    print("  Batch 2: params = {'limit': 10, 'exclude_place_ids': '101,102,103...'}")
+    print("           -> Returns NEW results, excluding previous ones")
+
+    def get_exclude_param(place_ids: list) -> str:
+        """Convert list of place IDs to exclude parameter."""
+        return ",".join(map(str, place_ids))
+
+    # Demo
+    example_ids = [101, 102, 103, 104, 105]
+    print(f"\n  Example place_ids: {example_ids}")
+    print(f"  exclude_place_ids param: '{get_exclude_param(example_ids)}'")
 
 
 # =============================================================================
-# Example 9: Paginated API Search
+# Example 9: Lazy API Search with Exclusion
 # =============================================================================
 
 def example_paginated_search():
-    """Demonstrate paginated API search."""
+    """Demonstrate lazy API search using exclude_place_ids."""
     print("\n" + "="*60)
-    print("Example 9: Paginated API Search")
+    print("Example 9: Lazy API Search (exclude_place_ids)")
     print("="*60)
 
-    def search_places(query: str, page_size: int = 5, max_pages: int = 2):
-        """Generator that fetches places page by page."""
+    def search_places(query: str, batch_size: int = 5, max_batches: int = 2):
+        """Generator that fetches places batch by batch."""
         url = f"{BASE_URL}/search"
         headers = {"User-Agent": USER_AGENT}
+        exclude_ids = []
 
-        for page in range(max_pages):
-            offset = page * page_size
-
-            print(f"  [Fetching page {page + 1}, offset {offset}...]")
+        for batch in range(max_batches):
+            print(f"  [Fetching batch {batch + 1}...]")
 
             params = {
                 "q": query,
                 "format": "json",
-                "limit": page_size,
-                "offset": offset
+                "limit": min(batch_size, 40)  # Nominatim max is 40
             }
+
+            if exclude_ids:
+                params["exclude_place_ids"] = ",".join(map(str, exclude_ids))
 
             try:
                 response = requests.get(url, params=params, headers=headers, timeout=10)
@@ -289,6 +300,7 @@ def example_paginated_search():
                     return
 
                 for place in results:
+                    exclude_ids.append(place["place_id"])
                     yield {
                         "name": place.get("display_name", "Unknown")[:50],
                         "type": place.get("type", "unknown")
@@ -301,13 +313,13 @@ def example_paginated_search():
                 return
 
     print("\nSearching for 'museum taipei' (lazy loading):")
-    search = search_places("museum taipei", page_size=3, max_pages=2)
+    search = search_places("museum taipei", batch_size=3, max_batches=2)
 
     print("\nGetting results one at a time:")
     for i, place in enumerate(search):
         print(f"  {i+1}. {place['name']}...")
         if i >= 4:
-            print("  [Stopping early - remaining pages not fetched!]")
+            print("  [Stopping early - remaining batches not fetched!]")
             break
 
 
@@ -333,7 +345,7 @@ def example_advanced_search():
         params = {
             "q": query,
             "format": "json",
-            "limit": 10
+            "limit": min(max_results or 10, 40)  # Nominatim max is 40
         }
 
         if country:
@@ -433,7 +445,7 @@ def example_food_search():
     print("="*60)
 
     def search_food(food_type: str, location: str):
-        """Search for food places."""
+        """Search for food places (single batch for demo)."""
         query = f"{food_type} {location}"
         url = f"{BASE_URL}/search"
         headers = {"User-Agent": USER_AGENT}
@@ -441,7 +453,7 @@ def example_food_search():
         params = {
             "q": query,
             "format": "json",
-            "limit": 5,
+            "limit": 5,  # Nominatim max is 40
             "addressdetails": 1
         }
 
@@ -489,8 +501,8 @@ def main():
         ("5", "Memory Efficiency", example_memory_efficiency),
         ("6", "Fibonacci Generator", example_fibonacci),
         ("7", "Generator Expressions", example_generator_expressions),
-        ("8", "Pagination Basics", example_pagination),
-        ("9", "Paginated Search", example_paginated_search),
+        ("8", "Result Exclusion (API)", example_pagination),
+        ("9", "Lazy API Search", example_paginated_search),
         ("10", "Advanced Search", example_advanced_search),
         ("11", "Generator Utilities", example_generator_utilities),
         ("12", "Food Search Preview", example_food_search),

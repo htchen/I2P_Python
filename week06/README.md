@@ -31,27 +31,33 @@ Generators fetch results **on demand**.
 import requests
 import time
 
-def search_places(query, limit_per_page=10):
+def search_places(query, batch_size=10):
     """
     Generator that yields places one at a time,
-    fetching new pages only when needed.
+    fetching new batches only when needed.
     """
     headers = {
         "User-Agent": "CS101-Search/1.0 (your-email@university.edu)"
     }
 
-    page = 0
+    exclude_ids = []  # Track place IDs we've already returned
 
     while True:
-        # Fetch next page
+        # Build request parameters
+        params = {
+            "q": query,
+            "format": "json",
+            "limit": min(batch_size, 40)  # Nominatim max is 40
+        }
+
+        # Exclude previously returned results
+        if exclude_ids:
+            params["exclude_place_ids"] = ",".join(map(str, exclude_ids))
+
+        # Fetch next batch
         response = requests.get(
             "https://nominatim.openstreetmap.org/search",
-            params={
-                "q": query,
-                "format": "json",
-                "limit": limit_per_page,
-                "offset": page * limit_per_page
-            },
+            params=params,
             headers=headers
         )
 
@@ -62,19 +68,19 @@ def search_places(query, limit_per_page=10):
 
         # Yield each result one at a time
         for place in data:
+            exclude_ids.append(place["place_id"])  # Remember this ID
             yield {
                 "name": place["display_name"],
                 "coords": (float(place["lat"]), float(place["lon"]))
             }
 
-        page += 1
         time.sleep(1)  # Rate limiting
 
 
 # Usage - results are fetched lazily!
 search = search_places("pizza taipei")
 
-# Only fetches first page
+# Only fetches first batch
 print("First 3 results:")
 for i, place in enumerate(search):
     print(f"  {place['name'][:50]}...")
