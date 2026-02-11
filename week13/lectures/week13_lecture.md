@@ -65,7 +65,7 @@ By the end of this lecture, students will be able to:
 │                    HTTP Request Structure                        │
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                 │
-│   GET /search?q=pizza HTTP/1.1                                  │
+│   GET /search?q=mcdonalds HTTP/1.1                                  │
 │   ^^^  ^^^^^^^^^^^^^^ ^^^^^^^^                                  │
 │   │    │              └── Protocol version                      │
 │   │    └── Path + Query string                                  │
@@ -81,7 +81,7 @@ By the end of this lecture, students will be able to:
 ### URLs and Routes
 
 ```
-   https://example.com:5000/search?q=pizza&limit=10
+   https://example.com:5000/search?q=mcdonalds&limit=10
    ^^^^^   ^^^^^^^^^^^^ ^^^^ ^^^^^^ ^^^^^^^^^^^^^^^
    │       │            │    │      └── Query parameters
    │       │            │    └── Path (route)
@@ -214,7 +214,7 @@ def about():
 
 @app.route("/contact")
 def contact():
-    return "Email: navigator@example.com"
+    return "Email: htchen@cs.nthu.edu.tw"
 
 if __name__ == "__main__":
     app.run(debug=True)
@@ -262,7 +262,7 @@ if __name__ == "__main__":
 
 ```python
 # These URLs will match:
-@app.route("/place/<name>")           # /place/Pizza_Palace
+@app.route("/place/<name>")           # /place/Taipei_McDonalds
 @app.route("/place/<int:id>")         # /place/42
 @app.route("/coords/<float:lat>/<float:lon>")  # /coords/25.033/121.565
 ```
@@ -489,7 +489,7 @@ def demo():
         # Dictionary
         place={"name": "Pizza Palace", "rating": 4.5},
         # Object
-        user=User("Bob", "bob@example.com")
+        user=User("Bob", "htchen@cs.nthu.edu.tw")
     )
 ```
 
@@ -826,8 +826,8 @@ Don't Repeat Yourself! Base templates let you define common structure once:
 <!-- Generates: /  -->
 
 <!-- Link with parameters -->
-<a href="{{ url_for('show_place', name='pizza') }}">Pizza</a>
-<!-- Generates: /place/pizza -->
+<a href="{{ url_for('show_place', name='mcdonalds') }}">McDonalds</a>
+<!-- Generates: /place/mcdonalds -->
 
 <!-- Link to static files -->
 <link href="{{ url_for('static', filename='css/style.css') }}">
@@ -879,14 +879,18 @@ def search():
 def search_places(query):
     """Search for places matching query."""
     all_places = [
-        {"name": "Pizza Palace", "rating": 4.5},
-        {"name": "Pizza Hut", "rating": 4.0},
-        {"name": "Burger Barn", "rating": 4.2},
+        {"name": "Taipei McDonalds Zhongxiao", "rating": 4.2},
+        {"name": "Taipei McDonalds Station", "rating": 4.0},
+        {"name": "Taipei McDonalds Xinyi", "rating": 4.5},
     ]
 
     # Simple search - filter by name containing query
     query_lower = query.lower()
     return [p for p in all_places if query_lower in p["name"].lower()]
+
+def sort_by_rating(places):
+    """Sort places by rating in descending order."""
+    return sorted(places, key=lambda p: p["rating"], reverse=True)
 
 if __name__ == "__main__":
     app.run(debug=True)
@@ -903,7 +907,7 @@ if __name__ == "__main__":
     <div class="form-group">
         <label for="query">Search for:</label>
         <input type="text" id="query" name="query"
-               placeholder="e.g., pizza, burger, park" required>
+               placeholder="e.g., mcdonalds, park, museum" required>
     </div>
     <button type="submit">Search</button>
 </form>
