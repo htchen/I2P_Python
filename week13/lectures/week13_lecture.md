@@ -546,14 +546,14 @@ Filters modify values using the pipe `|` character:
 
 | Filter | Purpose | Example |
 |--------|---------|---------|
-| `upper` | Uppercase | `{{ "hi" | upper }}` → HI |
-| `lower` | Lowercase | `{{ "HI" | lower }}` → hi |
-| `title` | Title Case | `{{ "hello world" | title }}` → Hello World |
-| `length` | Count items | `{{ [1,2,3] | length }}` → 3 |
-| `default(val)` | Default if None | `{{ x | default("N/A") }}` |
-| `round(n)` | Round number | `{{ 3.14159 | round(2) }}` → 3.14 |
-| `join(sep)` | Join list | `{{ ["a","b"] | join("-") }}` → a-b |
-| `safe` | Don't escape HTML | `{{ "<b>Hi</b>" | safe }}` |
+| `upper` | Uppercase | `{{ "hi" \| upper }}` → HI |
+| `lower` | Lowercase | `{{ "HI" \| lower }}` → hi |
+| `title` | Title Case | `{{ "hello world" \| title }}` → Hello World |
+| `length` | Count items | `{{ [1,2,3] \| length }}` → 3 |
+| `default(val)` | Default if None | `{{ x \| default("N/A") }}` |
+| `round(n)` | Round number | `{{ 3.14159 \| round(2) }}` → 3.14 |
+| `join(sep)` | Join list | `{{ ["a","b"] \| join("-") }}` → a-b |
+| `safe` | Don't escape HTML | `{{ "<b>Hi</b>" \| safe }}` |
 
 ## 2.5 Control Structures
 
@@ -1031,6 +1031,7 @@ smart_city_navigator/
 ├── app.py
 ├── places.py
 ├── templates/
+│   ├── about.html
 │   ├── base.html
 │   ├── index.html
 │   ├── places.html
