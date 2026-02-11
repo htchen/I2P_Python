@@ -50,10 +50,10 @@ Your Smart City Navigator should demonstrate:
 | Criteria | Points |
 |----------|--------|
 | Core functionality works | 50% |
-| Code quality (OOP, decorators, clean structure) | 20% |
+| Code quality (OOP, decorators, clean structure) | 5% |
 | User interface (clear, usable) | 15% |
 | Demo presentation | 10% |
-| Bonus features | 5% |
+| Bonus features | 20% |
 
 ---
 
