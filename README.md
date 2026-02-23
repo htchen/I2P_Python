@@ -8,14 +8,15 @@
 
 ---
 
-## Grading
+## Grading Policy
 
 | Component | Weight | Notes |
-|-----------|--------|-------|
-| Midterm Exam | 40% | 有兩次考試機會，只取較高分的那次（電腦教室考試） |
-| Labs | 30% | 多次電腦教室實驗加小考 |
-| Written Exam | 5% | 筆試，跟期中考一起 |
-| Final Project | 25% | 期末專題 |
+|------------|--------|-------|
+| Midterm Exam | 40% | 兩次期中考，只取較高分的那次（電腦教室考試） |
+| Labs | 10% | 四次線上實作測驗 |
+| Quizzes | 20% | 兩次電腦教室實體小考 |
+| Written Exam | 5% | 筆試，跟期中考同時進行 |
+| Final Project | 25% | 期末專題 ||
 
 ---
 
@@ -32,59 +33,26 @@ By Week 16, every student (or group) will have a working Python web application 
 
 ---
 
-## Weekly Schedule
+# Weekly Schedule
 
-Every week introduces a new Python concept specifically required to build the next feature of the app.
-
-### Phase 1: Data & Coordinates (Weeks 1-3)
-
-**Theme:** "Where am I?" — Python Basics & Geodata
-
-| Week | Lecture | Lab |
-|------|---------|-----|
-| 1 (2/24 Tue., 2/26 Thu.) | **Variables, Coordinates & Functions** — Variables, Floats, Tuples, Math module, Defining Functions. Store locations as `(lat, long)` tuples and implement the Haversine Formula. | |
-| 2 (3/3 Tue., 3/5 Thu.) | **Lists, Loops & Dictionaries** — Lists, `for` loops, `range`, `zip`, `map`, `filter`, Dictionaries, Nested structures. Calculate path distances and store complex place data. | |
-| 3 (3/10 Tue., 3/12 Thu.) | **JSON & File I/O** — JSON format, Reading/Writing files. Save and load a database of "favorite places" to/from a `.json` file. | |
-
----
-
-### Phase 2: The API & The Cloud (Weeks 4-8)
-
-**Theme:** "Fetching the World" — APIs, Network, and Parsing
-
-| Week | Lecture | Lab |
-|------|---------|-----|
-| 4 (3/17 Tue., 3/19 Thu.) | **HTTP Requests & API Keys** — Request/Response cycle, Status Codes (200 vs 403), User-Agent Headers. Make calls to Nominatim API using `requests`. | |
-| 5 (3/24 Tue., 3/26 Thu.) | **The Nominatim API (Geocoding)** — Parsing nested JSON, Recursion, Error Handling (`try/except`). Build a CLI geocoding tool. | |
-| 6 (3/31 Tue., 4/2 Thu.) | **Searching for Places (Lazy Loading)** — Query parameters, Pagination, Generators (`yield`). Handle API pagination efficiently. | |
-| 7 (4/7 Tue., 4/9 Thu.) | **Midterm Exam 1 (Tue. & Thu.)** | |
-| 8 (4/14 Tue., 4/16 Thu.) | **OSRM API (Real Routing)** — 2D Lists (Matrices), Cost comparison. Compare Haversine vs OSRM distance, fetch route geometry. | |
-
----
-
-### Phase 3: Algorithms & Logic (Weeks 9-12)
-
-**Theme:** "Making Smart Decisions" — CS Fundamentals
-
-| Week | Lecture | Lab |
-|------|---------|-----|
-| 9 (4/21 Tue., 4/23 Thu.) | **Functional Patterns & Sorting** — Functional Programming (`map`, `filter`), Lambda functions, Immutability. Sort places by rating, filter by walk time. | |
-| 10 (4/28 Tue., 4/30 Thu.) | **The "Traveling Salesperson" (Graph Theory Lite)** — Permutations, Brute Force optimization. Find optimal visitation order for shortest walking time. | |
-| 11 (5/5 Tue., 5/7 Thu.) | **Midterm Exam 2 (Tue. & Thu.)** | |
-| 12 (5/12 Tue., 5/14 Thu.) | **Refactoring: OOP & Decorators** — Classes, Methods, Decorators. Create a `Place` class and `@rate_limit` decorator. | |
-
----
-
-### Phase 4: The Web Interface (Weeks 13-16)
-
-**Theme:** "Showing the User" — Web Frameworks & Final Project
-
-| Week | Lecture | Lab |
-|------|---------|-----|
-| 13 (5/19 Tue., 5/21 Thu.) | **Introduction to Flask (Web Server)** — Routes, Templates, HTML basics. Build a "Hello World" web server with Jinja2 templates. | |
-| 14 (5/26 Tue., 5/28 Thu.) | **Interactive Maps with Folium** — Python-to-JS transpilation (Folium/Leaflet). Generate interactive map HTML with markers and routes. | |
-| 15 (6/2 Tue., 6/4 Thu.) | **Final Integration Sprint** — Connect User Input Form → Flask → Nominatim API → Sorting Logic → Folium Map Display. | |
-| 16 (6/9 Tue., 6/11 Thu.) | **Final Demo Day** | |
+| Week | Date | Lecture (Tue 18:30–21:20) | TA / Exams (Thu 18:40–) |
+|------|------|----------------------------|--------------------------|
+| 1 | 2/24, 2/26 | 課程介紹, Variables, Coordinates & Functions | TA 講解 OJ 使用規定以及計分 |
+| 2 | 3/3, 3/5 | Lists, Loops & Dictionaries | TA 演習／線上實作測驗 #1 <br> @ 18:40-19:40 線上實作測驗 |
+| 3 | 3/10, 3/12 | JSON & File I/O | TA 演習 |
+| 4 | 3/17, 3/19 | HTTP Requests & API Keys | TA 演習／線上實作測驗 #2 <br> @ 18:40-19:40 線上實作測驗 |
+| 5 | 3/24, 3/26 | The Nominatim API (Geocoding) | 實體小考 #1 <br> @ 資電館電腦室 18:40 開始|
+| 6 | 3/31, 4/2 | Searching for Places (Lazy Loading) | 校際活動週 放假 |
+| 7 | 4/7, 4/9 | Midterm Exam 1 (Tue.) <br> @ 資電館電腦室 18:40 開始| Midterm Exam 1 (Thu.) <br> @ 資電館電腦室 18:40 開始 |
+| 8 | 4/14, 4/16 | OSRM API (Real Routing) | TA 演習 |
+| 9 | 4/21, 4/23 | Functional Patterns & Sorting | TA 演習／線上實作測驗 #3 <br> @ 18:40-19:40 線上實作測驗|
+| 10 | 4/28, 4/30 | The "Traveling Salesperson" (Graph Theory Lite) | 實體小考 #2 <br> @ 資電館電腦室 18:40 開始|
+| 11 | 5/5, 5/7 | Midterm Exam 2 (Tue.) <br> @ 資電館電腦室 18:40 開始| Midterm Exam 2 (Thu.) <br> @ 資電館電腦室 18:40 開始|
+| 12 | 5/12, 5/14 | Refactoring: OOP & Decorators | TA 演習 |
+| 13 | 5/19, 5/21 | Introduction to Flask (Web Server) | TA 演習／線上實作測驗 #4 <br> @ 18:40-19:40 線上實作測驗|
+| 14 | 5/26, 5/28 | Interactive Maps with Folium | TA 演習 |
+| 15 | 6/2, 6/4 | Final Integration Sprint | TA 演習 |
+| 16 | 6/9, 6/11 | Final Demo Day (Tue.) | Final Demo Day (Thu.) |
 
 ---
 
