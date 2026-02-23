@@ -1184,7 +1184,7 @@ class NominatimClient:
             Place(
                 name=item.get("display_name", "Unknown"),
                 coords=(float(item["lat"]), float(item["lon"])),
-                category=item.get("type")
+                category=item.get("type"),
                 rating=round(random.uniform(3.0, 5.0), 1)
             )
             for item in response.json()
