@@ -84,23 +84,23 @@ print(place1.format())
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                    Object-Oriented Programming                   │
+│                    Object-Oriented Programming                  │
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                 │
 │  CLASS: A blueprint/template for creating objects               │
-│  ┌─────────────────────────────────────┐                       │
+│  ┌─────────────────────────────────────┐                        │
 │  │ class Place:                         │                       │
 │  │   - attributes (data)                │                       │
 │  │   - methods (behavior)               │                       │
-│  └─────────────────────────────────────┘                       │
+│  └─────────────────────────────────────┘                        │
 │                    │                                            │
 │                    │ creates                                    │
 │                    ▼                                            │
 │  OBJECTS: Instances of a class                                  │
-│  ┌──────────┐  ┌──────────┐  ┌──────────┐                      │
-│  │ place1   │  │ place2   │  │ place3   │                      │
-│  │ Pizza    │  │ Burger   │  │ Taco     │                      │
-│  └──────────┘  └──────────┘  └──────────┘                      │
+│  ┌──────────┐  ┌──────────┐  ┌──────────┐                       │
+│  │ place1   │  │ place2   │  │ place3   │                       │
+│  │ Pizza    │  │ Burger   │  │ Taco     │                       │
+│  └──────────┘  └──────────┘  └──────────┘                       │
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
@@ -507,19 +507,19 @@ A **decorator** is a function that wraps another function to extend its behavior
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                         Decorator Pattern                        │
+│                         Decorator Pattern                       │
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                 │
 │   Original Function          Decorated Function                 │
-│   ┌─────────────┐           ┌─────────────────────────┐        │
-│   │             │           │  ┌─────────────────┐    │        │
-│   │   func()    │    =>     │  │  Before logic   │    │        │
-│   │             │           │  ├─────────────────┤    │        │
-│   └─────────────┘           │  │    func()       │    │        │
-│                             │  ├─────────────────┤    │        │
-│                             │  │  After logic    │    │        │
-│                             │  └─────────────────┘    │        │
-│                             └─────────────────────────┘        │
+│   ┌─────────────┐           ┌─────────────────────────┐         │
+│   │             │           │  ┌─────────────────┐    │         │
+│   │   func()    │    =>     │  │  Before logic   │    │         │
+│   │             │           │  ├─────────────────┤    │         │
+│   └─────────────┘           │  │    func()       │    │         │
+│                             │  ├─────────────────┤    │         │
+│                             │  │  After logic    │    │         │
+│                             │  └─────────────────┘    │         │
+│                             └─────────────────────────┘         │
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
@@ -1138,6 +1138,13 @@ class Place:
         a = math.sin(dlat/2)**2 + math.cos(lat1) * math.cos(lat2) * math.sin(dlon/2)**2
         return R * 2 * math.asin(math.sqrt(a))
 
+    def __lt__(self, other: 'Place') -> bool:
+        """Compare by rating for sorting."""
+        if self.rating is None:
+            return True
+        if other.rating is None:
+            return False
+        return self.rating < other.rating
 
 class PlaceService:
     """Service for managing places."""
@@ -1177,18 +1184,19 @@ class NominatimClient:
             Place(
                 name=item.get("display_name", "Unknown"),
                 coords=(float(item["lat"]), float(item["lon"])),
-                category=item.get("type")
+                category=item.get("type"),
+                rating=round(random.uniform(3.0, 5.0), 1)
             )
             for item in response.json()
         ]
 
 
 # Usage is now clean and organized
-client = NominatimClient("MyApp/1.0 (email@example.com)")
+client = NominatimClient("MyApp/1.0 (your-email@university.edu)")
 service = PlaceService()
 
 # Search is automatically rate-limited
-results = client.search("taipei pizza")
+results = client.search("McDonald's")
 for place in results[:3]:
     service.add(place)
 

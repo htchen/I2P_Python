@@ -104,7 +104,7 @@ def rate_limit(seconds=1):
 def search_nominatim(query):
     """This function will automatically wait 1s between calls."""
     import requests
-    headers = {"User-Agent": "CS101/1.0 (email@example.com)"}
+    headers = {"User-Agent": "CS101/1.0 (your-email@university.edu)"}
     response = requests.get(
         "https://nominatim.openstreetmap.org/search",
         params={"q": query, "format": "json"},

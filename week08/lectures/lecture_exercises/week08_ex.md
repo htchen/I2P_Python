@@ -71,7 +71,7 @@ def haversine_distance(lat1: float, lon1: float,
 
     Examples:
         >>> haversine_distance(25.0330, 121.5654, 25.0478, 121.5170)
-        5.21  # Approximately
+        5.15  # Approximately
         >>> haversine_distance(0, 0, 0, 0)
         0.0
     """
@@ -117,7 +117,7 @@ if __name__ == "__main__":
 ```
 Testing Haversine function...
   Test 1 (same point): PASS
-  Test 2 (Taipei 101 → Main Station): 5.21 km - PASS
+  Test 2 (Taipei 101 → Main Station): 5.15 km - PASS
   Test 3 (equator 1°): 111.19 km - PASS
 All Haversine tests passed!
 ```
@@ -263,9 +263,9 @@ def print_distance_matrix(matrix: list[list[float]], locations: list[dict]) -> N
 
     Output format:
                  Loc1      Loc2      Loc3
-        Loc1     0.00      5.21     10.34
-        Loc2     5.21      0.00      6.78
-        Loc3    10.34      6.78      0.00
+        Loc1     0.00      5.15      7.90
+        Loc2     5.15      0.00      6.85
+        Loc3     7.90      6.85      0.00
     """
     # TODO: Implement pretty printing
     # 1. Print header row with location names (truncated to 8 chars)
@@ -465,9 +465,9 @@ def print_comparison_report(comparisons: list[dict]) -> None:
     ============================================================
 
     Taipei 101 → Main Station
-      Haversine:     5.21 km
-      Driving:       6.54 km (12 min)
-      Ratio:         1.26x
+      Haversine:     5.15 km
+      Driving:       6.33 km (8.7 min)
+      Ratio:         1.23x
 
     ...
     """
@@ -659,7 +659,7 @@ Locations:
   0. Taipei 101 (25.0330, 121.5654)
   1. Main Station (25.0478, 121.5170)
   2. Palace Museum (25.1024, 121.5485)
-  3. Shilin Market (25.0881, 121.5240)
+  3. Shilin Market (25.0881, 121.524)
 
 Choice: 3
 
@@ -667,10 +667,10 @@ Enter start location index: 0
 Enter end location index: 2
 
 Detailed Route: Taipei 101 → Palace Museum
-  Distance: 10.45 km
-  Duration: 18.2 min
-  Route points: 234
-  Turn-by-turn steps: 15
+  Distance: 10.32 km
+  Duration: 14.4 min
+  Route points: 283
+  Turn-by-turn steps: 22
 
 Choice: 4
 Goodbye!

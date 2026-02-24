@@ -30,7 +30,7 @@ When we calculated distances in previous weeks using the Haversine formula, we c
 ```
 Point A -------- straight line -------- Point B
          \                            /
-          \    actual road path     /
+          \    actual road path      /
            \________________________/
 ```
 
@@ -93,16 +93,16 @@ Real routes must account for:
 ┌─────────────────────────────────────────────────────────┐
 │                    OSRM Server                          │
 │                                                         │
-│  ┌─────────────┐    ┌─────────────┐    ┌─────────────┐ │
-│  │ OpenStreet  │ -> │   Graph     │ -> │   Routing   │ │
-│  │ Map Data    │    │  Database   │    │  Algorithm  │ │
-│  └─────────────┘    └─────────────┘    └─────────────┘ │
+│  ┌─────────────┐    ┌─────────────┐    ┌─────────────┐  │
+│  │ OpenStreet  │ -> │   Graph     │ -> │   Routing   │  │
+│  │ Map Data    │    │  Database   │    │  Algorithm  │  │
+│  └─────────────┘    └─────────────┘    └─────────────┘  │
 │                                               │         │
 │                                               v         │
-│                                        ┌───────────┐   │
-│                                        │  Route    │   │
-│                                        │  Result   │   │
-│                                        └───────────┘   │
+│                                        ┌───────────┐    │
+│                                        │  Route    │    │
+│                                        │  Result   │    │
+│                                        └───────────┘    │
 └─────────────────────────────────────────────────────────┘
 ```
 
@@ -549,7 +549,7 @@ A **distance matrix** stores the distances between all pairs of locations:
        ┌────┬────┬────┬────┐
     A  │  0 │ 10 │ 25 │ 30 │
        ├────┼────┼────┼────┤
-From: B │ 10 │  0 │ 15 │ 20 │
+From: B│ 10 │  0 │ 15 │ 20 │
        ├────┼────┼────┼────┤
     C  │ 25 │ 15 │  0 │ 12 │
        ├────┼────┼────┼────┤
