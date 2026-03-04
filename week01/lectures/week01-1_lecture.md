@@ -201,7 +201,7 @@ taipei = (25.0330, 121.5654)
 
 # Unpacking into variables
 lat, lon = taipei
-print(f"Latitude: {lat}")   # Latitude: 25.0330
+print(f"Latitude: {lat}")   # Latitude: 25.033
 print(f"Longitude: {lon}")  # Longitude: 121.5654
 
 # Unpacking in loops
