@@ -31,7 +31,7 @@ In real-world programming, you rarely work with clean, predictable data. APIs re
 **Geocoding** is the process of converting human-readable addresses or place names into geographic coordinates (latitude and longitude).
 
 ```
-┌─────────────────────────┐     Geocoding      ┌─────────────────────┐
+┌─────────────────────────┐     Geocoding       ┌─────────────────────┐
 │    "Taipei 101"         │ ──────────────────> │ (25.0339, 121.5645) │
 │    (Place Name)         │                     │   (Coordinates)     │
 └─────────────────────────┘                     └─────────────────────┘
@@ -292,20 +292,20 @@ When you make a search request, Nominatim returns a **list of place objects**. L
 ```json
 [
     {
-        "place_id": 297611768,
+        "place_id": 424937126,
         "licence": "Data © OpenStreetMap contributors...",
         "osm_type": "way",
-        "osm_id": 55284753,
-        "lat": "25.0339639",
-        "lon": "121.5644722",
-        "class": "tourism",
+        "osm_id": 1159328965,
+        "lat": "25.0338352",
+        "lon": "121.5644995",
+        "class": "building",
         "type": "attraction",
         "place_rank": 30,
-        "importance": 0.6864891756640247,
-        "addresstype": "tourism",
+        "importance": 0.5453714025007607,
+        "addresstype": "building",
         "name": "台北101",
-        "display_name": "台北101, 7, Section 5, Xinyi Road, Xinyi District, Taipei, 110, Taiwan",
-        "boundingbox": ["25.0329639", "25.0349639", "121.5634722", "121.5654722"]
+        "display_name": "台北101, 7, 信義路五段, 西村里, 信義區, 信義商圈, 臺北市, 11049, 臺灣",
+        "boundingbox": ["25.0332803", "25.0346102", "121.5638583", "121.5652356"]
     }
 ]
 ```
@@ -318,8 +318,8 @@ Let's understand what each field means:
 
 | Field | Type | Description | Example |
 |-------|------|-------------|---------|
-| `place_id` | int | Unique ID in Nominatim's database | `297611768` |
-| `osm_id` | int | ID in OpenStreetMap database | `55284753` |
+| `place_id` | int | Unique ID in Nominatim's database | `424937126` |
+| `osm_id` | int | ID in OpenStreetMap database | `1159328965` |
 | `osm_type` | string | Type in OSM | `"way"` |
 
 **Understanding `osm_type`**:
@@ -371,8 +371,8 @@ float(result["lat"]) + 1  # Works: 26.0339639
 
 **Understanding `importance`**:
 - Higher = more famous/notable
-- Eiffel Tower: ~0.8
-- Taipei 101: ~0.68
+- Eiffel Tower: ~0.62
+- Taipei 101: ~0.55
 - Local coffee shop: ~0.2
 
 **Understanding `place_rank`**:
@@ -390,7 +390,7 @@ float(result["lat"]) + 1  # Works: 26.0339639
 
 ```python
 result["name"]         # "台北101"
-result["display_name"] # "台北101, 7, Section 5, Xinyi Road, Xinyi District, Taipei, 110, Taiwan"
+result["display_name"] # "台北101, 7, 信義路五段, 西村里, 信義區, 信義商圈, 臺北市, 11049, 臺灣"
 ```
 
 ---
@@ -493,15 +493,18 @@ The response includes a nested `address` object with structured information:
 {
     "lat": "25.0339639",
     "lon": "121.5644722",
-    "display_name": "台北101, 7, Section 5, Xinyi Road, ...",
+    "display_name": "台北101, 7, 信義路五段, 西村里, 信義區, 信義商圈, 臺北市, 11049, 臺灣",
     "address": {
         "tourism": "台北101",
         "house_number": "7",
-        "road": "Section 5, Xinyi Road",
-        "suburb": "Xinyi District",
-        "city": "Taipei",
-        "postcode": "110",
-        "country": "Taiwan",
+        "road": "信義路五段",
+        "neighbourhood": "西村里",
+        "suburb": "信義區",
+        "village": "信義商圈",
+        "city": "臺北市",
+        "ISO3166-2-lvl4": "TW-TPE",
+        "postcode": "11049",
+        "country": "臺灣",
         "country_code": "tw"
     }
 }
@@ -514,12 +517,17 @@ The `address` object contains **components** of the address, but the keys vary d
 **For a tourist attraction (Taipei 101)**:
 ```json
 {
-    "tourism": "台北101",        // The name, keyed by class
+    "tourism": "台北101",
     "house_number": "7",
-    "road": "Section 5, Xinyi Road",
-    "suburb": "Xinyi District",  // District/neighborhood
-    "city": "Taipei",
-    "country": "Taiwan"
+    "road": "信義路五段",
+    "neighbourhood": "西村里",
+    "suburb": "信義區",
+    "village": "信義商圈",
+    "city": "臺北市",  // with city, villge, suburb
+    "ISO3166-2-lvl4": "TW-TPE",
+    "postcode": "11049",
+    "country": "臺灣",
+    "country_code": "tw"
 }
 ```
 
@@ -606,18 +614,22 @@ Here are two real Nominatim responses showing how different they can be:
 # Response for "Taipei 101" - a major landmark
 {
     "name": "台北101",
-    "display_name": "台北101, 7, Section 5, Xinyi Road, Xinyi District, Taipei, Taiwan",
+    "display_name": "台北101, 7, 信義路五段, 西村里, 信義區, 信義商圈, 臺北市, 11049, 臺灣'",
     "address": {
         "tourism": "台北101",
         "house_number": "7",
-        "road": "Section 5, Xinyi Road",
-        "suburb": "Xinyi District",
-        "city": "Taipei",
-        "postcode": "110",
-        "country": "Taiwan",
+        "road": "信義路五段",
+        "neighbourhood": "西村里",
+        "suburb": "信義區",
+        "village": "信義商圈",
+        "city": "臺北市",
+        "ISO3166-2-lvl4": "TW-TPE",
+        "postcode": "11049",
+        "country": "臺灣",
         "country_code": "tw"
     },
-    "importance": 0.68
+    "importance": 0.55
+    ...
 }
 
 # Response for a small village - much sparser
@@ -856,7 +868,7 @@ Now with a missing key:
 ```python
 # Raw Nominatim response
 result = {
-    "lat": "25.0339",
+    "lat": "25.0338",
     "lon": "121.5645",
     "display_name": "Taipei 101, Taipei, Taiwan",
     "address": {
@@ -1870,8 +1882,8 @@ Enter a place name, or 'quit' to exit.
 geocoder> Taipei 101
 
   Name: 台北101
-  Coordinates: (25.033964, 121.564472)
-  Address: 台北101, 7, Section 5, Xinyi Road, Xinyi District, Taipei, Taiwan
+  Coordinates: (25.033835, 121.564499)
+  Address: 台北101, 7, 信義路五段, 西村里, 信義區, 信義商圈, 臺北市, 11049, 臺灣
 
 geocoder> xyznotaplace
   No results for: xyznotaplace
