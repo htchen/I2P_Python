@@ -68,6 +68,20 @@ places = load_places("places.json")
 3. **Mobile Apps** - Cache data locally in JSON
 4. **Our Project** - Save favorite places for later use
 
+### Storage Latency
+| Storage Type | Typical Latency | Scaled Comparison (1 CPU Cycle ≈ 1s) |
+| :--- | :--- | :--- |
+| **L1 Cache** | ~0.5 - 1 ns | 1 second |
+| **L2 Cache** | ~4 - 7 ns | 7 seconds |
+| **L3 Cache** | ~15 - 25 ns | 25 seconds |
+| **Main Memory (RAM)** | ~100 ns | 1.5 minutes |
+| **NVMe SSD (File)** | ~10 - 100 μs | 3 - 28 hours |
+| **SATA SSD (File)** | ~200 - 500 μs | 2 - 5 days |
+| **Hard Drive (HDD)** | ~5 - 20 ms | 2 - 8 months |
+| **Database (Local)** | ~1 - 50 ms | 1 - 18 months |
+| **Cloud Storage** | ~100 - 500+ ms | 3 - 15 years |
+
+
 ---
 
 ## Part 2: Introduction to JSON (20 minutes)
