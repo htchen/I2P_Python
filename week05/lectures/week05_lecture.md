@@ -1101,16 +1101,16 @@ def flatten_dict(data, parent_key="", separator="."):
             if isinstance(value, dict):
                 # Recurse into nested dictionary
                 items.update(flatten_dict(value, new_key, separator))
-            elif isinstance(value, list):
-                # Handle lists with index notation
-                for i, item in enumerate(value):
-                    if isinstance(item, dict):
-                        items.update(flatten_dict(item, f"{new_key}[{i}]", separator))
-                    else:
-                        items[f"{new_key}[{i}]"] = item
+    elif isinstance(value, list):
+        # Handle lists with index notation
+        for i, item in enumerate(value):
+            if isinstance(item, dict):
+                items.update(flatten_dict(item, f"{new_key}[{i}]", separator))
             else:
-                # Base case: simple value
-                items[new_key] = value
+                items[f"{new_key}[{i}]"] = item
+    else:
+        # Base case: simple value
+        items[new_key] = value
 
     return items
 
