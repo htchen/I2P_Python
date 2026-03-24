@@ -1096,22 +1096,22 @@ def flatten_dict(data, parent_key="", separator="."):
 
     if isinstance(data, dict):
         for key, value in data.items():
-            new_key = f"{parent_key}{separator}{key}" if parent_key else key
+            current_key_path = f"{parent_key}{separator}{key}" if parent_key else key
 
-            if isinstance(value, dict):
-                # Recurse into nested dictionary
-                items.update(flatten_dict(value, new_key, separator))
-    elif isinstance(value, list):
-        # Handle lists with index notation
-        for i, item in enumerate(value):
-            if isinstance(item, dict):
-                items.update(flatten_dict(item, f"{new_key}[{i}]", separator))
-            else:
-                items[f"{new_key}[{i}]"] = item
-    else:
-        # Base case: simple value
-        items[new_key] = value
+            if isinstance(value, (dict, list)): # Recurse for nested dicts or lists
+                items.update(flatten_dict(value, current_key_path, separator))
+            else: # Simple value
+                items[current_key_path] = value
 
+    elif isinstance(data, list):
+        for i, item in enumerate(data):
+            current_key_path = f"{parent_key}[{i}]" # Key includes list index
+
+            if isinstance(item, (dict, list)): # Recurse for nested dicts or lists
+                items.update(flatten_dict(item, current_key_path, separator))
+            else: # Simple value
+                items[current_key_path] = item
+    
     return items
 
 
@@ -1138,6 +1138,40 @@ for key, value in flat.items():
 # address.country: Taiwan
 # address.details.postcode: 110
 # address.details.district: Xinyi
+
+# Another test case with nested lists
+list_data = {
+    "products": [
+        {
+            "id": 1,
+            "name": "Laptop",
+            "specs": ["16GB RAM", "512GB SSD"]
+        },
+        {
+            "id": 2,
+            "name": "Mouse",
+            "features": ["Wireless", "Ergonomic"]
+        }
+    ],
+    "settings": {
+        "theme": "dark"
+    }
+}
+
+print(flat_list_data)
+for key, value in flat_list_data.items():
+    print(f"{key}: {value}")
+
+# Expected Output:
+# products[0].id: 1
+# products[0].name: Laptop
+# products[0].specs[0]: 16GB RAM
+# products[0].specs[1]: 512GB SSD
+# products[1].id: 2
+# products[1].name: Mouse
+# products[1].features[0]: Wireless
+# products[1].features[1]: Ergonomic
+# settings.theme: dark
 ```
 
 ### Counting Nesting Depth
