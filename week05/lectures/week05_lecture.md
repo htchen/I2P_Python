@@ -1295,6 +1295,70 @@ def find_path(data, target_value, current_path=""):
 
 </details>
 
+
+<details>
+<summary>Advanced: Eight Queens Puzzle</summary>
+
+```python
+def solve_n_queens(n):
+    """Solves the N-Queens problem and returns all solutions."""
+    solutions = []
+    board = [-1] * n  # board[i] = j means queen at row i, column j
+
+    def is_safe(row, col):
+        """Checks if placing a queen at (row, col) is safe."""
+        for prev_row in range(row):
+            # Check if queens are in the same column or diagonal
+            if board[prev_row] == col or \
+               board[prev_row] - prev_row == col - row or \
+               board[prev_row] + prev_row == col + row:
+                return False
+        return True
+
+    def solve(row):
+        """Recursive helper function to place queens row by row."""
+        if row == n:  # All queens placed successfully
+            solutions.append(list(board)) # Add a copy of the current board configuration
+            return
+
+        for col in range(n):
+            if is_safe(row, col):
+                board[row] = col  # Place queen
+                solve(row + 1)    # Recurse for the next row
+                board[row] = -1   # Backtrack: remove queen
+
+    solve(0) # Start solving from the first row
+    return solutions
+
+def print_solution(board):
+    """Prints a single N-Queens solution."""
+    n = len(board)
+    for row in range(n):
+        line = []
+        for col in range(n):
+            if board[row] == col:
+                line.append('Q')
+            else:
+                line.append('.')
+        print(' '.join(line))
+    print()
+
+# Solve the 8-Queens problem
+n_queens = 8
+all_solutions = solve_n_queens(n_queens)
+
+print(f"Found {len(all_solutions)} solutions for the {n_queens}-Queens problem.\n")
+
+# Print the first few solutions as examples
+num_examples = min(4, len(all_solutions))
+if num_examples > 0:
+    print(f"Displaying {num_examples} example solutions:")
+    for i in range(num_examples):
+        print(f"Solution {i + 1}:")
+        print_solution(all_solutions[i])
+```
+</details>
+
 ---
 
 ## 2.7 Parsing Nominatim Results Robustly
