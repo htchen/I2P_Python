@@ -1158,7 +1158,7 @@ list_data = {
     }
 }
 
-print(flat_list_data)
+flat_list_data = flatten_dict(list_data)
 for key, value in flat_list_data.items():
     print(f"{key}: {value}")
 
