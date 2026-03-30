@@ -57,12 +57,3 @@ Create a generator that yields coordinates from a list, one at a time.
 - No internet access during the exam
 - Two attempts available — higher score counts
 
----
-
-## 筆試 (Written Exam - 5%)
-
-The written exam is held together with the midterm. It covers:
-- Conceptual understanding of APIs
-- HTTP protocol basics
-- Algorithm complexity (basic)
-- Code reading and tracing
