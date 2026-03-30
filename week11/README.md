@@ -58,3 +58,13 @@ Write a function that takes a list of places and returns the top 3 highest-rated
 - Two attempts available — higher score counts
 
 **Remember:** 有兩次考試機會，只取較高分的那次！
+
+---
+
+## 筆試 (Written Exam - 5%)
+
+The written exam is held together with the midterm. It covers:
+- Conceptual understanding of APIs
+- HTTP protocol basics
+- Algorithm complexity (basic)
+- Code reading and tracing
