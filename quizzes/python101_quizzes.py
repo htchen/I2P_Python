@@ -34,6 +34,7 @@ def q01_swap(a, b):
     pass
 
 assert q01_swap(1, 2) == (2, 1)
+assert q01_swap("hello", 99) == (99, "hello")
 
 
 def q02_integer_ops(a, b):
@@ -43,6 +44,7 @@ def q02_integer_ops(a, b):
     pass
 
 assert q02_integer_ops(17, 5) == (3, 2)
+assert q02_integer_ops(20, 3) == (6, 2)
 
 
 def q03_power(base, exp):
@@ -51,6 +53,7 @@ def q03_power(base, exp):
     pass
 
 assert q03_power(2, 10) == 1024
+assert q03_power(3, 4) == 81
 
 
 def q04_type_of(value):
@@ -59,6 +62,7 @@ def q04_type_of(value):
     pass
 
 assert q04_type_of(3.14) == float
+assert q04_type_of(42) == int
 
 
 def q05_convert_to_int(s):
@@ -67,6 +71,7 @@ def q05_convert_to_int(s):
     pass
 
 assert q05_convert_to_int("42") == 42
+assert q05_convert_to_int("-7") == -7
 
 
 def q06_convert_to_float(s):
@@ -75,6 +80,7 @@ def q06_convert_to_float(s):
     pass
 
 assert q06_convert_to_float("3.14") == 3.14
+assert q06_convert_to_float("0.5") == 0.5
 
 
 def q07_is_even(n):
@@ -106,6 +112,7 @@ def q09_fstring_format(name, score):
     pass
 
 assert q09_fstring_format("Alice", 95) == "Alice scored 95 points"
+assert q09_fstring_format("Bob", 70) == "Bob scored 70 points"
 
 
 def q10_fstring_precision(value):
@@ -115,6 +122,7 @@ def q10_fstring_precision(value):
     pass
 
 assert q10_fstring_precision(3.14159) == "3.14"
+assert q10_fstring_precision(1.0) == "1.00"
 
 
 def q11_string_slicing(s):
@@ -123,6 +131,7 @@ def q11_string_slicing(s):
     pass
 
 assert q11_string_slicing("abcdefg") == ("abc", "efg", "gfedcba")
+assert q11_string_slicing("python") == ("pyt", "hon", "nohtyp")
 
 
 def q12_string_methods(s):
@@ -131,6 +140,7 @@ def q12_string_methods(s):
     pass
 
 assert q12_string_methods("  Hello  ") == ("  HELLO  ", "  hello  ", "Hello")
+assert q12_string_methods(" PyThOn ") == (" PYTHON ", " python ", "PyThOn")
 
 
 def q13_string_split_join(sentence):
@@ -140,6 +150,7 @@ def q13_string_split_join(sentence):
     pass
 
 assert q13_string_split_join("one two three") == "one-two-three"
+assert q13_string_split_join("hello world") == "hello-world"
 
 
 def q14_string_contains_count(s, sub):
@@ -149,6 +160,7 @@ def q14_string_contains_count(s, sub):
     pass
 
 assert q14_string_contains_count("banana", "an") == (True, 2)
+assert q14_string_contains_count("hello", "z") == (False, 0)
 
 
 # ---------------------------------------------------------------------------
@@ -161,6 +173,7 @@ def q15_create_tuple(a, b, c):
     pass
 
 assert q15_create_tuple(1, 2, 3) == (1, 2, 3)
+assert q15_create_tuple("a", "b", "c") == ("a", "b", "c")
 
 
 def q16_unpack_and_sum(triple):
@@ -169,6 +182,7 @@ def q16_unpack_and_sum(triple):
     pass
 
 assert q16_unpack_and_sum((4, 5, 6)) == 15
+assert q16_unpack_and_sum((10, 20, 30)) == 60
 
 
 def q17_single_element_tuple(value):
@@ -186,6 +200,7 @@ def q18_tuple_index(t, i):
     pass
 
 assert q18_tuple_index((10, 20, 30), -1) == 30
+assert q18_tuple_index((10, 20, 30), 0) == 10
 
 
 def q19_math_operations(x):
@@ -203,6 +218,7 @@ def q20_degrees_radians_round_trip(degrees):
     pass
 
 assert abs(q20_degrees_radians_round_trip(180.0) - 180.0) < 1e-9
+assert abs(q20_degrees_radians_round_trip(45.0) - 45.0) < 1e-9
 
 
 # ---------------------------------------------------------------------------
@@ -215,6 +231,7 @@ def q21_build_list(n):
     pass
 
 assert q21_build_list(5) == [1, 2, 3, 4, 5]
+assert q21_build_list(3) == [1, 2, 3]
 
 
 def q22_list_ops(lst):
@@ -223,6 +240,7 @@ def q22_list_ops(lst):
     pass
 
 assert q22_list_ops([3, 1, 4, 1, 5]) == (1, 5, 14)
+assert q22_list_ops([10, 20, 30]) == (10, 30, 60)
 
 
 def q23_list_slice_middle(lst):
@@ -231,6 +249,7 @@ def q23_list_slice_middle(lst):
     pass
 
 assert q23_list_slice_middle([1, 2, 3, 4, 5]) == [2, 3, 4]
+assert q23_list_slice_middle([10, 20, 30, 40, 50, 60]) == [20, 30, 40, 50]
 
 
 def q24_list_reverse(lst):
@@ -241,6 +260,7 @@ def q24_list_reverse(lst):
 original = [1, 2, 3]
 assert q24_list_reverse(original) == [3, 2, 1]
 assert original == [1, 2, 3]
+assert q24_list_reverse([5, 6, 7, 8]) == [8, 7, 6, 5]
 
 
 def q25_list_sort_ascending(lst):
@@ -251,6 +271,7 @@ def q25_list_sort_ascending(lst):
 original = [3, 1, 4, 1, 5]
 assert q25_list_sort_ascending(original) == [1, 1, 3, 4, 5]
 assert original == [3, 1, 4, 1, 5]
+assert q25_list_sort_ascending([5, 2, 8, 1]) == [1, 2, 5, 8]
 
 
 def q26_list_remove_first(lst, value):
@@ -259,6 +280,7 @@ def q26_list_remove_first(lst, value):
     pass
 
 assert q26_list_remove_first([1, 2, 3, 2], 2) == [1, 3, 2]
+assert q26_list_remove_first([5, 5, 5], 5) == [5, 5]
 
 
 def q27_list_insert_at(lst, index, value):
@@ -267,6 +289,7 @@ def q27_list_insert_at(lst, index, value):
     pass
 
 assert q27_list_insert_at([1, 2, 3], 1, 99) == [1, 99, 2, 3]
+assert q27_list_insert_at([10, 20], 0, 0) == [0, 10, 20]
 
 
 def q28_list_count_membership(lst, value):
@@ -285,6 +308,7 @@ def q29_flatten_two_lists(lst1, lst2):
     pass
 
 assert q29_flatten_two_lists([1, 2], [3, 4]) == [1, 2, 3, 4]
+assert q29_flatten_two_lists([], [7, 8, 9]) == [7, 8, 9]
 
 
 def q30_list_unique(lst):
@@ -293,6 +317,7 @@ def q30_list_unique(lst):
     pass
 
 assert q30_list_unique([3, 1, 2, 1, 3]) == [3, 1, 2]
+assert q30_list_unique([4, 4, 4, 4]) == [4]
 
 
 # ---------------------------------------------------------------------------
@@ -305,6 +330,7 @@ def q31_sum_with_loop(numbers):
     pass
 
 assert q31_sum_with_loop([1, 2, 3, 4, 5]) == 15
+assert q31_sum_with_loop([10, 20, 30]) == 60
 
 
 def q32_countdown(n):
@@ -313,6 +339,7 @@ def q32_countdown(n):
     pass
 
 assert q32_countdown(5) == [5, 4, 3, 2, 1]
+assert q32_countdown(3) == [3, 2, 1]
 
 
 def q33_range_step():
@@ -321,6 +348,7 @@ def q33_range_step():
     pass
 
 assert q33_range_step() == [0, 3, 6, 9, 12, 15, 18, 21, 24, 27, 30]
+assert len(q33_range_step()) == 11
 
 
 def q34_enumerate_labels(items):
@@ -329,6 +357,7 @@ def q34_enumerate_labels(items):
     pass
 
 assert q34_enumerate_labels(["a", "b", "c"]) == ["1. a", "2. b", "3. c"]
+assert q34_enumerate_labels(["x", "y"]) == ["1. x", "2. y"]
 
 
 def q35_zip_pairs(keys, values):
@@ -337,6 +366,7 @@ def q35_zip_pairs(keys, values):
     pass
 
 assert q35_zip_pairs(["x", "y"], [10, 20]) == {"x": 10, "y": 20}
+assert q35_zip_pairs(["a", "b", "c"], [1, 2, 3]) == {"a": 1, "b": 2, "c": 3}
 
 
 def q36_consecutive_pairs(lst):
@@ -345,6 +375,7 @@ def q36_consecutive_pairs(lst):
     pass
 
 assert q36_consecutive_pairs([1, 2, 3, 4]) == [(1, 2), (2, 3), (3, 4)]
+assert q36_consecutive_pairs(["a", "b", "c"]) == [("a", "b"), ("b", "c")]
 
 
 def q37_loop_break(numbers, target):
@@ -363,6 +394,7 @@ def q38_loop_continue(numbers):
     pass
 
 assert q38_loop_continue([-1, 2, -3, 4, 0]) == [2, 4]
+assert q38_loop_continue([1, 2, 3]) == [1, 2, 3]
 
 
 # ---------------------------------------------------------------------------
@@ -375,6 +407,7 @@ def q39_build_dict(keys, values):
     pass
 
 assert q39_build_dict(["a", "b"], [1, 2]) == {"a": 1, "b": 2}
+assert q39_build_dict(["x"], [99]) == {"x": 99}
 
 
 def q40_safe_get(d, key, default):
@@ -410,6 +443,7 @@ def q43_dict_keys_values(d):
     pass
 
 assert q43_dict_keys_values({"b": 2, "a": 1, "c": 3}) == (["a", "b", "c"], [1, 2, 3])
+assert q43_dict_keys_values({"z": 10, "m": 5}) == (["m", "z"], [5, 10])
 
 
 def q44_dict_merge(d1, d2):
@@ -419,6 +453,7 @@ def q44_dict_merge(d1, d2):
     pass
 
 assert q44_dict_merge({"a": 1, "b": 2}, {"b": 9, "c": 3}) == {"a": 1, "b": 9, "c": 3}
+assert q44_dict_merge({"x": 1}, {"y": 2}) == {"x": 1, "y": 2}
 
 
 def q45_nested_dict_access(d, outer_key, inner_key):
@@ -437,6 +472,7 @@ def q46_count_occurrences(items):
     pass
 
 assert q46_count_occurrences(["a", "b", "a", "c", "b", "a"]) == {"a": 3, "b": 2, "c": 1}
+assert q46_count_occurrences([1, 2, 1]) == {1: 2, 2: 1}
 
 
 # ---------------------------------------------------------------------------
@@ -449,6 +485,7 @@ def q47_squares_comprehension(n):
     pass
 
 assert q47_squares_comprehension(5) == [1, 4, 9, 16, 25]
+assert q47_squares_comprehension(3) == [1, 4, 9]
 
 
 def q48_even_filter_comprehension(numbers):
@@ -457,6 +494,7 @@ def q48_even_filter_comprehension(numbers):
     pass
 
 assert q48_even_filter_comprehension([1, 2, 3, 4, 5, 6]) == [2, 4, 6]
+assert q48_even_filter_comprehension([7, 8, 9, 10]) == [8, 10]
 
 
 def q49_transform_comprehension(words):
@@ -465,6 +503,7 @@ def q49_transform_comprehension(words):
     pass
 
 assert q49_transform_comprehension(["hi", "world"]) == ["HI", "WORLD"]
+assert q49_transform_comprehension(["python"]) == ["PYTHON"]
 
 
 def q50_nested_comprehension(matrix):
@@ -473,6 +512,7 @@ def q50_nested_comprehension(matrix):
     pass
 
 assert q50_nested_comprehension([[1, 2], [3, 4], [5]]) == [1, 2, 3, 4, 5]
+assert q50_nested_comprehension([[10, 20], [30]]) == [10, 20, 30]
 
 
 def q51_dict_comprehension(lst):
@@ -481,6 +521,7 @@ def q51_dict_comprehension(lst):
     pass
 
 assert q51_dict_comprehension(["cat", "elephant", "ox"]) == {"cat": 3, "elephant": 8, "ox": 2}
+assert q51_dict_comprehension(["hi", "bye"]) == {"hi": 2, "bye": 3}
 
 
 def q52_dict_comprehension_filter(d):
@@ -490,6 +531,7 @@ def q52_dict_comprehension_filter(d):
     pass
 
 assert q52_dict_comprehension_filter({"a": 3, "b": -1, "c": 0, "d": 7}) == {"a": 3, "d": 7}
+assert q52_dict_comprehension_filter({"x": -5, "y": 2}) == {"y": 2}
 
 
 def q53_map_transform(numbers):
@@ -498,6 +540,7 @@ def q53_map_transform(numbers):
     pass
 
 assert q53_map_transform([1, 2, 3]) == [3, 6, 9]
+assert q53_map_transform([0, 4]) == [0, 12]
 
 
 def q54_filter_transform(numbers):
@@ -506,6 +549,7 @@ def q54_filter_transform(numbers):
     pass
 
 assert q54_filter_transform([5, 10, 15, 20]) == [15, 20]
+assert q54_filter_transform([1, 100, 11]) == [100, 11]
 
 
 def q55_lambda_expression():
@@ -524,6 +568,7 @@ def q56_sorted_with_key(words):
     pass
 
 assert q56_sorted_with_key(["banana", "fig", "apple", "kiwi"]) == ["fig", "kiwi", "apple", "banana"]
+assert q56_sorted_with_key(["a", "bbb", "cc"]) == ["a", "cc", "bbb"]
 
 
 # ---------------------------------------------------------------------------
@@ -545,6 +590,7 @@ def q58_keyword_call_demo(a, b, c):
     pass
 
 assert q58_keyword_call_demo(c=3, a=10, b=4) == 9
+assert q58_keyword_call_demo(1, 2, 3) == 2
 
 
 def q59_multiple_return(numbers):
@@ -553,6 +599,7 @@ def q59_multiple_return(numbers):
     pass
 
 assert q59_multiple_return([2, 4, 6]) == (2, 6, 4.0)
+assert q59_multiple_return([1, 2, 3, 4]) == (1, 4, 2.5)
 
 
 def q60_variadic_sum(*args):
@@ -570,6 +617,7 @@ def q61_variadic_kwargs(**kwargs):
     pass
 
 assert q61_variadic_kwargs(b=2, a=1, c=3) == ["a=1", "b=2", "c=3"]
+assert q61_variadic_kwargs(z=9, m=5) == ["m=5", "z=9"]
 
 
 def q62_inner_function(x):
@@ -579,6 +627,7 @@ def q62_inner_function(x):
     pass
 
 assert q62_inner_function(6) == 12
+assert q62_inner_function(0) == 0
 
 
 def q63_function_as_argument(numbers, transform):
@@ -588,6 +637,7 @@ def q63_function_as_argument(numbers, transform):
     pass
 
 assert q63_function_as_argument([1, 2, 3], lambda x: x ** 2) == [1, 4, 9]
+assert q63_function_as_argument([5, 10], lambda x: x + 1) == [6, 11]
 
 
 def q64_recursive_factorial(n):
@@ -609,6 +659,7 @@ def q65_sort_by_second(pairs):
     pass
 
 assert q65_sort_by_second([(1, 3), (2, 1), (3, 2)]) == [(2, 1), (3, 2), (1, 3)]
+assert q65_sort_by_second([(5, 0), (1, 9), (3, 4)]) == [(5, 0), (3, 4), (1, 9)]
 
 
 def q66_sort_dicts_by_key(records, key):
@@ -620,6 +671,8 @@ data = [{"name": "B", "score": 70}, {"name": "A", "score": 90}, {"name": "C", "s
 assert q66_sort_dicts_by_key(data, "score") == [
     {"name": "A", "score": 90}, {"name": "C", "score": 80}, {"name": "B", "score": 70}
 ]
+data2 = [{"v": 3}, {"v": 1}, {"v": 2}]
+assert q66_sort_dicts_by_key(data2, "v") == [{"v": 3}, {"v": 2}, {"v": 1}]
 
 
 def q67_min_max_with_key(words):
@@ -628,6 +681,7 @@ def q67_min_max_with_key(words):
     pass
 
 assert q67_min_max_with_key(["hi", "elephant", "cat"]) == ("hi", "elephant")
+assert q67_min_max_with_key(["python", "go", "javascript"]) == ("go", "javascript")
 
 
 def q68_any_all(numbers):
@@ -650,6 +704,7 @@ def q69_counting_generator(start, stop):
     pass
 
 assert list(q69_counting_generator(3, 7)) == [3, 4, 5, 6]
+assert list(q69_counting_generator(0, 3)) == [0, 1, 2]
 
 
 def q70_fibonacci_generator(limit):
@@ -659,6 +714,7 @@ def q70_fibonacci_generator(limit):
     pass
 
 assert list(q70_fibonacci_generator(10)) == [0, 1, 1, 2, 3, 5, 8]
+assert list(q70_fibonacci_generator(1)) == [0, 1, 1]
 
 
 def q71_generator_pipeline(iterable, predicate, transform):
@@ -673,6 +729,8 @@ result = list(q71_generator_pipeline(
     lambda x: x ** 2
 ))
 assert result == [0, 4, 16, 36, 64]
+result2 = list(q71_generator_pipeline([1, 2, 3, 4, 5], lambda x: x > 2, lambda x: x * 10))
+assert result2 == [30, 40, 50]
 
 
 def q72_take(generator, n):
