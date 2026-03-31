@@ -3,139 +3,144 @@ Python Language 101 — Fill-in-the-Code Quizzes
 Week 01–06 Essential Understanding
 
 Instructions:
-  Each function has a comment describing the code requirement.
+  Each function contains a docstring describing what the function must do.
   Replace every `pass` with the correct Python code.
   Do NOT change function signatures or remove comments.
 
 Topics:
-  Q01–Q08   Variables & Data Types       (Week 01)
-  Q09–Q16   Functions & Math Module      (Week 01)
-  Q17–Q24   Lists                        (Week 02)
-  Q25–Q32   Loops & Iteration            (Week 02)
-  Q33–Q40   Dictionaries                 (Week 02)
-  Q41–Q48   Comprehensions & Lambda      (Week 02)
-  Q49–Q56   JSON & File I/O              (Week 03)
-  Q57–Q62   HTTP Requests                (Week 04)
-  Q63–Q68   Error Handling & APIs        (Week 05)
-  Q69–Q72   Generators & Lazy Loading    (Week 06)
+  Q01–Q08   Variables & Types           (Week 01)
+  Q09–Q14   Strings                     (Week 01–02)
+  Q15–Q20   Tuples & Math Module        (Week 01)
+  Q21–Q30   Lists                       (Week 02)
+  Q31–Q38   Loops & Iteration           (Week 02)
+  Q39–Q46   Dictionaries                (Week 02)
+  Q47–Q56   Comprehensions & Lambdas    (Week 02)
+  Q57–Q64   Functions (Advanced)        (Week 01–02)
+  Q65–Q68   Sorting & Built-ins         (Week 02)
+  Q69–Q72   Generators                  (Week 06)
 """
 
 import math
-import json
-import os
+
 
 # ---------------------------------------------------------------------------
-# WEEK 01 — Variables & Data Types
+# WEEK 01 — Variables & Types
 # ---------------------------------------------------------------------------
 
-def q01_assign_variables():
-    # Assign the integer 2024 to a variable named `year`
-    # Assign the float 25.0330 to a variable named `latitude`
-    # Assign the string "Taipei" to a variable named `city`
-    # Return a tuple: (year, latitude, city)
+def q01_swap(a, b):
+    """Return (b, a) — the two arguments swapped."""
     pass
 
 
-def q02_integer_arithmetic(a, b):
-    # Return a tuple of five results:
-    #   (a + b,  a - b,  a * b,  a // b,  a % b)
-    # Use integer division (//) and modulo (%) — not regular division
+def q02_integer_ops(a, b):
+    """Return a tuple of (quotient, remainder) when a is divided by b.
+    Use integer (floor) division and the modulo operator."""
     pass
 
 
-def q03_float_division(a, b):
-    # Return the result of TRUE division of a by b (yields a float)
-    # e.g. q03_float_division(10, 3) → 3.3333...
+def q03_power(base, exp):
+    """Return base raised to the power of exp."""
     pass
 
 
-def q04_exponentiation(base, exp):
-    # Return base raised to the power of exp using the ** operator
+def q04_type_of(value):
+    """Return the type of value."""
     pass
 
 
-def q05_create_coordinate_tuple(lat, lon):
-    # Create and return a tuple (lat, lon) representing a coordinate
+def q05_convert_to_int(s):
+    """Convert the string s to an integer and return it."""
     pass
 
 
-def q06_unpack_coordinate(coord):
-    # coord is a (latitude, longitude) tuple
-    # Unpack it into two variables: lat and lon
-    # Return (lat, lon)
+def q06_convert_to_float(s):
+    """Convert the string s to a float and return it."""
     pass
 
 
-def q07_type_check(value):
-    # Return the type of `value` using the built-in type() function
+def q07_is_even(n):
+    """Return True if n is even, False otherwise."""
     pass
 
 
-def q08_string_formatting(name, lat, lon):
-    # Return a formatted string using an f-string:
-    #   "{name} is at ({lat:.4f}, {lon:.4f})"
-    # Example: "Taipei 101 is at (25.0330, 121.5654)"
+def q08_absolute_value(n):
+    """Return the absolute value of n without using abs()."""
     pass
 
 
 # ---------------------------------------------------------------------------
-# WEEK 01 — Functions & Math Module
+# WEEK 01–02 — Strings
 # ---------------------------------------------------------------------------
 
-def q09_import_and_use_sqrt(x):
-    # Import the math module (already imported at the top)
-    # Return the square root of x using math.sqrt()
+def q09_fstring_format(name, score):
+    """Return a formatted string: "<name> scored <score> points"
+    Use an f-string."""
     pass
 
 
-def q10_degrees_to_radians(degrees):
-    # Convert degrees to radians using math.radians()
-    # Return the result
+def q10_fstring_precision(value):
+    """Return a string showing value formatted to exactly 2 decimal places.
+    Use an f-string with format spec."""
     pass
 
 
-def q11_radians_to_degrees(radians):
-    # Convert radians to degrees using math.degrees()
-    # Return the result
+def q11_string_slicing(s):
+    """Return a tuple: (first 3 characters, last 3 characters, reversed string)."""
     pass
 
 
-def q12_trig_functions(angle_degrees):
-    # Convert angle_degrees to radians first
-    # Return a tuple: (sin, cos) of the angle
+def q12_string_methods(s):
+    """Return a tuple: (s uppercased, s lowercased, s with leading/trailing
+    whitespace removed)."""
     pass
 
 
-def q13_default_parameter(name, greeting="Hello"):
-    # Return the string f"{greeting}, {name}!"
-    # The greeting parameter should default to "Hello"
+def q13_string_split_join(sentence):
+    """Split sentence on spaces into a list of words, then join them back
+    together separated by hyphens. Return the joined string."""
     pass
 
 
-def q14_return_multiple_values(coord1, coord2):
-    # coord1 and coord2 are (lat, lon) tuples
-    # Return a tuple: (lat1, lon1, lat2, lon2)
-    # where lat1/lon1 come from coord1 and lat2/lon2 from coord2
+def q14_string_contains_count(s, sub):
+    """Return a tuple: (True/False whether sub is in s,
+    the number of times sub appears in s)."""
     pass
 
 
-def q15_km_to_miles(km):
-    # Convert kilometers to miles
-    # 1 km = 0.621371 miles
-    # Return the result
+# ---------------------------------------------------------------------------
+# WEEK 01 — Tuples & Math Module
+# ---------------------------------------------------------------------------
+
+def q15_create_tuple(a, b, c):
+    """Return a tuple containing a, b, c (in that order)."""
     pass
 
 
-def q16_haversine(coord1, coord2):
-    # Implement the Haversine formula to calculate great-circle distance in km
-    # Earth radius R = 6371 km
-    # Steps:
-    #   1. Extract lat1, lon1 from coord1 and lat2, lon2 from coord2
-    #   2. Convert all four values to radians with math.radians()
-    #   3. dlat = lat2_rad - lat1_rad
-    #      dlon = lon2_rad - lon1_rad
-    #   4. a = sin(dlat/2)**2 + cos(lat1_rad)*cos(lat2_rad)*sin(dlon/2)**2
-    #   5. return R * 2 * math.asin(math.sqrt(a))
+def q16_unpack_and_sum(triple):
+    """triple is a tuple of three numbers. Unpack it into three variables
+    and return their sum."""
+    pass
+
+
+def q17_single_element_tuple(value):
+    """Return a tuple containing exactly one element: value."""
+    pass
+
+
+def q18_tuple_index(t, i):
+    """Return the element at index i of tuple t."""
+    pass
+
+
+def q19_math_operations(x):
+    """Return a tuple: (square root of x, ceiling of x, floor of x).
+    Use math.sqrt, math.ceil, math.floor."""
+    pass
+
+
+def q20_degrees_radians_round_trip(degrees):
+    """Convert degrees to radians, then back to degrees.
+    Return the final degrees value (a float)."""
     pass
 
 
@@ -143,54 +148,62 @@ def q16_haversine(coord1, coord2):
 # WEEK 02 — Lists
 # ---------------------------------------------------------------------------
 
-def q17_create_and_append():
-    # Create an empty list named `cities`
-    # Append "Taipei", then "Tokyo", then "Seoul" to it (in that order)
-    # Return cities
+def q21_build_list(n):
+    """Return a list of integers from 1 to n inclusive."""
     pass
 
 
-def q18_list_indexing(lst):
-    # Return a tuple: (first element, last element)
-    # Use positive index for first and negative index for last
+def q22_list_ops(lst):
+    """Return a tuple: (minimum value, maximum value, sum of all values)
+    of the list. Use built-in functions."""
     pass
 
 
-def q19_list_slicing(lst):
-    # lst has at least 5 elements
-    # Return a tuple:
-    #   (first 3 elements,  last 2 elements,  reversed list)
+def q23_list_slice_middle(lst):
+    """lst has at least 5 elements. Return a new list containing
+    all elements except the first and last."""
     pass
 
 
-def q20_list_methods(lst, value):
-    # Remove the first occurrence of `value` from lst (use .remove())
-    # Append the integer 99 to the end
-    # Return the modified lst
+def q24_list_reverse(lst):
+    """Return a new list that is lst in reverse order.
+    Do not modify the original list."""
     pass
 
 
-def q21_list_insert_and_pop(lst):
-    # Insert the string "START" at index 0
-    # Pop (remove and discard) the last element
-    # Return the modified lst
+def q25_list_sort_ascending(lst):
+    """Return a new list with the same elements sorted in ascending order.
+    Do not modify the original list."""
     pass
 
 
-def q22_list_length_and_sum(numbers):
-    # Return a tuple: (len(numbers), sum(numbers))
+def q26_list_remove_first(lst, value):
+    """Remove the first occurrence of value from lst and return lst.
+    Modify the list in place."""
     pass
 
 
-def q23_list_concatenation(list1, list2):
-    # Return a new list that is list1 followed by list2
-    # Use the + operator (do not modify either input list)
+def q27_list_insert_at(lst, index, value):
+    """Insert value at the given index in lst and return lst.
+    Modify the list in place."""
     pass
 
 
-def q24_list_extend(list1, list2):
-    # Extend list1 IN PLACE with the elements of list2 (use .extend())
-    # Return list1
+def q28_list_count_membership(lst, value):
+    """Return a tuple: (number of times value appears in lst,
+    True if value is in lst else False)."""
+    pass
+
+
+def q29_flatten_two_lists(lst1, lst2):
+    """Return a single list that contains all elements of lst1
+    followed by all elements of lst2.
+    Do not modify either input list."""
+    pass
+
+
+def q30_list_unique(lst):
+    """Return a list of unique elements from lst, preserving original order."""
     pass
 
 
@@ -198,52 +211,50 @@ def q24_list_extend(list1, list2):
 # WEEK 02 — Loops & Iteration
 # ---------------------------------------------------------------------------
 
-def q25_for_loop_sum(numbers):
-    # Use a for loop to compute and return the sum of all numbers in the list
-    # Do NOT use the built-in sum()
+def q31_sum_with_loop(numbers):
+    """Use a for loop to compute and return the sum of numbers.
+    Do not use the built-in sum()."""
     pass
 
 
-def q26_range_loop():
-    # Use range() to build and return a list of even numbers from 0 to 18 (inclusive)
-    # [0, 2, 4, 6, 8, 10, 12, 14, 16, 18]
+def q32_countdown(n):
+    """Use a while loop to build and return a list counting down
+    from n to 1 (inclusive)."""
     pass
 
 
-def q27_enumerate_loop(items):
-    # Use enumerate() to build and return a list of strings:
-    #   ["1. item0", "2. item1", ...]  (1-based numbering)
+def q33_range_step():
+    """Return a list of every third integer from 0 up to and including 30.
+    Use range() with a step argument."""
     pass
 
 
-def q28_zip_loop(names, coords):
-    # names is a list of strings; coords is a list of (lat, lon) tuples
-    # Use zip() to return a list of strings:
-    #   ["{name}: ({lat}, {lon})", ...]
+def q34_enumerate_labels(items):
+    """Use enumerate() to return a list of strings "1. item", "2. item", ...
+    (1-based numbering)."""
     pass
 
 
-def q29_consecutive_pairs(lst):
-    # Return a list of consecutive (a, b) pairs from lst
-    # e.g. [1,2,3,4] → [(1,2), (2,3), (3,4)]
-    # Use zip() with slicing: zip(lst[:-1], lst[1:])
+def q35_zip_pairs(keys, values):
+    """Use zip() to return a dict mapping each key to its corresponding value."""
     pass
 
 
-def q30_while_loop_countdown(n):
-    # Use a while loop to build and return a list counting down from n to 1
-    # e.g. n=5 → [5, 4, 3, 2, 1]
+def q36_consecutive_pairs(lst):
+    """Return a list of overlapping consecutive pairs (a, b) from lst.
+    Example: [1, 2, 3] → [(1, 2), (2, 3)]"""
     pass
 
 
-def q31_map_function(numbers):
-    # Use map() with a lambda to return a list where every element is squared
-    # e.g. [1, 2, 3] → [1, 4, 9]
+def q37_loop_break(numbers, target):
+    """Iterate over numbers. Return the index of the first element equal
+    to target. Return -1 if target is not found. Use a for loop and break."""
     pass
 
 
-def q32_filter_function(numbers):
-    # Use filter() with a lambda to return a list of only the EVEN numbers
+def q38_loop_continue(numbers):
+    """Use a for loop with continue to build and return a list of only
+    the positive numbers from numbers."""
     pass
 
 
@@ -251,287 +262,213 @@ def q32_filter_function(numbers):
 # WEEK 02 — Dictionaries
 # ---------------------------------------------------------------------------
 
-def q33_create_place_dict(name, lat, lon, rating):
-    # Create and return a dictionary with keys:
-    #   "name", "coords" (tuple of lat,lon), "rating"
+def q39_build_dict(keys, values):
+    """Given two equal-length lists, return a dict mapping keys[i] → values[i]."""
     pass
 
 
-def q34_dict_access(place):
-    # place is a dict with keys "name", "coords", "rating"
-    # Return the value for "name" using square-bracket notation
+def q40_safe_get(d, key, default):
+    """Return the value for key in dict d.
+    If key is absent, return default instead."""
     pass
 
 
-def q35_dict_safe_access(place, key, default="N/A"):
-    # Return the value for `key` from `place`
-    # If the key does not exist, return `default` (use .get())
+def q41_dict_add_update(d, key, value):
+    """Add or update key → value in d. Return d."""
     pass
 
 
-def q36_dict_update(place, new_category):
-    # Add or update a key "category" in `place` with the value new_category
-    # Return the modified place dict
+def q42_dict_remove_key(d, key):
+    """Remove key from d if it exists. Return d.
+    Do not raise an error if key is absent."""
     pass
 
 
-def q37_dict_keys_values(place):
-    # Return a tuple: (list of keys, list of values)
-    # Convert dict_keys / dict_values to plain lists
+def q43_dict_keys_values(d):
+    """Return a tuple: (sorted list of keys, list of values for those sorted keys)."""
     pass
 
 
-def q38_dict_iteration(places):
-    # places is a list of dicts, each with "name" and "rating"
-    # Use a for loop and .items() on each dict to build and return
-    # a list of strings:  ["{name}: {rating}", ...]
+def q44_dict_merge(d1, d2):
+    """Return a new dict containing all entries from d1 and d2.
+    Entries from d2 should overwrite d1 on duplicate keys."""
     pass
 
 
-def q39_nested_dict_access(place):
-    # place = {"name": "...", "coords": {"lat": ..., "lon": ...}, ...}
-    # Return a tuple: (lat, lon) extracted from place["coords"]
+def q45_nested_dict_access(d, outer_key, inner_key):
+    """Return d[outer_key][inner_key]. Return None if either key is missing
+    (use .get() chaining)."""
     pass
 
 
-def q40_dict_pop(place, key):
-    # Remove `key` from `place` using .pop()
-    # If the key does not exist, return the string "missing" as the default
-    # Return the removed value (or "missing")
+def q46_count_occurrences(items):
+    """items is a list of values. Return a dict mapping each unique value
+    to the number of times it appears in items."""
     pass
 
 
 # ---------------------------------------------------------------------------
-# WEEK 02 — Comprehensions & Lambda
+# WEEK 02 — Comprehensions & Lambdas
 # ---------------------------------------------------------------------------
 
-def q41_list_comprehension_squares(n):
-    # Use a list comprehension to return a list of squares: [1, 4, 9, ..., n²]
-    # for i in range(1, n+1)
+def q47_squares_comprehension(n):
+    """Return a list of squares [1, 4, 9, ..., n²] using a list comprehension."""
     pass
 
 
-def q42_list_comprehension_filter(numbers):
-    # Use a list comprehension to return only the numbers greater than 10
+def q48_even_filter_comprehension(numbers):
+    """Return a list of only the even numbers from numbers,
+    using a list comprehension with a condition."""
     pass
 
 
-def q43_list_comprehension_transform(coords):
-    # coords is a list of (lat, lon) tuples
-    # Return a list of only the latitudes (first element of each tuple)
+def q49_transform_comprehension(words):
+    """Return a list of each word in words converted to uppercase,
+    using a list comprehension."""
     pass
 
 
-def q44_dict_comprehension(names, ratings):
-    # names is a list of strings; ratings is a list of floats
-    # Use a dict comprehension with zip() to return {name: rating, ...}
+def q50_nested_comprehension(matrix):
+    """matrix is a list of lists of numbers.
+    Return a flat list of all numbers using a nested list comprehension."""
     pass
 
 
-def q45_dict_comprehension_filter(place_list):
-    # place_list is a list of dicts, each with "name" and "rating"
-    # Return a dict {name: rating} for places with rating >= 4.5 only
+def q51_dict_comprehension(lst):
+    """lst is a list of strings.
+    Return a dict mapping each string to its length, using a dict comprehension."""
     pass
 
 
-def q46_lambda_sort(places):
-    # places is a list of dicts, each with "name" and "rating"
-    # Use sorted() with a lambda key to return the list sorted by
-    # "rating" in DESCENDING order (highest first)
+def q52_dict_comprehension_filter(d):
+    """d maps strings to numbers.
+    Return a new dict containing only entries where the value is positive,
+    using a dict comprehension."""
     pass
 
 
-def q47_lambda_map(strings):
-    # Use map() with a lambda to return a list of all strings converted to UPPERCASE
+def q53_map_transform(numbers):
+    """Use map() with a lambda to return a list where each number is tripled."""
     pass
 
 
-def q48_lambda_filter(place_list):
-    # place_list is a list of dicts, each with "category"
-    # Use filter() with a lambda to return only places where category == "restaurant"
+def q54_filter_transform(numbers):
+    """Use filter() with a lambda to return a list of numbers greater than 10."""
     pass
 
 
-# ---------------------------------------------------------------------------
-# WEEK 03 — JSON & File I/O
-# ---------------------------------------------------------------------------
-
-def q49_json_dumps(data):
-    # Convert the Python dict `data` to a JSON-formatted string
-    # Use indent=2 for pretty-printing
-    # Return the string
+def q55_lambda_expression():
+    """Define and return a lambda that takes two numbers and returns
+    the larger of the two."""
     pass
 
 
-def q50_json_loads(json_string):
-    # Parse the JSON string `json_string` into a Python object
-    # Return the result
-    pass
-
-
-def q51_write_text_file(filepath, content):
-    # Open `filepath` for writing (mode "w") with UTF-8 encoding
-    # Write `content` (a string) to the file
-    # Use a with statement
-    pass
-
-
-def q52_read_text_file(filepath):
-    # Open `filepath` for reading (mode "r") with UTF-8 encoding
-    # Read and return the entire file contents as a string
-    # Use a with statement
-    pass
-
-
-def q53_save_json_file(filepath, data):
-    # Save `data` (a Python object) to `filepath` as JSON
-    # Use json.dump() with indent=2 inside a with/open block
-    pass
-
-
-def q54_load_json_file(filepath):
-    # Open `filepath` for reading and parse it as JSON using json.load()
-    # Return the resulting Python object
-    pass
-
-
-def q55_json_type_conversion():
-    # JSON does not support Python tuples or sets.
-    # Create a dict `original` with key "coords" = (25.03, 121.57)  (a tuple)
-    # Convert it to JSON string (json.dumps), then parse it back (json.loads)
-    # Return the TYPE of result["coords"]  — show what JSON does to tuples
-    pass
-
-
-def q56_file_exists_check(filepath):
-    # Return True if the file at `filepath` exists, False otherwise
-    # Use os.path.exists()
+def q56_sorted_with_key(words):
+    """Return a new list with the strings in words sorted by their length
+    (shortest first), using sorted() with a key argument."""
     pass
 
 
 # ---------------------------------------------------------------------------
-# WEEK 04 — HTTP Requests
+# WEEK 01–02 — Functions (Advanced)
 # ---------------------------------------------------------------------------
 
-def q57_make_get_request(url, params, headers):
-    # Import requests is assumed available
-    # Make a GET request to `url` with `params` and `headers`
-    # Set timeout=10
-    # Return the response object
-    import requests
+def q57_default_parameter(value, multiplier=2):
+    """Return value multiplied by multiplier.
+    multiplier should default to 2."""
     pass
 
 
-def q58_check_status_code(response):
-    # Return True if the response status code is 200, False otherwise
+def q58_keyword_call_demo(a, b, c):
+    """Return a - b + c."""
     pass
 
 
-def q59_parse_response_json(response):
-    # Parse and return the JSON body of the response
-    # Use response.json()
+def q59_multiple_return(numbers):
+    """Return a tuple (min_val, max_val, mean) of the list.
+    mean should be a float."""
     pass
 
 
-def q60_build_nominatim_params(query):
-    # Build and return a dict of query parameters for a Nominatim /search request:
-    #   "q"      → query
-    #   "format" → "json"
-    #   "limit"  → 5
+def q60_variadic_sum(*args):
+    """Accept any number of positional arguments and return their sum."""
     pass
 
 
-def q61_build_user_agent_header(app_name, email):
-    # Build and return a dict containing the User-Agent header:
-    #   {"User-Agent": "{app_name}/1.0 ({email})"}
+def q61_variadic_kwargs(**kwargs):
+    """Accept any number of keyword arguments.
+    Return a list of strings "key=value" for each pair, sorted by key."""
     pass
 
 
-def q62_extract_first_result_coords(results):
-    # results is a list of dicts returned by the Nominatim API
-    # Each dict has "lat" and "lon" as STRING values
-    # Return a tuple: (float(lat), float(lon)) from the FIRST result
-    # Return None if results is empty
+def q62_inner_function(x):
+    """Define an inner function double(n) that returns n * 2.
+    Call it with x and return the result."""
     pass
 
 
-# ---------------------------------------------------------------------------
-# WEEK 05 — Error Handling & Defensive APIs
-# ---------------------------------------------------------------------------
-
-def q63_try_except_basic(risky_function, *args):
-    # Call risky_function(*args) inside a try block
-    # If ANY exception is raised, return None
-    # Otherwise return the result
+def q63_function_as_argument(numbers, transform):
+    """Apply the transform function to every element of numbers and
+    return the resulting list. Do not use map()."""
     pass
 
 
-def q64_try_except_specific(json_string):
-    # Try to parse `json_string` with json.loads()
-    # Catch json.JSONDecodeError specifically
-    # If parsing fails, return the empty dict {}
-    # Otherwise return the parsed object
-    pass
-
-
-def q65_try_except_finally(filepath):
-    # Open `filepath`, read its contents, and return them
-    # Use try/finally to ensure the file handle `f` is always closed
-    # (Manually open with open(), not a with statement)
-    pass
-
-
-def q66_safe_dict_get_nested(data, *keys):
-    # Safely retrieve a nested value from `data` using the sequence of `keys`
-    # e.g. safe_get(d, "a", "b", "c") → d["a"]["b"]["c"]
-    # If any key is missing (KeyError) or the value is not subscriptable
-    # (TypeError), return None
-    pass
-
-
-def q67_validate_coordinate(lat, lon):
-    # Return True if the coordinate is valid:
-    #   -90 <= lat <= 90  AND  -180 <= lon <= 180
-    # Return False otherwise
-    pass
-
-
-def q68_retry_request(url, headers, max_retries=3):
-    # Make a GET request to `url` with `headers`
-    # If the status code is NOT 200, retry up to max_retries times
-    # Return the response if successful (status 200)
-    # Return None if all retries are exhausted
-    import requests
-    import time
+def q64_recursive_factorial(n):
+    """Return n! (factorial) using recursion.
+    Base case: factorial(0) = 1."""
     pass
 
 
 # ---------------------------------------------------------------------------
-# WEEK 06 — Generators & Lazy Loading
+# WEEK 02 — Sorting & Built-ins
 # ---------------------------------------------------------------------------
 
-def q69_simple_generator(n):
-    # Write a generator function that YIELDS integers from 0 up to (but not including) n
-    # Use the `yield` keyword inside a for/range loop
+def q65_sort_by_second(pairs):
+    """pairs is a list of (a, b) tuples.
+    Return a new list sorted by the second element of each tuple (ascending)."""
     pass
 
 
-def q70_generator_squares(n):
-    # Write a generator that yields the squares of integers 1..n
-    # e.g. n=4 → yields 1, 4, 9, 16
+def q66_sort_dicts_by_key(records, key):
+    """records is a list of dicts that all contain key.
+    Return a new list sorted by records[i][key] in descending order."""
     pass
 
 
-def q71_paginated_results(fetch_page, total_pages):
-    # `fetch_page(page_number)` is a function that returns a list of items
-    #    for the given page number (1-indexed).
-    # Write a generator that lazily YIELDS items one by one,
-    #    calling fetch_page() for each page from 1 to total_pages.
+def q67_min_max_with_key(words):
+    """Return a tuple: (shortest word, longest word) from words.
+    Use min() and max() with a key argument."""
     pass
 
 
-def q72_lazy_filter_generator(iterable, predicate):
-    # Write a generator that lazily yields only items from `iterable`
-    # for which predicate(item) returns True
-    # e.g. lazy_filter([1,2,3,4,5], lambda x: x % 2 == 0) → yields 2, 4
+def q68_any_all(numbers):
+    """Return a tuple: (any(n > 100 for n in numbers),
+                        all(n > 0 for n in numbers))"""
+    pass
+
+
+# ---------------------------------------------------------------------------
+# WEEK 06 — Generators
+# ---------------------------------------------------------------------------
+
+def q69_counting_generator(start, stop):
+    """A generator function that yields integers from start up to
+    (but not including) stop."""
+    pass
+
+
+def q70_fibonacci_generator(limit):
+    """A generator function that yields Fibonacci numbers (0, 1, 1, 2, 3, 5, ...)
+    as long as the value is less than or equal to limit."""
+    pass
+
+
+def q71_generator_pipeline(iterable, predicate, transform):
+    """A generator function that yields transform(item) for each item in
+    iterable where predicate(item) is True."""
+    pass
+
+
+def q72_take(generator, n):
+    """Consume at most n values from generator and return them as a list."""
     pass
