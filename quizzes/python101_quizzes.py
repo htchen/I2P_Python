@@ -30,7 +30,8 @@ import math
 
 def q01_swap(a, b):
     """Return (b, a) — the two arguments swapped.
-    回傳 (b, a)，即將兩個引數互換後的元組。"""
+    回傳 (b, a)，即將兩個引數互換後的元組。
+    Hint: return (???, ???)"""
     pass
 
 assert q01_swap(1, 2) == (2, 1)
@@ -40,7 +41,8 @@ assert q01_swap("hello", 99) == (99, "hello")
 def q02_integer_ops(a, b):
     """Return a tuple of (quotient, remainder) when a is divided by b.
     Use integer (floor) division and the modulo operator.
-    回傳 a 除以 b 的（商, 餘數）元組，使用整數除法與模運算子。"""
+    回傳 a 除以 b 的（商, 餘數）元組，使用整數除法與模運算子。
+    Hint: return (a ??? b, a ??? b)"""
     pass
 
 assert q02_integer_ops(17, 5) == (3, 2)
@@ -49,7 +51,8 @@ assert q02_integer_ops(20, 3) == (6, 2)
 
 def q03_power(base, exp):
     """Return base raised to the power of exp.
-    回傳 base 的 exp 次方。"""
+    回傳 base 的 exp 次方。
+    Hint: return base ??? exp"""
     pass
 
 assert q03_power(2, 10) == 1024
@@ -58,7 +61,8 @@ assert q03_power(3, 4) == 81
 
 def q04_type_of(value):
     """Return the type of value.
-    回傳 value 的型別。"""
+    回傳 value 的型別。
+    Hint: return ???(value)"""
     pass
 
 assert q04_type_of(3.14) == float
@@ -67,7 +71,8 @@ assert q04_type_of(42) == int
 
 def q05_convert_to_int(s):
     """Convert the string s to an integer and return it.
-    將字串 s 轉換為整數並回傳。"""
+    將字串 s 轉換為整數並回傳。
+    Hint: return ???(s)"""
     pass
 
 assert q05_convert_to_int("42") == 42
@@ -76,7 +81,8 @@ assert q05_convert_to_int("-7") == -7
 
 def q06_convert_to_float(s):
     """Convert the string s to a float and return it.
-    將字串 s 轉換為浮點數並回傳。"""
+    將字串 s 轉換為浮點數並回傳。
+    Hint: return ???(s)"""
     pass
 
 assert q06_convert_to_float("3.14") == 3.14
@@ -85,7 +91,8 @@ assert q06_convert_to_float("0.5") == 0.5
 
 def q07_is_even(n):
     """Return True if n is even, False otherwise.
-    若 n 為偶數則回傳 True，否則回傳 False。"""
+    若 n 為偶數則回傳 True，否則回傳 False。
+    Hint: return n ??? 2 == ???"""
     pass
 
 assert q07_is_even(4) == True
@@ -94,7 +101,8 @@ assert q07_is_even(7) == False
 
 def q08_absolute_value(n):
     """Return the absolute value of n without using abs().
-    不使用 abs()，回傳 n 的絕對值。"""
+    不使用 abs()，回傳 n 的絕對值。
+    Hint: return n if n ??? 0 else ???n"""
     pass
 
 assert q08_absolute_value(-9) == 9
@@ -108,7 +116,8 @@ assert q08_absolute_value(5) == 5
 def q09_fstring_format(name, score):
     """Return a formatted string: "<name> scored <score> points"
     Use an f-string.
-    使用 f-string 回傳格式化字串："<name> scored <score> points"。"""
+    使用 f-string 回傳格式化字串："<name> scored <score> points"。
+    Hint: return f"{???} scored {???} points" """
     pass
 
 assert q09_fstring_format("Alice", 95) == "Alice scored 95 points"
@@ -118,7 +127,8 @@ assert q09_fstring_format("Bob", 70) == "Bob scored 70 points"
 def q10_fstring_precision(value):
     """Return a string showing value formatted to exactly 2 decimal places.
     Use an f-string with a format spec.
-    使用 f-string 格式規格，回傳保留恰好兩位小數的字串。"""
+    使用 f-string 格式規格，回傳保留恰好兩位小數的字串。
+    Hint: return f"{value???}"""
     pass
 
 assert q10_fstring_precision(3.14159) == "3.14"
@@ -127,7 +137,8 @@ assert q10_fstring_precision(1.0) == "1.00"
 
 def q11_string_slicing(s):
     """Return a tuple: (first 3 characters, last 3 characters, reversed string).
-    回傳元組：（前 3 個字元、後 3 個字元、反轉後的字串）。"""
+    回傳元組：（前 3 個字元、後 3 個字元、反轉後的字串）。
+    Hint: return (s[???:3], s[???:], s[???])"""
     pass
 
 assert q11_string_slicing("abcdefg") == ("abc", "efg", "gfedcba")
@@ -136,7 +147,8 @@ assert q11_string_slicing("python") == ("pyt", "hon", "nohtyp")
 
 def q12_string_methods(s):
     """Return a tuple: (s uppercased, s lowercased, s stripped of whitespace).
-    回傳元組：（全大寫、全小寫、去除首尾空白後的字串）。"""
+    回傳元組：（全大寫、全小寫、去除首尾空白後的字串）。
+    Hint: return (s.???(), s.???(), s.???())"""
     pass
 
 assert q12_string_methods("  Hello  ") == ("  HELLO  ", "  hello  ", "Hello")
@@ -146,7 +158,8 @@ assert q12_string_methods(" PyThOn ") == (" PYTHON ", " python ", "PyThOn")
 def q13_string_split_join(sentence):
     """Split sentence on spaces into words, then join them with hyphens.
     Return the joined string.
-    以空格分割 sentence 為單字串列，再用連字號連接並回傳。"""
+    以空格分割 sentence 為單字串列，再用連字號連接並回傳。
+    Hint: return "???".???(sentence.???())"""
     pass
 
 assert q13_string_split_join("one two three") == "one-two-three"
@@ -156,7 +169,8 @@ assert q13_string_split_join("hello world") == "hello-world"
 def q14_string_contains_count(s, sub):
     """Return a tuple: (True/False whether sub is in s,
     the number of times sub appears in s).
-    回傳元組：（sub 是否存在於 s 的布林值、sub 在 s 中出現的次數）。"""
+    回傳元組：（sub 是否存在於 s 的布林值、sub 在 s 中出現的次數）。
+    Hint: return (??? ??? s, s.???(sub))"""
     pass
 
 assert q14_string_contains_count("banana", "an") == (True, 2)
@@ -169,7 +183,8 @@ assert q14_string_contains_count("hello", "z") == (False, 0)
 
 def q15_create_tuple(a, b, c):
     """Return a tuple containing a, b, c in that order.
-    依序將 a、b、c 包裝為元組並回傳。"""
+    依序將 a、b、c 包裝為元組並回傳。
+    Hint: return (???, ???, ???)"""
     pass
 
 assert q15_create_tuple(1, 2, 3) == (1, 2, 3)
@@ -178,7 +193,8 @@ assert q15_create_tuple("a", "b", "c") == ("a", "b", "c")
 
 def q16_unpack_and_sum(triple):
     """triple is a tuple of three numbers. Unpack it and return their sum.
-    triple 是含三個數字的元組，將其拆包後回傳三數之總和。"""
+    triple 是含三個數字的元組，將其拆包後回傳三數之總和。
+    Hint: x, y, z = ???; return x ??? y ??? z"""
     pass
 
 assert q16_unpack_and_sum((4, 5, 6)) == 15
@@ -187,7 +203,8 @@ assert q16_unpack_and_sum((10, 20, 30)) == 60
 
 def q17_single_element_tuple(value):
     """Return a tuple containing exactly one element: value.
-    回傳只包含一個元素 value 的元組。"""
+    回傳只包含一個元素 value 的元組。
+    Hint: return (value???)"""
     pass
 
 assert q17_single_element_tuple(7) == (7,)
@@ -196,7 +213,8 @@ assert type(q17_single_element_tuple(7)) == tuple
 
 def q18_tuple_index(t, i):
     """Return the element at index i of tuple t.
-    回傳元組 t 中索引 i 的元素。"""
+    回傳元組 t 中索引 i 的元素。
+    Hint: return t[???]"""
     pass
 
 assert q18_tuple_index((10, 20, 30), -1) == 30
@@ -205,7 +223,8 @@ assert q18_tuple_index((10, 20, 30), 0) == 10
 
 def q19_math_operations(x):
     """Return a tuple: (square root of x, ceiling of x, floor of x).
-    回傳元組：（x 的平方根、無條件進位、無條件捨去）。"""
+    回傳元組：（x 的平方根、無條件進位、無條件捨去）。
+    Hint: return (math.???(x), math.???(x), math.???(x))"""
     pass
 
 assert q19_math_operations(9.0) == (3.0, 9, 9)
@@ -214,7 +233,8 @@ assert q19_math_operations(2.3) == (math.sqrt(2.3), 3, 2)
 
 def q20_degrees_radians_round_trip(degrees):
     """Convert degrees to radians, then convert back to degrees and return it.
-    將角度轉為弧度，再轉回角度並回傳（浮點數）。"""
+    將角度轉為弧度，再轉回角度並回傳（浮點數）。
+    Hint: return math.???(math.???(degrees))"""
     pass
 
 assert abs(q20_degrees_radians_round_trip(180.0) - 180.0) < 1e-9
@@ -227,7 +247,8 @@ assert abs(q20_degrees_radians_round_trip(45.0) - 45.0) < 1e-9
 
 def q21_build_list(n):
     """Return a list of integers from 1 to n inclusive.
-    回傳包含 1 到 n（含）的整數串列。"""
+    回傳包含 1 到 n（含）的整數串列。
+    Hint: return list(???(???, n + 1))"""
     pass
 
 assert q21_build_list(5) == [1, 2, 3, 4, 5]
@@ -236,7 +257,8 @@ assert q21_build_list(3) == [1, 2, 3]
 
 def q22_list_ops(lst):
     """Return a tuple: (minimum value, maximum value, sum) of the list.
-    回傳元組：（最小值、最大值、總和）。"""
+    回傳元組：（最小值、最大值、總和）。
+    Hint: return (???(lst), ???(lst), ???(lst))"""
     pass
 
 assert q22_list_ops([3, 1, 4, 1, 5]) == (1, 5, 14)
@@ -245,7 +267,8 @@ assert q22_list_ops([10, 20, 30]) == (10, 30, 60)
 
 def q23_list_slice_middle(lst):
     """Return a new list with all elements except the first and last.
-    回傳去掉第一個與最後一個元素後的新串列。"""
+    回傳去掉第一個與最後一個元素後的新串列。
+    Hint: return lst[???:???]"""
     pass
 
 assert q23_list_slice_middle([1, 2, 3, 4, 5]) == [2, 3, 4]
@@ -254,7 +277,8 @@ assert q23_list_slice_middle([10, 20, 30, 40, 50, 60]) == [20, 30, 40, 50]
 
 def q24_list_reverse(lst):
     """Return a new reversed list without modifying the original.
-    回傳反轉後的新串列，不得修改原串列。"""
+    回傳反轉後的新串列，不得修改原串列。
+    Hint: return lst[???]"""
     pass
 
 original = [1, 2, 3]
@@ -265,7 +289,8 @@ assert q24_list_reverse([5, 6, 7, 8]) == [8, 7, 6, 5]
 
 def q25_list_sort_ascending(lst):
     """Return a new list sorted in ascending order without modifying the original.
-    回傳升冪排序後的新串列，不得修改原串列。"""
+    回傳升冪排序後的新串列，不得修改原串列。
+    Hint: return ???(lst)"""
     pass
 
 original = [3, 1, 4, 1, 5]
@@ -276,7 +301,8 @@ assert q25_list_sort_ascending([5, 2, 8, 1]) == [1, 2, 5, 8]
 
 def q26_list_remove_first(lst, value):
     """Remove the first occurrence of value from lst in place and return lst.
-    原地移除 lst 中第一個等於 value 的元素，並回傳 lst。"""
+    原地移除 lst 中第一個等於 value 的元素，並回傳 lst。
+    Hint: lst.???(value); return lst"""
     pass
 
 assert q26_list_remove_first([1, 2, 3, 2], 2) == [1, 3, 2]
@@ -285,7 +311,8 @@ assert q26_list_remove_first([5, 5, 5], 5) == [5, 5]
 
 def q27_list_insert_at(lst, index, value):
     """Insert value at the given index in lst in place and return lst.
-    原地在 lst 的指定索引處插入 value，並回傳 lst。"""
+    原地在 lst 的指定索引處插入 value，並回傳 lst。
+    Hint: lst.???(???, value); return lst"""
     pass
 
 assert q27_list_insert_at([1, 2, 3], 1, 99) == [1, 99, 2, 3]
@@ -294,7 +321,8 @@ assert q27_list_insert_at([10, 20], 0, 0) == [0, 10, 20]
 
 def q28_list_count_membership(lst, value):
     """Return a tuple: (count of value in lst, True if value is in lst).
-    回傳元組：（value 在 lst 中的出現次數、value 是否存在於 lst）。"""
+    回傳元組：（value 在 lst 中的出現次數、value 是否存在於 lst）。
+    Hint: return (lst.???(value), value ??? lst)"""
     pass
 
 assert q28_list_count_membership([1, 2, 2, 3], 2) == (2, True)
@@ -304,7 +332,8 @@ assert q28_list_count_membership([1, 2, 2, 3], 9) == (0, False)
 def q29_flatten_two_lists(lst1, lst2):
     """Return a new list with all elements of lst1 followed by lst2.
     Do not modify either input.
-    回傳將 lst1 與 lst2 依序合併的新串列，不得修改原串列。"""
+    回傳將 lst1 與 lst2 依序合併的新串列，不得修改原串列。
+    Hint: return lst1 ??? lst2"""
     pass
 
 assert q29_flatten_two_lists([1, 2], [3, 4]) == [1, 2, 3, 4]
@@ -313,7 +342,8 @@ assert q29_flatten_two_lists([], [7, 8, 9]) == [7, 8, 9]
 
 def q30_list_unique(lst):
     """Return a list of unique elements from lst, preserving original order.
-    回傳 lst 中不重複的元素串列，保留原始順序。"""
+    回傳 lst 中不重複的元素串列，保留原始順序。
+    Hint: seen = ???; result = []; for x in lst: if x ??? seen: seen.???(x); result.???(x); return result"""
     pass
 
 assert q30_list_unique([3, 1, 2, 1, 3]) == [3, 1, 2]
@@ -326,7 +356,8 @@ assert q30_list_unique([4, 4, 4, 4]) == [4]
 
 def q31_sum_with_loop(numbers):
     """Use a for loop to return the sum of numbers. Do not use sum().
-    使用 for 迴圈計算並回傳 numbers 的總和，不得使用 sum()。"""
+    使用 for 迴圈計算並回傳 numbers 的總和，不得使用 sum()。
+    Hint: total = ???; for x in numbers: total ??? x; return total"""
     pass
 
 assert q31_sum_with_loop([1, 2, 3, 4, 5]) == 15
@@ -335,7 +366,8 @@ assert q31_sum_with_loop([10, 20, 30]) == 60
 
 def q32_countdown(n):
     """Use a while loop to return a list counting down from n to 1.
-    使用 while 迴圈回傳從 n 倒數至 1 的串列。"""
+    使用 while 迴圈回傳從 n 倒數至 1 的串列。
+    Hint: result = []; while n ??? 0: result.???(n); n ??? 1; return result"""
     pass
 
 assert q32_countdown(5) == [5, 4, 3, 2, 1]
@@ -344,7 +376,8 @@ assert q32_countdown(3) == [3, 2, 1]
 
 def q33_range_step():
     """Return a list of every third integer from 0 to 30 inclusive.
-    回傳從 0 到 30（含）每隔三個數的整數串列。"""
+    回傳從 0 到 30（含）每隔三個數的整數串列。
+    Hint: return list(???(0, ???, ???))"""
     pass
 
 assert q33_range_step() == [0, 3, 6, 9, 12, 15, 18, 21, 24, 27, 30]
@@ -353,7 +386,8 @@ assert len(q33_range_step()) == 11
 
 def q34_enumerate_labels(items):
     """Use enumerate() to return a list of "1. item", "2. item", ... (1-based).
-    使用 enumerate() 回傳 "1. 項目"、"2. 項目"⋯⋯（從 1 開始）的字串串列。"""
+    使用 enumerate() 回傳 "1. 項目"、"2. 項目"⋯⋯（從 1 開始）的字串串列。
+    Hint: return [f"???. {item}" for i, item in ???(items, start=???)]"""
     pass
 
 assert q34_enumerate_labels(["a", "b", "c"]) == ["1. a", "2. b", "3. c"]
@@ -362,7 +396,8 @@ assert q34_enumerate_labels(["x", "y"]) == ["1. x", "2. y"]
 
 def q35_zip_pairs(keys, values):
     """Use zip() to return a dict mapping each key to its corresponding value.
-    使用 zip() 回傳將 keys 對應至 values 的字典。"""
+    使用 zip() 回傳將 keys 對應至 values 的字典。
+    Hint: return {k: v for k, v in ???(???, ???)}"""
     pass
 
 assert q35_zip_pairs(["x", "y"], [10, 20]) == {"x": 10, "y": 20}
@@ -371,7 +406,8 @@ assert q35_zip_pairs(["a", "b", "c"], [1, 2, 3]) == {"a": 1, "b": 2, "c": 3}
 
 def q36_consecutive_pairs(lst):
     """Return a list of overlapping consecutive (a, b) pairs from lst.
-    回傳 lst 中相鄰元素組成的 (a, b) 元組串列。"""
+    回傳 lst 中相鄰元素組成的 (a, b) 元組串列。
+    Hint: return list(???(lst[???], lst[???]))"""
     pass
 
 assert q36_consecutive_pairs([1, 2, 3, 4]) == [(1, 2), (2, 3), (3, 4)]
@@ -381,7 +417,8 @@ assert q36_consecutive_pairs(["a", "b", "c"]) == [("a", "b"), ("b", "c")]
 def q37_loop_break(numbers, target):
     """Return the index of the first occurrence of target, or -1 if not found.
     Use a for loop and break.
-    使用 for 迴圈與 break，回傳 target 第一次出現的索引，找不到則回傳 -1。"""
+    使用 for 迴圈與 break，回傳 target 第一次出現的索引，找不到則回傳 -1。
+    Hint: for i, x in ???(numbers): if x == target: return ???; return ???"""
     pass
 
 assert q37_loop_break([5, 3, 8, 3], 8) == 2
@@ -390,7 +427,8 @@ assert q37_loop_break([5, 3, 8, 3], 9) == -1
 
 def q38_loop_continue(numbers):
     """Use a for loop with continue to return only the positive numbers.
-    使用含 continue 的 for 迴圈，回傳只包含正數的串列。"""
+    使用含 continue 的 for 迴圈，回傳只包含正數的串列。
+    Hint: result = []; for x in numbers: if x ??? 0: ???; result.???(x); return result"""
     pass
 
 assert q38_loop_continue([-1, 2, -3, 4, 0]) == [2, 4]
@@ -403,7 +441,8 @@ assert q38_loop_continue([1, 2, 3]) == [1, 2, 3]
 
 def q39_build_dict(keys, values):
     """Return a dict mapping keys[i] to values[i].
-    回傳將 keys[i] 對應至 values[i] 的字典。"""
+    回傳將 keys[i] 對應至 values[i] 的字典。
+    Hint: return {k: v for k, v in ???(???, ???)}"""
     pass
 
 assert q39_build_dict(["a", "b"], [1, 2]) == {"a": 1, "b": 2}
@@ -412,7 +451,8 @@ assert q39_build_dict(["x"], [99]) == {"x": 99}
 
 def q40_safe_get(d, key, default):
     """Return d[key], or default if key is absent.
-    回傳 d[key]；若鍵不存在則回傳 default。"""
+    回傳 d[key]；若鍵不存在則回傳 default。
+    Hint: return d.???(key, ???)"""
     pass
 
 assert q40_safe_get({"a": 1}, "a", 0) == 1
@@ -421,7 +461,8 @@ assert q40_safe_get({"a": 1}, "b", 0) == 0
 
 def q41_dict_add_update(d, key, value):
     """Add or update key → value in d and return d.
-    在 d 中新增或更新 key → value，並回傳 d。"""
+    在 d 中新增或更新 key → value，並回傳 d。
+    Hint: d[???] = ???; return d"""
     pass
 
 assert q41_dict_add_update({"a": 1}, "b", 2) == {"a": 1, "b": 2}
@@ -430,7 +471,8 @@ assert q41_dict_add_update({"a": 1}, "a", 9) == {"a": 9}
 
 def q42_dict_remove_key(d, key):
     """Remove key from d if it exists and return d. No error if absent.
-    若 key 存在則從 d 中移除，並回傳 d；鍵不存在時不可報錯。"""
+    若 key 存在則從 d 中移除，並回傳 d；鍵不存在時不可報錯。
+    Hint: d.???(key, ???); return d"""
     pass
 
 assert q42_dict_remove_key({"a": 1, "b": 2}, "a") == {"b": 2}
@@ -439,7 +481,8 @@ assert q42_dict_remove_key({"a": 1}, "z") == {"a": 1}
 
 def q43_dict_keys_values(d):
     """Return a tuple: (sorted list of keys, list of values in that same order).
-    回傳元組：（排序後的鍵串列、對應排序順序的值串列）。"""
+    回傳元組：（排序後的鍵串列、對應排序順序的值串列）。
+    Hint: ks = ???(d.???()); return (ks, [d[k] for k in ks])"""
     pass
 
 assert q43_dict_keys_values({"b": 2, "a": 1, "c": 3}) == (["a", "b", "c"], [1, 2, 3])
@@ -449,7 +492,8 @@ assert q43_dict_keys_values({"z": 10, "m": 5}) == (["m", "z"], [5, 10])
 def q44_dict_merge(d1, d2):
     """Return a new dict with all entries from d1 and d2.
     d2 values win on duplicate keys.
-    回傳包含 d1 與 d2 所有項目的新字典；重複鍵以 d2 的值為準。"""
+    回傳包含 d1 與 d2 所有項目的新字典；重複鍵以 d2 的值為準。
+    Hint: return {???d1, ???d2}"""
     pass
 
 assert q44_dict_merge({"a": 1, "b": 2}, {"b": 9, "c": 3}) == {"a": 1, "b": 9, "c": 3}
@@ -458,7 +502,8 @@ assert q44_dict_merge({"x": 1}, {"y": 2}) == {"x": 1, "y": 2}
 
 def q45_nested_dict_access(d, outer_key, inner_key):
     """Return d[outer_key][inner_key], or None if either key is missing.
-    回傳 d[outer_key][inner_key]；任一鍵不存在則回傳 None。"""
+    回傳 d[outer_key][inner_key]；任一鍵不存在則回傳 None。
+    Hint: return d.???(outer_key, ???).???(inner_key)"""
     pass
 
 assert q45_nested_dict_access({"a": {"x": 42}}, "a", "x") == 42
@@ -468,7 +513,8 @@ assert q45_nested_dict_access({"a": {"x": 42}}, "z", "x") is None
 
 def q46_count_occurrences(items):
     """Return a dict mapping each unique value to its count in items.
-    回傳將 items 中每個不重複值對應至其出現次數的字典。"""
+    回傳將 items 中每個不重複值對應至其出現次數的字典。
+    Hint: result = {}; for x in items: result[x] = result.???(x, 0) ??? 1; return result"""
     pass
 
 assert q46_count_occurrences(["a", "b", "a", "c", "b", "a"]) == {"a": 3, "b": 2, "c": 1}
@@ -481,7 +527,8 @@ assert q46_count_occurrences([1, 2, 1]) == {1: 2, 2: 1}
 
 def q47_squares_comprehension(n):
     """Return [1², 2², ..., n²] using a list comprehension.
-    使用串列推導式回傳 [1², 2², ..., n²]。"""
+    使用串列推導式回傳 [1², 2², ..., n²]。
+    Hint: return [i ??? 2 for i in range(???, ???)]"""
     pass
 
 assert q47_squares_comprehension(5) == [1, 4, 9, 16, 25]
@@ -490,7 +537,8 @@ assert q47_squares_comprehension(3) == [1, 4, 9]
 
 def q48_even_filter_comprehension(numbers):
     """Return only the even numbers from numbers using a list comprehension.
-    使用串列推導式回傳 numbers 中的所有偶數。"""
+    使用串列推導式回傳 numbers 中的所有偶數。
+    Hint: return [x for x in numbers if x ??? 2 == ???]"""
     pass
 
 assert q48_even_filter_comprehension([1, 2, 3, 4, 5, 6]) == [2, 4, 6]
@@ -499,7 +547,8 @@ assert q48_even_filter_comprehension([7, 8, 9, 10]) == [8, 10]
 
 def q49_transform_comprehension(words):
     """Return each word uppercased, using a list comprehension.
-    使用串列推導式回傳每個單字的大寫版本。"""
+    使用串列推導式回傳每個單字的大寫版本。
+    Hint: return [w.???() for w in ???]"""
     pass
 
 assert q49_transform_comprehension(["hi", "world"]) == ["HI", "WORLD"]
@@ -508,7 +557,8 @@ assert q49_transform_comprehension(["python"]) == ["PYTHON"]
 
 def q50_nested_comprehension(matrix):
     """Flatten a list-of-lists into a single list using a nested comprehension.
-    使用巢狀串列推導式將二維串列攤平為一維串列。"""
+    使用巢狀串列推導式將二維串列攤平為一維串列。
+    Hint: return [x for ??? in matrix for x in ???]"""
     pass
 
 assert q50_nested_comprehension([[1, 2], [3, 4], [5]]) == [1, 2, 3, 4, 5]
@@ -517,7 +567,8 @@ assert q50_nested_comprehension([[10, 20], [30]]) == [10, 20, 30]
 
 def q51_dict_comprehension(lst):
     """Return a dict mapping each string to its length, using a dict comprehension.
-    使用字典推導式回傳每個字串對應其長度的字典。"""
+    使用字典推導式回傳每個字串對應其長度的字典。
+    Hint: return {s: ???(s) for s in lst}"""
     pass
 
 assert q51_dict_comprehension(["cat", "elephant", "ox"]) == {"cat": 3, "elephant": 8, "ox": 2}
@@ -527,7 +578,8 @@ assert q51_dict_comprehension(["hi", "bye"]) == {"hi": 2, "bye": 3}
 def q52_dict_comprehension_filter(d):
     """Return a new dict with only entries whose value is positive,
     using a dict comprehension.
-    使用字典推導式回傳只包含正數值的新字典。"""
+    使用字典推導式回傳只包含正數值的新字典。
+    Hint: return {k: v for k, v in d.???() if v ??? 0}"""
     pass
 
 assert q52_dict_comprehension_filter({"a": 3, "b": -1, "c": 0, "d": 7}) == {"a": 3, "d": 7}
@@ -536,7 +588,8 @@ assert q52_dict_comprehension_filter({"x": -5, "y": 2}) == {"y": 2}
 
 def q53_map_transform(numbers):
     """Use map() with a lambda to return a list where each number is tripled.
-    使用 map() 搭配 lambda，回傳每個元素乘以三的串列。"""
+    使用 map() 搭配 lambda，回傳每個元素乘以三的串列。
+    Hint: return list(???(lambda x: x ??? 3, numbers))"""
     pass
 
 assert q53_map_transform([1, 2, 3]) == [3, 6, 9]
@@ -545,7 +598,8 @@ assert q53_map_transform([0, 4]) == [0, 12]
 
 def q54_filter_transform(numbers):
     """Use filter() with a lambda to return numbers greater than 10.
-    使用 filter() 搭配 lambda，回傳大於 10 的數字串列。"""
+    使用 filter() 搭配 lambda，回傳大於 10 的數字串列。
+    Hint: return list(???(lambda x: x ??? 10, numbers))"""
     pass
 
 assert q54_filter_transform([5, 10, 15, 20]) == [15, 20]
@@ -554,7 +608,8 @@ assert q54_filter_transform([1, 100, 11]) == [100, 11]
 
 def q55_lambda_expression():
     """Return a lambda that takes two numbers and returns the larger one.
-    回傳一個接受兩個數字並回傳較大值的 lambda。"""
+    回傳一個接受兩個數字並回傳較大值的 lambda。
+    Hint: return lambda a, b: a if a ??? b else ???"""
     pass
 
 f = q55_lambda_expression()
@@ -564,7 +619,8 @@ assert f(10, 2) == 10
 
 def q56_sorted_with_key(words):
     """Return words sorted by length (shortest first) using sorted() with a key.
-    使用 sorted() 搭配 key，回傳按字串長度升冪排序的串列。"""
+    使用 sorted() 搭配 key，回傳按字串長度升冪排序的串列。
+    Hint: return ???(words, key=lambda w: ???(w))"""
     pass
 
 assert q56_sorted_with_key(["banana", "fig", "apple", "kiwi"]) == ["fig", "kiwi", "apple", "banana"]
@@ -577,7 +633,8 @@ assert q56_sorted_with_key(["a", "bbb", "cc"]) == ["a", "cc", "bbb"]
 
 def q57_default_parameter(value, multiplier=2):
     """Return value * multiplier. multiplier defaults to 2.
-    回傳 value 乘以 multiplier，multiplier 預設為 2。"""
+    回傳 value 乘以 multiplier，multiplier 預設為 2。
+    Hint: return value ??? multiplier"""
     pass
 
 assert q57_default_parameter(5) == 10
@@ -586,7 +643,8 @@ assert q57_default_parameter(5, 3) == 15
 
 def q58_keyword_call_demo(a, b, c):
     """Return a - b + c.
-    回傳 a - b + c。"""
+    回傳 a - b + c。
+    Hint: return a ??? b ??? c"""
     pass
 
 assert q58_keyword_call_demo(c=3, a=10, b=4) == 9
@@ -595,7 +653,8 @@ assert q58_keyword_call_demo(1, 2, 3) == 2
 
 def q59_multiple_return(numbers):
     """Return a tuple (min_val, max_val, mean) where mean is a float.
-    回傳元組 (最小值, 最大值, 平均值)，平均值為浮點數。"""
+    回傳元組 (最小值, 最大值, 平均值)，平均值為浮點數。
+    Hint: return (???(numbers), ???(numbers), ???(numbers) / ???(numbers))"""
     pass
 
 assert q59_multiple_return([2, 4, 6]) == (2, 6, 4.0)
@@ -604,7 +663,8 @@ assert q59_multiple_return([1, 2, 3, 4]) == (1, 4, 2.5)
 
 def q60_variadic_sum(*args):
     """Accept any number of positional arguments and return their sum.
-    接受任意數量的位置引數並回傳其總和。"""
+    接受任意數量的位置引數並回傳其總和。
+    Hint: return ???(args)"""
     pass
 
 assert q60_variadic_sum(1, 2, 3, 4) == 10
@@ -613,7 +673,8 @@ assert q60_variadic_sum() == 0
 
 def q61_variadic_kwargs(**kwargs):
     """Return a sorted list of "key=value" strings from the keyword arguments.
-    回傳由關鍵字引數組成的 "key=value" 字串串列，依鍵名排序。"""
+    回傳由關鍵字引數組成的 "key=value" 字串串列，依鍵名排序。
+    Hint: return ???([f"{k}={v}" for k, v in kwargs.???()])"""
     pass
 
 assert q61_variadic_kwargs(b=2, a=1, c=3) == ["a=1", "b=2", "c=3"]
@@ -623,7 +684,8 @@ assert q61_variadic_kwargs(z=9, m=5) == ["m=5", "z=9"]
 def q62_inner_function(x):
     """Define an inner function named double that returns its argument times 2,
     then call it with x and return the result.
-    定義名為 double 的內部函式（回傳引數乘以 2），以 x 呼叫後回傳結果。"""
+    定義名為 double 的內部函式（回傳引數乘以 2），以 x 呼叫後回傳結果。
+    Hint: def ???(n): return n ??? 2; return ???(x)"""
     pass
 
 assert q62_inner_function(6) == 12
@@ -633,7 +695,8 @@ assert q62_inner_function(0) == 0
 def q63_function_as_argument(numbers, transform):
     """Apply transform to every element of numbers and return the resulting list.
     Do not use map().
-    將 transform 套用至 numbers 每個元素，回傳結果串列（不得使用 map()）。"""
+    將 transform 套用至 numbers 每個元素，回傳結果串列（不得使用 map()）。
+    Hint: return [???(x) for x in numbers]"""
     pass
 
 assert q63_function_as_argument([1, 2, 3], lambda x: x ** 2) == [1, 4, 9]
@@ -642,7 +705,8 @@ assert q63_function_as_argument([5, 10], lambda x: x + 1) == [6, 11]
 
 def q64_recursive_factorial(n):
     """Return n! using recursion. Base case: factorial(0) == 1.
-    使用遞迴回傳 n 的階乘，基底情況：factorial(0) == 1。"""
+    使用遞迴回傳 n 的階乘，基底情況：factorial(0) == 1。
+    Hint: if n == ???: return ???; return n ??? ???(n - 1)"""
     pass
 
 assert q64_recursive_factorial(0) == 1
@@ -655,7 +719,8 @@ assert q64_recursive_factorial(5) == 120
 
 def q65_sort_by_second(pairs):
     """Return the list of (a, b) tuples sorted by the second element ascending.
-    回傳依每個元組第二個元素升冪排序後的新串列。"""
+    回傳依每個元組第二個元素升冪排序後的新串列。
+    Hint: return ???(pairs, key=lambda p: p[???])"""
     pass
 
 assert q65_sort_by_second([(1, 3), (2, 1), (3, 2)]) == [(2, 1), (3, 2), (1, 3)]
@@ -664,7 +729,8 @@ assert q65_sort_by_second([(5, 0), (1, 9), (3, 4)]) == [(5, 0), (3, 4), (1, 9)]
 
 def q66_sort_dicts_by_key(records, key):
     """Return records sorted by records[i][key] in descending order.
-    回傳依 records[i][key] 降冪排序後的新串列。"""
+    回傳依 records[i][key] 降冪排序後的新串列。
+    Hint: return ???(records, key=lambda r: r[???], ???=True)"""
     pass
 
 data = [{"name": "B", "score": 70}, {"name": "A", "score": 90}, {"name": "C", "score": 80}]
@@ -677,7 +743,8 @@ assert q66_sort_dicts_by_key(data2, "v") == [{"v": 3}, {"v": 2}, {"v": 1}]
 
 def q67_min_max_with_key(words):
     """Return a tuple: (shortest word, longest word) using min() and max() with a key.
-    使用帶 key 的 min() 與 max()，回傳（最短單字, 最長單字）元組。"""
+    使用帶 key 的 min() 與 max()，回傳（最短單字, 最長單字）元組。
+    Hint: return (???(words, key=???), ???(words, key=???))"""
     pass
 
 assert q67_min_max_with_key(["hi", "elephant", "cat"]) == ("hi", "elephant")
@@ -686,7 +753,8 @@ assert q67_min_max_with_key(["python", "go", "javascript"]) == ("go", "javascrip
 
 def q68_any_all(numbers):
     """Return a tuple: (True if any number > 100, True if all numbers > 0).
-    回傳元組：（是否有任一數 > 100、是否所有數均 > 0）。"""
+    回傳元組：（是否有任一數 > 100、是否所有數均 > 0）。
+    Hint: return (???(n > 100 for n in numbers), ???(n > 0 for n in numbers))"""
     pass
 
 assert q68_any_all([1, 50, 200]) == (True, True)
@@ -700,7 +768,8 @@ assert q68_any_all([-1, 50, 200]) == (True, False)
 
 def q69_counting_generator(start, stop):
     """A generator that yields integers from start up to (not including) stop.
-    生成器函式，從 start 逐一產出整數直到（不含）stop。"""
+    生成器函式，從 start 逐一產出整數直到（不含）stop。
+    Hint: for i in ???(start, stop): ??? i"""
     pass
 
 assert list(q69_counting_generator(3, 7)) == [3, 4, 5, 6]
@@ -710,7 +779,8 @@ assert list(q69_counting_generator(0, 3)) == [0, 1, 2]
 def q70_fibonacci_generator(limit):
     """A generator that yields Fibonacci numbers (0, 1, 1, 2, 3, 5, ...)
     as long as the value is <= limit.
-    生成器函式，產出不超過 limit 的費氏數列（0, 1, 1, 2, 3, 5, ...）。"""
+    生成器函式，產出不超過 limit 的費氏數列（0, 1, 1, 2, 3, 5, ...）。
+    Hint: a, b = 0, 1; while a ??? limit: ??? a; a, b = b, a ??? b"""
     pass
 
 assert list(q70_fibonacci_generator(10)) == [0, 1, 1, 2, 3, 5, 8]
@@ -720,7 +790,8 @@ assert list(q70_fibonacci_generator(1)) == [0, 1, 1]
 def q71_generator_pipeline(iterable, predicate, transform):
     """A generator that yields transform(item) for each item in iterable
     where predicate(item) is True.
-    生成器函式，對 iterable 中滿足 predicate(item) 的每個元素產出 transform(item)。"""
+    生成器函式，對 iterable 中滿足 predicate(item) 的每個元素產出 transform(item)。
+    Hint: for item in iterable: if ???(item): ??? ???(item)"""
     pass
 
 result = list(q71_generator_pipeline(
@@ -735,7 +806,8 @@ assert result2 == [30, 40, 50]
 
 def q72_take(generator, n):
     """Consume at most n values from generator and return them as a list.
-    從 generator 最多取出 n 個值並回傳為串列。"""
+    從 generator 最多取出 n 個值並回傳為串列。
+    Hint: result = []; for x in generator: result.???(x); if len(result) ??? n: ???; return result"""
     pass
 
 assert q72_take(q69_counting_generator(0, 100), 5) == [0, 1, 2, 3, 4]
