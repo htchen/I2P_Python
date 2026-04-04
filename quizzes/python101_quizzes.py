@@ -21,8 +21,9 @@ Topics / 主題:
   Q69–Q72   Generators                  生成器              (Week 06)
 """
 
+import copy
 import math
-
+import types
 
 # ---------------------------------------------------------------------------
 # WEEK 01 — Variables & Types  （變數與型別）
@@ -281,10 +282,14 @@ def q24_list_reverse(lst):
     Hint: return lst[???]"""
     pass
 
-original = [1, 2, 3]
-assert q24_list_reverse(original) == [3, 2, 1]
-assert original == [1, 2, 3]
-assert q24_list_reverse([5, 6, 7, 8]) == [8, 7, 6, 5]
+def q24_driver(lst):
+    lst_copy = copy.deepcopy(lst)
+    result = q24_list_reverse(lst_copy)
+    assert all(x == y for x, y in zip(lst, lst_copy))
+    return result
+
+assert q24_driver([1, 2, 3]) == [3, 2, 1]
+assert q24_driver([5, 6, 7, 8]) == [8, 7, 6, 5]
 
 
 def q25_list_sort_ascending(lst):
@@ -293,10 +298,14 @@ def q25_list_sort_ascending(lst):
     Hint: return ???(lst)"""
     pass
 
-original = [3, 1, 4, 1, 5]
-assert q25_list_sort_ascending(original) == [1, 1, 3, 4, 5]
-assert original == [3, 1, 4, 1, 5]
-assert q25_list_sort_ascending([5, 2, 8, 1]) == [1, 2, 5, 8]
+def q25_driver(lst):
+    lst_copy = copy.deepcopy(lst)
+    result = q25_list_sort_ascending(lst_copy)
+    assert all(x == y for x, y in zip(lst, lst_copy))
+    return result
+
+assert q25_driver([3, 1, 4, 1, 5]) == [1, 1, 3, 4, 5]
+assert q25_driver([5, 2, 8, 1]) == [1, 2, 5, 8]
 
 
 def q26_list_remove_first(lst, value):
@@ -336,8 +345,16 @@ def q29_flatten_two_lists(lst1, lst2):
     Hint: return lst1 ??? lst2"""
     pass
 
-assert q29_flatten_two_lists([1, 2], [3, 4]) == [1, 2, 3, 4]
-assert q29_flatten_two_lists([], [7, 8, 9]) == [7, 8, 9]
+def q29_driver(lst1, lst2):
+    lst1_copy = copy.deepcopy(lst1)
+    lst2_copy = copy.deepcopy(lst2)
+    lst_result = q29_flatten_two_lists(lst1, lst2)
+    assert len(lst1) == len(lst1_copy) and all(x == y for x, y in zip(lst1, lst1_copy))
+    assert len(lst2) == len(lst2_copy) and all(x == y for x, y in zip(lst2, lst2_copy))
+    return lst_result
+
+assert q29_driver([1, 2], [3, 4]) == [1, 2, 3, 4]
+assert q29_driver([], [7, 8, 9]) == [7, 8, 9]
 
 
 def q30_list_unique(lst):
@@ -374,14 +391,14 @@ assert q32_countdown(5) == [5, 4, 3, 2, 1]
 assert q32_countdown(3) == [3, 2, 1]
 
 
-def q33_range_step():
-    """Return a list of every third integer from 0 to 30 inclusive.
-    回傳從 0 到 30（含）每隔三個數的整數串列。
+def q33_range_step(n):
+    """Return a list of every third integer from 0 to n inclusive.
+    回傳從 0 到 n（含）每隔三個數的整數串列。
     Hint: return list(???(0, ???, ???))"""
     pass
 
-assert q33_range_step() == [0, 3, 6, 9, 12, 15, 18, 21, 24, 27, 30]
-assert len(q33_range_step()) == 11
+assert q33_range_step(30) == [0, 3, 6, 9, 12, 15, 18, 21, 24, 27, 30]
+assert len(q33_range_step(30)) == 11
 
 
 def q34_enumerate_labels(items):
@@ -503,7 +520,7 @@ assert q44_dict_merge({"x": 1}, {"y": 2}) == {"x": 1, "y": 2}
 def q45_nested_dict_access(d, outer_key, inner_key):
     """Return d[outer_key][inner_key], or None if either key is missing.
     回傳 d[outer_key][inner_key]；任一鍵不存在則回傳 None。
-    Hint: return d.???(outer_key, ???).???(inner_key)"""
+    Hint: return d.???(outer_key, ???).???(inner_key, ???)"""
     pass
 
 assert q45_nested_dict_access({"a": {"x": 42}}, "a", "x") == 42
@@ -612,9 +629,13 @@ def q55_lambda_expression():
     Hint: return lambda a, b: a if a ??? b else ???"""
     pass
 
-f = q55_lambda_expression()
-assert f(3, 7) == 7
-assert f(10, 2) == 10
+def q55_driver(a, b):
+    f = q55_lambda_expression()
+    assert isinstance(f, types.LambdaType)
+    return f(a, b)
+
+assert q55_driver(3, 7) == 7
+assert q55_driver(10, 2) == 10
 
 
 def q56_sorted_with_key(words):
@@ -772,8 +793,13 @@ def q69_counting_generator(start, stop):
     Hint: for i in ???(start, stop): ??? i"""
     pass
 
-assert list(q69_counting_generator(3, 7)) == [3, 4, 5, 6]
-assert list(q69_counting_generator(0, 3)) == [0, 1, 2]
+def q69_driver(start, stop):
+    gen = q69_counting_generator(start, stop)
+    assert isinstance(gen, types.GeneratorType)
+    return list(gen)
+
+assert q69_driver(3, 7) == [3, 4, 5, 6]
+assert q69_driver(0, 3) == [0, 1, 2]
 
 
 def q70_fibonacci_generator(limit):
@@ -783,8 +809,13 @@ def q70_fibonacci_generator(limit):
     Hint: a, b = 0, 1; while a ??? limit: ??? a; a, b = b, a ??? b"""
     pass
 
-assert list(q70_fibonacci_generator(10)) == [0, 1, 1, 2, 3, 5, 8]
-assert list(q70_fibonacci_generator(1)) == [0, 1, 1]
+def q70_driver(limit):
+    gen = q70_fibonacci_generator(limit)
+    assert isinstance(gen, types.GeneratorType)
+    return list(gen)
+
+assert q70_driver(10) == [0, 1, 1, 2, 3, 5, 8]
+assert q70_driver(1) == [0, 1, 1]
 
 
 def q71_generator_pipeline(iterable, predicate, transform):
@@ -794,14 +825,13 @@ def q71_generator_pipeline(iterable, predicate, transform):
     Hint: for item in iterable: if ???(item): ??? ???(item)"""
     pass
 
-result = list(q71_generator_pipeline(
-    range(10),
-    lambda x: x % 2 == 0,
-    lambda x: x ** 2
-))
-assert result == [0, 4, 16, 36, 64]
-result2 = list(q71_generator_pipeline([1, 2, 3, 4, 5], lambda x: x > 2, lambda x: x * 10))
-assert result2 == [30, 40, 50]
+def q71_driver(iterable, predicate, transform):
+    gen = q71_generator_pipeline(iterable, predicate, transform)
+    assert isinstance(gen, types.GeneratorType)
+    return list(gen)
+
+assert q71_driver(range(10), lambda x: x % 2 == 0, lambda x: x ** 2) == [0, 4, 16, 36, 64]
+assert q71_driver([1, 2, 3, 4, 5], lambda x: x > 2, lambda x: x * 10) == [30, 40, 50]
 
 
 def q72_take(generator, n):
@@ -810,5 +840,11 @@ def q72_take(generator, n):
     Hint: result = []; for x in generator: result.???(x); if len(result) ??? n: ???; return result"""
     pass
 
-assert q72_take(q69_counting_generator(0, 100), 5) == [0, 1, 2, 3, 4]
-assert q72_take(q69_counting_generator(0, 3), 10) == [0, 1, 2]
+def q72_driver(iterable, n):
+    def generator():
+        for x in iterable:
+            yield x
+    return q72_take(generator(), n)
+
+assert q72_driver(q69_counting_generator(0, 100), 5) == [0, 1, 2, 3, 4]
+assert q72_driver(q69_counting_generator(0, 3), 10) == [0, 1, 2]
