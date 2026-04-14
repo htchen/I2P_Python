@@ -1552,7 +1552,77 @@ if route:
 
 ---
 
-## 3.8 Summary: Key Takeaways
+## 3.8 Alternative: Walking Routes with Valhalla
+
+OSRM isn't the only open routing engine. **Valhalla** is another powerful option, hosted for free by OpenStreetMap Germany. Unlike OSRM, Valhalla:
+
+- Uses **POST** requests with a JSON body (instead of GET with URL parameters)
+- Takes coordinates in **lat, lon** order (more intuitive than OSRM's lon, lat)
+- Requires **no API key**
+
+Here's a complete example that fetches a walking route:
+
+```python
+import requests
+import json
+
+def get_walking_route_valhalla(start_lat, start_lon, end_lat, end_lon):
+    """
+    Get a walking route using Valhalla (hosted by OpenStreetMap Germany).
+    No API key needed! Note: uses lat,lon order (unlike OSRM).
+    """
+    payload = {
+        "locations": [
+            {"lat": start_lat, "lon": start_lon},
+            {"lat": end_lat,   "lon": end_lon}
+        ],
+        "costing": "pedestrian",   # ← walking profile
+        "units": "km"
+    }
+
+    url = "https://valhalla1.openstreetmap.de/route"
+    try:
+        # Change to POST request with json body
+        response = requests.post(url, json=payload, timeout=15)
+        response.raise_for_status() # Raise an HTTPError for bad responses (4xx or 5xx)
+        data = response.json()
+
+        if "trip" in data:
+            trip = data["trip"]
+            summary = trip["summary"]
+            return {
+                "distance_km": summary["length"],
+                "duration_min": summary["time"] / 60,
+            }
+        else:
+            print(f"Valhalla API response did not contain 'trip' data. Response: {data}")
+            return None
+    except requests.exceptions.RequestException as e:
+        print(f"Request to Valhalla API failed: {e}")
+        return None
+
+# Taipei 101 → Taipei Main Station
+route = get_walking_route_valhalla(25.0330, 121.5654, 25.0478, 121.5170)
+if route:
+    print(f"Walking distance: {route['distance_km']:.2f} km")
+    print(f"Walking time:     {route['duration_min']:.1f} minutes")
+else:
+    print("Could not retrieve walking route.")
+```
+
+### OSRM vs Valhalla Quick Comparison
+
+| Feature | OSRM | Valhalla |
+|---------|------|----------|
+| HTTP Method | GET | POST |
+| Coordinate Order | lon, lat | lat, lon |
+| Walking Profile | `walking` | `pedestrian` |
+| Distance Unit | Always meters | Configurable (`km`, `miles`) |
+| Free Public Server | `router.project-osrm.org` | `valhalla1.openstreetmap.de` |
+
+---
+
+## 3.9 Summary: Key Takeaways
 
 ### Routing Concepts
 
@@ -1602,7 +1672,7 @@ value = matrix[row][col]
 
 ---
 
-## 3.9 Homework Assignments
+## 3.10 Homework Assignments
 
 ### Assignment 1: Delivery Route Analyzer (Basic)
 Create a tool that takes a list of delivery addresses and:
