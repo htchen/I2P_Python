@@ -590,6 +590,209 @@ N=11:  3,628,800 permutations,   5.3847 seconds
 
 ---
 
+## 2.5 Beyond TSP: Other Applications of Permutations
+
+So far we've used permutations to solve TSP — finding the shortest route through a set of locations. But permutations are useful **far beyond routing problems**. Anywhere we ask *"what's the best ordering?"* or *"which arrangements satisfy a rule?"*, permutations show up.
+
+The general pattern is always:
+1. **Generate** every possible ordering with `itertools.permutations`
+2. **Filter or score** each one with a problem-specific check
+3. **Return** the best (or all valid) results
+
+Let's look at three classic examples that have nothing to do with maps.
+
+---
+
+### 2.5.1 Anagrams: Finding Valid Words
+
+An **anagram** is a rearrangement of letters in a word. Given a set of letters, list every permutation and check which ones form real words.
+
+```python
+from itertools import permutations
+
+def find_anagrams(letters: str, dictionary: set) -> list:
+    """Find every valid word that can be formed from `letters`."""
+    valid_words = set()
+
+    # Try every possible length, from 2 letters up to all of them
+    for length in range(2, len(letters) + 1):
+        for perm in permutations(letters, length):
+            word = "".join(perm).lower()
+            if word in dictionary:
+                valid_words.add(word)
+
+    # Sort: longer words first, then alphabetical
+    return sorted(valid_words, key=lambda w: (-len(w), w))
+
+
+# Example
+dictionary = {"eat", "ate", "tea", "at", "ta", "ae", "ea", "et", "te"}
+print(find_anagrams("EAT", dictionary))
+# Output: ['ate', 'eat', 'tea', 'ae', 'at', 'ea', 'et', 'ta', 'te']
+```
+
+**How it works:**
+- `permutations(letters, length)` generates orderings of a *specific* length.
+- We loop over multiple lengths so we also find shorter sub-words (e.g. "AT" out of "EAT").
+- Using a `set` for the dictionary makes each lookup O(1).
+- The same letters can form multiple valid words ("EAT", "ATE", "TEA").
+
+**Tracing on "DOG":**
+```
+Length 2 perms: DO, OD, DG, GD, OG, GO   (6 perms)
+Length 3 perms: DOG, DGO, ODG, OGD, GDO, GOD   (6 perms)
+
+Filtered against an English dictionary:
+   → "DOG", "GOD"  ✓
+```
+
+**Real-world uses:** Scrabble / Wordle helpers, crossword solvers, simple cipher cracking.
+
+---
+
+### 2.5.2 Seating Arrangements with Constraints
+
+Five friends sit in a row, but **A and B refuse to sit next to each other**. How many arrangements work?
+
+This is a textbook **"permutations + filter"** problem — and a perfect chance to reuse the list-comprehension / `filter` idea from Week 9.
+
+```python
+from itertools import permutations
+
+def are_adjacent(arrangement: tuple, p1: str, p2: str) -> bool:
+    """Return True if p1 and p2 sit next to each other."""
+    return abs(arrangement.index(p1) - arrangement.index(p2)) == 1
+
+def find_valid_seatings(people: list, forbidden_pairs: list) -> list:
+    """Return all seatings where no forbidden pair is adjacent."""
+    return [
+        arr for arr in permutations(people)
+        if all(not are_adjacent(arr, p1, p2) for p1, p2 in forbidden_pairs)
+    ]
+
+
+# Example
+people = ["A", "B", "C", "D", "E"]
+forbidden = [("A", "B")]   # A and B cannot sit next to each other
+
+valid = find_valid_seatings(people, forbidden)
+print(f"Valid arrangements: {len(valid)} out of 120")
+for arr in valid[:3]:
+    print("  " + " - ".join(arr))
+```
+
+Output:
+```
+Valid arrangements: 72 out of 120
+  A - C - B - D - E
+  A - C - B - E - D
+  A - C - D - B - E
+```
+
+**How it works:**
+- There are 5! = 120 total seatings.
+- For each arrangement, we check every forbidden pair.
+- `arrangement.index(p1)` returns the seat number of person `p1`.
+- "A and B are adjacent" ⇔ `|index(A) − index(B)| == 1`.
+
+**Math sanity check:** Treat "A and B together" as a single block. There are 4! = 24 ways to arrange the 4 blocks, times 2 (AB or BA) = **48** "bad" arrangements. So valid = 120 − 48 = **72** ✓
+
+**Extending:** Add a second rule like *"C and D must sit together"* — just write a complementary `must_be_adjacent` check and combine them in the comprehension.
+
+---
+
+### 2.5.3 The N-Queens Problem
+
+Place N queens on an N×N chessboard so that **no two queens attack each other** — none share a row, column, or diagonal.
+
+Here's the elegant insight: if every row holds exactly one queen, a solution is just a list `[c₀, c₁, …, c_{N−1}]` where `cᵢ` is the column of the queen in row *i*. Since each column appears at most once, **a solution is exactly a permutation of `[0, 1, …, N−1]`**.
+
+```python
+from itertools import permutations
+
+def is_valid_queens(arrangement: tuple) -> bool:
+    """Check if a queen placement has no diagonal conflicts."""
+    n = len(arrangement)
+    for i in range(n):
+        for j in range(i + 1, n):
+            # |row difference| == |column difference|  →  same diagonal
+            if abs(arrangement[i] - arrangement[j]) == abs(i - j):
+                return False
+    return True
+
+def solve_n_queens(n: int) -> list:
+    """Return all solutions to the N-queens problem."""
+    return [perm for perm in permutations(range(n)) if is_valid_queens(perm)]
+
+def print_board(arrangement: tuple) -> None:
+    """Print a chessboard with the queens placed."""
+    n = len(arrangement)
+    for row in range(n):
+        print(" ".join("Q" if arrangement[row] == col else "."
+                       for col in range(n)))
+    print()
+
+
+# Example: 4-queens
+solutions = solve_n_queens(4)
+print(f"4-Queens has {len(solutions)} solutions\n")
+print("First solution:")
+print_board(solutions[0])
+```
+
+Output:
+```
+4-Queens has 2 solutions
+
+First solution:
+. Q . .
+. . . Q
+Q . . .
+. . Q .
+```
+
+**How it works:**
+- The permutation `(1, 3, 0, 2)` reads as: row 0 → col 1, row 1 → col 3, row 2 → col 0, row 3 → col 2.
+- Because it's a permutation, **no row repeats and no column repeats** — only diagonals can still clash.
+- Two queens are on the same diagonal exactly when `|rowᵢ − rowⱼ| == |colᵢ − colⱼ|`.
+
+**Scaling (factorial growth, just like TSP!):**
+
+| N | Permutations checked | Solutions found |
+|---|----------------------|-----------------|
+| 4 | 24 | 2 |
+| 5 | 120 | 10 |
+| 6 | 720 | 4 |
+| 7 | 5,040 | 40 |
+| 8 | 40,320 | 92 |
+
+Brute force via `permutations` works comfortably up to N ≈ 10. Beyond that, smarter techniques (backtracking with pruning) are required — the same lesson we learned with TSP.
+
+---
+
+### 2.5.4 The Common Pattern
+
+Notice that **TSP, anagrams, seating, and N-Queens** all follow the *same* template:
+
+```python
+best = None
+for perm in permutations(items):
+    if is_valid(perm):              # filter (optional)
+        if score(perm) < best_score:  # optimize (optional)
+            best = perm
+```
+
+| Problem | Permutation of… | Filter | Optimize |
+|---------|------------------|--------|----------|
+| TSP | locations | — | minimize total distance |
+| Anagrams | letters | in dictionary? | — (collect all) |
+| Seating | people | no forbidden pair adjacent | — (collect all) |
+| N-Queens | column indices | no diagonal conflict | — (collect all) |
+
+Whenever you see **"find the best ordering"** or **"list all arrangements satisfying X"**, ask yourself: *is this a permutations + filter / score problem?* If so, you already know the toolkit.
+
+---
+
 # Hour 3: Integration and Advanced Topics
 
 ## 3.1 Integrating with OSRM API
