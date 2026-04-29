@@ -232,3 +232,241 @@ result = list(map(lambda x: x * 2, filter(lambda x: x > 0, nums)))
   - 十進位：`255` ← 失去 bit 對應
   - 十六進位：`0xFF` ← 又短、又能對應 bit pattern
 - 這也是為什麼網頁顏色（`#FF8800`）、記憶體位址、bitmask 都習慣用十六進位來表示。
+
+---
+---
+
+# Week 11 Sample Written Exam Questions (English Version)
+
+**Format:** Written exam (5%)
+**Scope:** Fundamental programming concepts
+
+---
+
+## Question 1: Mutable vs. Immutable Data Types
+
+Please answer the following:
+
+(a) Name **two immutable** data types or data structures in Python.
+
+(b) Name **two mutable** data types or data structures in Python.
+
+(c) Explain the difference between mutable and immutable data in programming, and give an example of a bug that can arise from using mutable data.
+
+### Reference Answer
+
+(a) Immutable (any two are acceptable):
+- `int`, `float`, `bool`, `str`, `tuple`, `frozenset`
+
+(b) Mutable (any two are acceptable):
+- `list`, `dict`, `set`, custom class instances
+
+(c) **Difference:**
+- Immutable data, once created, cannot be modified; any "modification" actually creates a new object.
+- Mutable data can be modified in place — every variable referring to the object will see the change.
+
+**Bug scenario:** Using a mutable object as a function's default argument:
+
+```python
+def add_item(item, bag=[]):   # ❌ The default [] is created only once
+    bag.append(item)
+    return bag
+
+print(add_item("apple"))   # ['apple']
+print(add_item("banana"))  # ['apple', 'banana']  ← unexpected!
+```
+
+Or, side effects from "two variables pointing at the same list":
+
+```python
+a = [1, 2, 3]
+b = a            # b and a point to the same list
+b.append(4)
+print(a)         # [1, 2, 3, 4]  ← a was changed too
+```
+
+Switching to a tuple avoids this entirely, because tuples cannot be modified.
+
+---
+
+## Question 2: Pure Functions
+
+What is a **pure function**? Why is `sorted(my_list)` closer to "pure" than `my_list.sort()`? What benefits does this style bring when maintaining code?
+
+### Reference Answer
+
+**Definition of a pure function:** A function is "pure" if it satisfies both of the following:
+
+1. **The same input always produces the same output** (no dependency on external state — no globals, no time, no randomness).
+2. **No side effects:** it does not mutate its arguments, modify globals, or perform I/O (printing, file writes, network requests), etc.
+
+**Why is `sorted()` more "pure" than `.sort()`?**
+
+|  | `sorted(my_list)` | `my_list.sort()` |
+|---|---|---|
+| Modifies the original list? | No (returns a new list) | Yes (in-place modification) |
+| Return value | The new sorted list | `None` |
+| Effect on external state | None | Yes (the original list is changed) |
+
+`sorted()` does not mutate the input `my_list`, satisfying the "no side-effect" property — so it is closer to a pure function.
+
+**Benefits for maintainability:**
+
+1. **Easier to reason about:** seeing a pure-function call, you don't have to worry that it secretly modifies other variables.
+2. **Easier to test:** identical input → identical output, so unit tests just compare return values.
+3. **Easier to debug:** bugs cannot escape the call site.
+4. **Easier to parallelise:** with no shared state, threads do not interfere with each other.
+
+---
+
+## Question 3: Error-Handling Design
+
+Why do we typically use `try / except` rather than an `if`-check for situations such as a network outage, an API returning 404, or malformed JSON? Compare the two styles and the situations each one fits.
+
+### Reference Answer
+
+**Why `try / except`?**
+
+Conditions like "is the network up?", "did the API respond correctly?", or "is the file's content valid JSON?" **cannot be checked in advance** —
+- Even if you `if`-check that the network is up, it could go down a moment later.
+- You cannot tell whether JSON is valid without actually trying to parse it.
+
+For these "you only find out by doing it" situations, `try / except` is the right tool to catch errors.
+
+**Names for the two styles:**
+
+- **LBYL (Look Before You Leap):** check conditions with `if` before acting.
+- **EAFP (Easier to Ask for Forgiveness than Permission):** just do it, and handle failures afterwards. Python prefers this style.
+
+**Comparison:**
+
+|  | `if` check ahead of time (LBYL) | `try / except` (EAFP) |
+|---|---|---|
+| Suited to | Conditions that can be checked in advance (`if x > 0`, `if key in dict`) | Conditions that **cannot be predicted** (network, files, external APIs) |
+| Race conditions | Easy to hit (state can change between check and use) | Avoided (you just attempt the action) |
+| Code readability | "Normal logic" and "error handling" are mixed together | The two are separated; the main path stays clean |
+| Performance | One extra check every time | Faster on the success path; slightly slower on failure |
+
+**Rule of thumb:**
+- For pure mathematical / logical conditions → use `if`.
+- For interactions with the outside world (network, files, user input, parsing) → use `try / except`.
+
+---
+
+## Question 4: The Functional Trio (`map` / `filter` / `reduce`)
+
+Describe the purpose and difference of `map`, `filter`, and `reduce` in one sentence each. Then explain why this style is called **declarative**, and how it differs from a traditional `for` loop in describing programs.
+
+### Reference Answer
+
+**Purpose of each:**
+
+- **`map(f, xs)`:** apply `f` to **every element** of a sequence, producing a new sequence of the **same length**. (One-to-one transformation.)
+- **`filter(f, xs)`:** keep only elements for which `f(x)` is true, producing a **shorter** sequence. (Selection.)
+- **`reduce(f, xs)`:** combine the sequence into a **single value** using a binary function `f` (e.g. sum, max, product). (Aggregation.)
+
+|  | Inputs | Output length | Concept |
+|---|---|---|---|
+| `map` | sequence + transform | same as input | Transform |
+| `filter` | sequence + predicate | ≤ input | Selection |
+| `reduce` | sequence + combiner | 1 (single value) | Aggregation |
+
+**Why "declarative"?**
+
+- **Imperative (a `for` loop):** you describe **how** the computer should do it step by step — "create an empty list, iterate, check the condition, append…".
+- **Declarative (`map / filter / reduce`):** you only describe **what** the result should be — "double every value", "keep entries with rating > 4". The looping order is left to the language / library.
+
+**Side-by-side example:**
+
+```python
+# Imperative: describes "how"
+result = []
+for x in nums:
+    if x > 0:
+        result.append(x * 2)
+
+# Declarative: describes "what"
+result = list(map(lambda x: x * 2, filter(lambda x: x > 0, nums)))
+```
+
+**Benefits:** shorter code, clearer intent, fewer off-by-one mistakes, and easier to optimise (e.g. parallelisation).
+
+---
+
+## Question 5: Number Base Conversion
+
+Perform the following conversions (show your working):
+
+(a) Convert decimal `156` to **binary** and **hexadecimal**.
+
+(b) Convert binary `1011 0110` to **decimal** and **hexadecimal**.
+
+(c) Convert hexadecimal `0x2F` to **decimal** and **binary**.
+
+(d) Why is hexadecimal commonly used to represent binary values in programming? (Explain from a readability perspective.)
+
+### Reference Answer
+
+**(a) Decimal 156 → binary, hexadecimal**
+
+Repeated division by 2 (read the remainders bottom-up):
+```
+156 ÷ 2 = 78 ... 0
+ 78 ÷ 2 = 39 ... 0
+ 39 ÷ 2 = 19 ... 1
+ 19 ÷ 2 =  9 ... 1
+  9 ÷ 2 =  4 ... 1
+  4 ÷ 2 =  2 ... 0
+  2 ÷ 2 =  1 ... 0
+  1 ÷ 2 =  0 ... 1
+```
+**Binary: `1001 1100`** (check: 128 + 16 + 8 + 4 = 156 ✓)
+
+Group every 4 bits into one hex digit:
+- `1001` = 9
+- `1100` = C (12)
+
+**Hexadecimal: `0x9C`** (check: 9 × 16 + 12 = 156 ✓)
+
+---
+
+**(b) Binary `1011 0110` → decimal, hexadecimal**
+
+Sum each bit's weight:
+```
+1 0 1 1 0 1 1 0
+128 64 32 16  8  4  2  1
+```
+= 128 + 32 + 16 + 4 + 2 = **decimal `182`**
+
+Split into 4-bit groups:
+- `1011` = 11 = B
+- `0110` = 6
+
+**Hexadecimal: `0xB6`** (check: 11 × 16 + 6 = 182 ✓)
+
+---
+
+**(c) Hexadecimal `0x2F` → decimal, binary**
+
+By positional weight:
+- 2 × 16¹ + 15 × 16⁰ = 32 + 15 = **decimal `47`**
+
+Expand each hex digit into 4 bits:
+- `2` = `0010`
+- `F` = `1111`
+
+**Binary: `0010 1111`** (check: 32 + 8 + 4 + 2 + 1 = 47 ✓)
+
+---
+
+**(d) Why use hexadecimal to represent binary?**
+
+- Binary numbers are very long — e.g. a 32-bit value would be 32 zeros and ones, hard to read and easy to mis-copy.
+- **One hex digit = exactly 4 binary bits** (because 2⁴ = 16), so binary and hexadecimal can be **converted segment-by-segment without going through decimal**.
+- Hexadecimal is therefore **only ¼ the length of binary**, while preserving every bit's information.
+- For example, representing a byte (8 bits) of memory address or a colour value:
+  - Binary: `11111111` ← hard to read
+  - Decimal: `255` ← loses the bit-pattern correspondence
+  - Hexadecimal: `0xFF` ← short *and* maps cleanly to bits
+- This is why web colours (`#FF8800`), memory addresses, and bitmasks are conventionally written in hexadecimal.
