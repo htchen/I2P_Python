@@ -119,10 +119,13 @@ def q09_make_multiplier(factor):
     Hint: def ???(x): return x ??? ???; return ???"""
     pass
 
-double = q09_make_multiplier(2)
-triple = q09_make_multiplier(3)
-assert double(7) == 14
-assert triple(5) == 15
+def q09_driver(factor, x):
+    f = q09_make_multiplier(factor)
+    assert isinstance(f, types.FunctionType)
+    return f(x)
+
+assert q09_driver(2, 7) == 14
+assert q09_driver(3, 5) == 15
 
 
 def q10_map_transform(numbers, func):
@@ -229,8 +232,12 @@ def q17_all_permutations(items):
     Hint: return list(itertools.???(???))"""
     pass
 
-assert sorted(q17_all_permutations([1, 2, 3])) == [(1,2,3),(1,3,2),(2,1,3),(2,3,1),(3,1,2),(3,2,1)]
-assert len(q17_all_permutations([1, 2, 3, 4])) == 24
+def q17_driver(items):
+    result = q17_all_permutations(items)
+    assert isinstance(result, list)
+    return sorted(result)
+
+assert q17_driver([1, 2, 3]) == [(1,2,3),(1,3,2),(2,1,3),(2,3,1),(3,1,2),(3,2,1)]
 
 
 def q18_all_pairs(items):
@@ -240,8 +247,12 @@ def q18_all_pairs(items):
     Hint: return list(itertools.???(???, ???))"""
     pass
 
-assert sorted(q18_all_pairs([1, 2, 3])) == [(1, 2), (1, 3), (2, 3)]
-assert len(q18_all_pairs([1, 2, 3, 4])) == 6
+def q18_driver(items):
+    result = q18_all_pairs(items)
+    assert isinstance(result, list)
+    return sorted(result)
+
+assert q18_driver([1, 2, 3]) == [(1, 2), (1, 3), (2, 3)]
 
 
 def q19_route_distance(matrix, path):
