@@ -1546,6 +1546,188 @@ When `debug=True`:
 - Shows detailed error pages
 - Never use in production!
 
+## 3.6 Running Flask in Google Colab
+
+### Why It's Different in Colab
+
+Google Colab runs your Python code on a remote virtual machine, not on your
+local computer. This creates two problems for a normal Flask app:
+
+1. `app.run()` is a **blocking call** — it takes over the notebook cell and
+   prevents you from running any other code while the server is alive.
+2. The Flask server listens on a port inside the Colab VM. Your browser
+   cannot reach `http://localhost:5000` directly because "localhost" on
+   your laptop is not the same machine as the Colab VM.
+
+The fix uses two tricks:
+
+- Start the Flask server in a **background thread** so the cell finishes
+  immediately and the notebook stays interactive.
+- Use Colab's **proxy port helper** (`google.colab.output`) to generate a
+  public URL that tunnels through to the server's port inside the VM.
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                Flask in Google Colab                            │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│   Your Browser              Colab VM                            │
+│   ┌─────────────┐           ┌──────────────────────┐           │
+│   │             │  HTTPS    │  ┌────────────────┐  │           │
+│   │   Click     │ ─────────▶│  │ Colab Proxy    │  │           │
+│   │   proxy     │           │  │ (public URL)   │  │           │
+│   │   URL       │           │  └───────┬────────┘  │           │
+│   │             │           │          │           │           │
+│   │             │           │          ▼           │           │
+│   │             │           │  ┌────────────────┐  │           │
+│   │             │           │  │ Flask app on   │  │           │
+│   │             │           │  │ port 5000      │  │           │
+│   │             │           │  │ (background    │  │           │
+│   │             │           │  │  thread)       │  │           │
+│   │             │           │  └────────────────┘  │           │
+│   └─────────────┘           └──────────────────────┘           │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+### Minimal Example: "Hello, Colab!"
+
+Put this in a single Colab cell:
+
+```python
+import threading
+from flask import Flask
+from google.colab import output
+
+app = Flask(__name__)
+
+@app.route("/")
+def home():
+    return "Hello from Flask running in Colab!"
+
+# Run the server in a separate thread so the cell doesn't block
+threading.Thread(target=app.run,
+                 kwargs={"host": "0.0.0.0", "port": 5000}).start()
+
+# Ask Colab to expose port 5000 and print a clickable URL
+print(output.eval_js("google.colab.kernel.proxyPort(5000)"))
+```
+
+After running the cell, Colab prints a URL like
+`https://xxxx-5000-colab.googleusercontent.com/`. Click it to open the
+Flask app in a new tab.
+
+**Important details:**
+- Use `host="0.0.0.0"` (not the default `127.0.0.1`) so the server accepts
+  connections from the Colab proxy.
+- Do **not** pass `debug=True` — the debug reloader spawns a child
+  process, which does not play well with threading.
+- Run the cell only once per session. Restart the runtime if you change
+  routes and want a fresh server (the old thread keeps running otherwise).
+
+### Example: Rendering a Template
+
+Colab also supports `render_template`. Create the template file from the
+notebook with `%%writefile`:
+
+```python
+# Cell 1: create the template
+import os
+os.makedirs("templates", exist_ok=True)
+```
+
+```python
+%%writefile templates/index.html
+<!DOCTYPE html>
+<html>
+<head><title>Smart City Navigator</title></head>
+<body>
+    <h1>{{ title }}</h1>
+    <ul>
+    {% for place in places %}
+        <li>{{ place.name }} — {{ place.rating }} stars</li>
+    {% endfor %}
+    </ul>
+</body>
+</html>
+```
+
+```python
+# Cell 2: define and start the app
+import threading
+from flask import Flask, render_template
+from google.colab import output
+
+app = Flask(__name__)
+
+PLACES = [
+    {"name": "Pizza Palace", "rating": 4.5},
+    {"name": "Central Park",  "rating": 4.8},
+    {"name": "City Museum",   "rating": 4.6},
+]
+
+@app.route("/")
+def home():
+    return render_template("index.html",
+                           title="Smart City Navigator",
+                           places=PLACES)
+
+threading.Thread(target=app.run,
+                 kwargs={"host": "0.0.0.0", "port": 5000}).start()
+
+print(output.eval_js("google.colab.kernel.proxyPort(5000)"))
+```
+
+### Example: Handling a Form in Colab
+
+Forms work the same way — the only Colab-specific code is the
+thread + `proxyPort` setup:
+
+```python
+import threading
+from flask import Flask, request
+from google.colab import output
+
+app = Flask(__name__)
+
+PLACES = [
+    {"name": "Taipei McDonalds Zhongxiao", "rating": 4.2},
+    {"name": "Taipei McDonalds Station",   "rating": 4.0},
+    {"name": "Taipei McDonalds Xinyi",     "rating": 4.5},
+]
+
+FORM_HTML = """
+<form method="POST">
+    <input name="query" placeholder="Search places..." required>
+    <button type="submit">Search</button>
+</form>
+"""
+
+@app.route("/", methods=["GET", "POST"])
+def search():
+    if request.method == "POST":
+        q = request.form["query"].lower()
+        hits = [p for p in PLACES if q in p["name"].lower()]
+        items = "".join(f"<li>{p['name']} ({p['rating']})</li>" for p in hits)
+        return FORM_HTML + f"<h2>Results</h2><ul>{items or '<li>None</li>'}</ul>"
+    return FORM_HTML
+
+threading.Thread(target=app.run,
+                 kwargs={"host": "0.0.0.0", "port": 5000}).start()
+
+print(output.eval_js("google.colab.kernel.proxyPort(5000)"))
+```
+
+### Common Issues in Colab
+
+| Problem | Cause | Fix |
+|---------|-------|-----|
+| URL shows "site can't be reached" | Server bound to `127.0.0.1` | Use `host="0.0.0.0"` |
+| Cell hangs forever | Forgot the thread | Wrap `app.run` in `threading.Thread(...).start()` |
+| Old routes still served after edit | Previous thread still running | Restart runtime (Runtime → Restart) |
+| `Address already in use` | Already started on that port | Restart runtime or use a different port |
+| No URL printed | `google.colab` not available | You're not in Colab; run locally instead |
+
 ---
 
 ## Summary
