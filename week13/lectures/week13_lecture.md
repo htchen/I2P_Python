@@ -1718,6 +1718,71 @@ threading.Thread(target=app.run,
 print(output.eval_js("google.colab.kernel.proxyPort(5000)"))
 ```
 
+### Stopping the App Thread
+
+Python threads cannot be killed from the outside, and `app.run()` blocks
+inside its own thread waiting for connections. There is no clean
+`thread.stop()` call. In Colab you have two practical options.
+
+**Option 1 (recommended): Restart the runtime.**
+
+This is the simplest and most reliable way. It kills the Python process
+entirely, which releases port 5000 and removes every route you defined.
+
+- Menu: **Runtime → Restart runtime** (or **Runtime → Restart session**).
+- Keyboard shortcut: `Ctrl+M .`
+
+Use this whenever you change routes, edit templates, or just want a clean
+slate.
+
+**Option 2: Save the thread and the server, then shut down explicitly.**
+
+If you want to stop the server without losing the rest of your notebook
+state, run the server through a `werkzeug` server object you control, and
+call its `shutdown()` method:
+
+```python
+import threading
+from flask import Flask
+from werkzeug.serving import make_server
+from google.colab import output
+
+app = Flask(__name__)
+
+@app.route("/")
+def home():
+    return "Hello from Flask running in Colab!"
+
+class ServerThread(threading.Thread):
+    def __init__(self, app, host="0.0.0.0", port=5000):
+        super().__init__()
+        self.server = make_server(host, port, app)
+    def run(self):
+        self.server.serve_forever()
+    def shutdown(self):
+        self.server.shutdown()  # stops serve_forever cleanly
+
+server_thread = ServerThread(app)
+server_thread.start()
+
+print(output.eval_js("google.colab.kernel.proxyPort(5000)"))
+```
+
+When you are done, run in a new cell:
+
+```python
+server_thread.shutdown()   # stops accepting requests
+server_thread.join()       # waits for the thread to finish
+print("Server stopped.")
+```
+
+After `shutdown()` returns, port 5000 is free and you can re-run the
+server cell with updated code.
+
+> **Tip:** If you used the plain `threading.Thread(target=app.run, ...)`
+> pattern and forgot to wrap it in a `ServerThread`, just restart the
+> runtime — there is no reliable way to recover that thread.
+
 ### Common Issues in Colab
 
 | Problem | Cause | Fix |
