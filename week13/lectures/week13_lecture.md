@@ -477,6 +477,12 @@ if __name__ == "__main__":
 ### Passing Different Data Types
 
 ```python
+class User:
+    """Simple user object used in the demo route."""
+    def __init__(self, name, email):
+        self.name = name
+        self.email = email
+
 @app.route("/demo")
 def demo():
     return render_template("demo.html",
