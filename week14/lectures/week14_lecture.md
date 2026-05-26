@@ -794,6 +794,37 @@ for place in places:
 m.save("multiple_markers.html")
 ```
 
+> **Python Spotlight: String Repetition with `*`**
+>
+> Notice this line from the popup code above:
+> ```python
+> '⭐' * int(place['rating'])   # rating 4.7 → int(4.7) = 4 → '⭐⭐⭐⭐'
+> ```
+> The `*` operator repeats a string a given number of times:
+> ```python
+> '=' * 20     # '===================='
+> 'ha' * 3     # 'hahaha'
+> '-' * 40     # a horizontal line
+> ```
+> Combined with `int()` to convert a float rating to a whole number,
+> this creates a visual star display in just one expression.
+
+> **Python Spotlight: Multi-line f-strings**
+>
+> Also notice how we build HTML inside a **triple-quoted f-string**:
+> ```python
+> popup_html = f"""
+> <b>{place['name']}</b><br>
+> Rating: {'⭐' * int(place['rating'])} {place['rating']}<br>
+> Category: {place['category'].title()}
+> """
+> ```
+> Key points:
+> - `f"""..."""` lets you write multi-line strings with `{expressions}` inside
+> - You can put **any Python expression** inside `{}`  — method calls like `.title()`,
+>   math like `rating * 3`, even string repetition like `'⭐' * int(rating)`
+> - This is very useful for building HTML snippets in Python
+
 ### Color-Coded Markers by Category
 
 ```python
@@ -830,6 +861,84 @@ for place in places:
 
 m.save("categorized_markers.html")
 ```
+
+> **Python Spotlight: Dictionary as a Lookup Table**
+>
+> Instead of a long chain of `if/elif` to map categories to styles:
+> ```python
+> # Repetitive if/elif chain — hard to maintain
+> if place['category'] == 'landmark':
+>     color, icon = 'purple', 'building'
+> elif place['category'] == 'restaurant':
+>     color, icon = 'red', 'cutlery'
+> elif place['category'] == 'market':
+>     color, icon = 'orange', 'shopping-cart'
+> # ... more elif for each category
+> ```
+>
+> We use a **dictionary as a lookup table**:
+> ```python
+> # Clean lookup table — easy to read and extend
+> category_styles = {
+>     "landmark":   {"color": "purple", "icon": "building"},
+>     "restaurant": {"color": "red",    "icon": "cutlery"},
+>     "market":     {"color": "orange", "icon": "shopping-cart"},
+> }
+>
+> style = category_styles[place['category']]  # One-line lookup!
+> ```
+>
+> Benefits:
+> - **Easier to read** — all mappings are in one place
+> - **Easier to extend** — just add a new line to the dictionary
+> - **Separates data from logic** — the mapping is data, the loop is logic
+>
+> Use `.get()` with a default for safety:
+> ```python
+> style = category_styles.get(place['category'], {"color": "gray", "icon": "info"})
+> # Returns the default dict if category is not found, instead of raising KeyError
+> ```
+
+> **Python Spotlight: Dictionary Unpacking with `**`**
+>
+> In the code above, we access dictionary values one by one:
+> ```python
+> style = {"color": "red", "icon": "cutlery"}
+> folium.Icon(color=style['color'], icon=style['icon'], prefix='fa')
+> ```
+>
+> Python's `**` operator can **unpack** a dictionary into keyword arguments:
+> ```python
+> style = {"color": "red", "icon": "cutlery", "prefix": "fa"}
+> folium.Icon(**style)
+> # Same as: folium.Icon(color="red", icon="cutlery", prefix="fa")
+> ```
+>
+> This is especially useful when passing configuration stored in dictionaries:
+> ```python
+> # Store complete icon configs in the lookup table
+> category_styles = {
+>     "landmark":   {"color": "purple", "icon": "building", "prefix": "fa"},
+>     "restaurant": {"color": "red",    "icon": "cutlery",  "prefix": "fa"},
+> }
+>
+> style = category_styles[place['category']]
+> folium.Marker(
+>     location=place['coords'],
+>     popup=place['name'],
+>     icon=folium.Icon(**style)   # Unpack all key-value pairs as arguments
+> ).add_to(m)
+> ```
+>
+> How `**` works:
+> ```python
+> def greet(name, greeting):
+>     print(f"{greeting}, {name}!")
+>
+> info = {"name": "Alice", "greeting": "Hello"}
+> greet(**info)        # Same as greet(name="Alice", greeting="Hello")
+> # Output: Hello, Alice!
+> ```
 
 ### Markers with Rating-Based Size
 
@@ -870,6 +979,44 @@ for place in places:
 m.save("rating_sized_markers.html")
 ```
 
+> **Python Spotlight: Conditional Expressions (Ternary Operator)**
+>
+> The code above uses `if/elif/else` to assign a color:
+> ```python
+> if place['rating'] >= 4.5:
+>     color = "green"
+> elif place['rating'] >= 4.0:
+>     color = "orange"
+> else:
+>     color = "red"
+> ```
+>
+> For simple two-way choices, Python has a **conditional expression**
+> (also called the ternary operator):
+> ```python
+> # Syntax: value_if_true if condition else value_if_false
+> color = "green" if place['rating'] >= 4.5 else "red"
+> ```
+>
+> More examples:
+> ```python
+> # Assign label based on a condition
+> label = "High" if score >= 80 else "Low"
+>
+> # Choose icon based on whether a place is open
+> icon = "check" if place['is_open'] else "times"
+>
+> # Set opacity based on selection
+> opacity = 1.0 if place['selected'] else 0.5
+>
+> # Use directly in f-strings
+> popup = f"Status: {'Open' if is_open else 'Closed'}"
+> ```
+>
+> When to use:
+> - **Ternary** `x if cond else y`: simple, two-way choice on one line
+> - **if/elif/else block**: three or more conditions, or complex logic
+
 ### Auto-Fit Map to Show All Markers
 
 When placing multiple markers, instead of manually calculating the center and zoom level, use `fit_bounds()` to automatically adjust the map view:
@@ -908,6 +1055,79 @@ m.fit_bounds([
 m.save("auto_fit_map.html")
 # The map automatically zooms to show ALL markers!
 ```
+
+> **Python Spotlight: Generator Expressions Inside Built-in Functions**
+>
+> In earlier weeks we learned about generator expressions (Week 6) and list
+> comprehensions (Week 2). Here's a powerful pattern — passing a generator
+> expression directly into built-in functions like `sum()`, `min()`, `max()`:
+> ```python
+> places = [
+>     {"name": "Taipei 101", "coords": [25.0330, 121.5654]},
+>     {"name": "Shilin Night Market", "coords": [25.0878, 121.5241]},
+>     {"name": "National Palace Museum", "coords": [25.1024, 121.5485]},
+> ]
+>
+> # List comprehension (creates a full list in memory):
+> lats = [p["coords"][0] for p in places]   # [25.0330, 25.0878, 25.1024]
+> avg_lat = sum(lats) / len(lats)
+>
+> # Generator expression (no intermediate list needed):
+> avg_lat = sum(p["coords"][0] for p in places) / len(places)
+> min_lat = min(p["coords"][0] for p in places)
+> max_lat = max(p["coords"][0] for p in places)
+> ```
+>
+> Notice: when a generator expression is the **only argument** to a function,
+> you don't need extra parentheses:
+> ```python
+> # Both work — the extra () are optional:
+> sum((x * x for x in range(10)))   # with extra parentheses
+> sum(x * x for x in range(10))     # cleaner — no extra parentheses
+> ```
+>
+> This pattern is useful whenever you need a single aggregate value
+> (sum, min, max, any, all) from a collection.
+
+> **Python Spotlight: `set()` — Getting Unique Values**
+>
+> A **set** is a collection that automatically removes duplicates:
+> ```python
+> # Lists can have duplicates:
+> categories = ["restaurant", "landmark", "restaurant", "museum", "landmark"]
+>
+> # Convert to set → duplicates removed:
+> unique = set(categories)   # {'restaurant', 'landmark', 'museum'}
+>
+> # Sort the result into a list:
+> sorted_unique = sorted(unique)   # ['landmark', 'museum', 'restaurant']
+> ```
+>
+> Combined with a generator expression — get all unique categories from our data:
+> ```python
+> places = [
+>     {"name": "Taipei 101", "category": "landmark"},
+>     {"name": "Din Tai Fung", "category": "restaurant"},
+>     {"name": "Shilin Night Market", "category": "market"},
+>     {"name": "Longshan Temple", "category": "landmark"},   # duplicate category!
+> ]
+>
+> # Get sorted unique categories in one line:
+> categories = sorted(set(p["category"] for p in places))
+> # Result: ['landmark', 'market', 'restaurant']
+> ```
+>
+> This is exactly what we use later in the Flask app to build the
+> category filter dropdown — we need each category to appear only once.
+>
+> Key set properties:
+> ```python
+> s = {1, 2, 3, 2, 1}   # {1, 2, 3} — duplicates ignored
+> s.add(4)               # {1, 2, 3, 4}
+> s.add(2)               # {1, 2, 3, 4} — already exists, no change
+> 3 in s                 # True — fast membership check
+> len(s)                 # 4
+> ```
 
 ### Manual Center vs fit_bounds
 
@@ -1786,6 +2006,38 @@ for i, stop in enumerate(stops, start=1):
 
 m.save("numbered_stops.html")
 ```
+
+> **Python Spotlight: `enumerate()` with `start` Parameter**
+>
+> In Week 2, we learned `enumerate()` gives us both the index and value:
+> ```python
+> for i, item in enumerate(["a", "b", "c"]):
+>     print(i, item)
+> # 0 a
+> # 1 b
+> # 2 c
+> ```
+>
+> By default, counting starts at 0. But for numbered markers (Stop 1, Stop 2, ...),
+> we want to start at 1. Use the `start` parameter:
+> ```python
+> for i, stop in enumerate(stops, start=1):
+>     print(f"Stop {i}: {stop['name']}")
+> # Stop 1: Taipei 101
+> # Stop 2: Ximending
+> # Stop 3: Longshan Temple
+> ```
+>
+> Other useful `start` values:
+> ```python
+> # Numbering lines in a file (lines are typically 1-indexed)
+> for line_num, line in enumerate(lines, start=1):
+>     print(f"{line_num}: {line}")
+>
+> # Continuing from a previous count
+> for i, item in enumerate(second_batch, start=len(first_batch) + 1):
+>     print(f"Item #{i}: {item}")
+> ```
 
 ### DivIcon — Label Markers
 
