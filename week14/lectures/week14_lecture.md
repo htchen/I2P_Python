@@ -190,6 +190,72 @@ folium.Map(location=[25.0330, 121.5654], zoom_start=12)  # See Taipei
 folium.Map(location=[25.0330, 121.5654], zoom_start=17)  # See buildings
 ```
 
+### Exploring Coordinates Interactively
+
+Folium provides plugins that help you explore coordinates directly on the map:
+
+#### MousePosition — See Coordinates on Hover
+
+```python
+import folium
+from folium.plugins import MousePosition
+
+m = folium.Map(location=[25.0330, 121.5654], zoom_start=14)
+
+# Show coordinates as the mouse moves
+MousePosition(
+    position="topright",
+    separator=" | ",
+    prefix="Coordinates:",
+    num_digits=4          # Decimal places
+).add_to(m)
+
+m.save("mouse_position.html")
+# Move your mouse over the map — the coordinates update in real time!
+```
+
+#### LatLngPopup — Click to See Coordinates
+
+```python
+import folium
+from folium.plugins import LatLngPopup
+
+m = folium.Map(location=[25.0330, 121.5654], zoom_start=14)
+
+# Click anywhere on the map to see coordinates in a popup
+LatLngPopup().add_to(m)
+
+m.save("click_coordinates.html")
+# Click on any spot — a popup shows the exact [lat, lon]!
+```
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│              Interactive Coordinate Tools                        │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│   MousePosition:                                                │
+│   ┌─────────────────────────────────────────┐                  │
+│   │                     Coordinates: 25.0330 | 121.5654│        │
+│   │          🖱️ ← mouse here                           │        │
+│   │                                         │                  │
+│   │    MAP                                  │                  │
+│   └─────────────────────────────────────────┘                  │
+│   Coordinates update as you move the mouse                     │
+│                                                                 │
+│   LatLngPopup:                                                  │
+│   ┌─────────────────────────────────────────┐                  │
+│   │              ┌──────────────┐           │                  │
+│   │              │ Lat: 25.0350 │           │                  │
+│   │              │ Lng: 121.5600│           │                  │
+│   │              └──────────────┘           │                  │
+│   │    MAP            👆 click here         │                  │
+│   └─────────────────────────────────────────┘                  │
+│   Click anywhere to see its coordinates                        │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+```
+
 ### Map Tiles (Base Layers)
 
 ```python
@@ -516,6 +582,88 @@ folium.PolyLine(
 m.save("multi_route.html")
 ```
 
+### Animated Routes with AntPath
+
+The `AntPath` plugin draws animated flowing dashes along a route, making it easy to see the direction of travel:
+
+```python
+import folium
+from folium.plugins import AntPath
+
+m = folium.Map(location=[25.04, 121.54], zoom_start=13)
+
+route_coords = [
+    [25.0330, 121.5654],  # Start: Taipei 101
+    [25.0380, 121.5550],  # Waypoint 1
+    [25.0420, 121.5450],  # Waypoint 2
+    [25.0478, 121.5170],  # End: Main Station
+]
+
+# Animated route — dashes flow from start to end
+AntPath(
+    locations=route_coords,
+    color="blue",
+    weight=5,
+    opacity=0.8,
+    delay=1000       # Animation speed (ms between frames)
+).add_to(m)
+
+# Start marker
+folium.Marker(
+    route_coords[0],
+    popup="Start: Taipei 101",
+    icon=folium.Icon(color="green", icon="play", prefix="fa")
+).add_to(m)
+
+# End marker
+folium.Marker(
+    route_coords[-1],
+    popup="End: Main Station",
+    icon=folium.Icon(color="red", icon="flag", prefix="fa")
+).add_to(m)
+
+m.save("animated_route.html")
+```
+
+### AntPath Options
+
+```python
+AntPath(
+    locations=route_coords,
+    color="blue",          # Line color
+    weight=5,              # Line thickness
+    opacity=0.8,           # Transparency
+    delay=1000,            # Animation speed (lower = faster)
+    dash_array=[10, 20],   # Dash pattern [dash_length, gap_length]
+    pulse_color="#ffffff",  # Color of the animated pulse
+    reverse=False          # Set True to reverse animation direction
+).add_to(m)
+```
+
+### Comparing PolyLine vs AntPath
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│              PolyLine vs AntPath                                │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│   PolyLine (static):                                           │
+│   ┌─────────────────────────────────────────┐                  │
+│   │    A ─────────────────────── B          │                  │
+│   │         (solid or dashed line)          │                  │
+│   └─────────────────────────────────────────┘                  │
+│   Best for: simple connections, multiple routes                │
+│                                                                 │
+│   AntPath (animated):                                          │
+│   ┌─────────────────────────────────────────┐                  │
+│   │    A ── ▸ ── ▸ ── ▸ ── ▸ ── B          │                  │
+│   │         (flowing dashes show direction)  │                  │
+│   └─────────────────────────────────────────┘                  │
+│   Best for: showing direction, navigation paths                │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+```
+
 ## 2.2 Drawing Shapes
 
 ### Circles
@@ -646,6 +794,37 @@ for place in places:
 m.save("multiple_markers.html")
 ```
 
+> **Python Spotlight: String Repetition with `*`**
+>
+> Notice this line from the popup code above:
+> ```python
+> '⭐' * int(place['rating'])   # rating 4.7 → int(4.7) = 4 → '⭐⭐⭐⭐'
+> ```
+> The `*` operator repeats a string a given number of times:
+> ```python
+> '=' * 20     # '===================='
+> 'ha' * 3     # 'hahaha'
+> '-' * 40     # a horizontal line
+> ```
+> Combined with `int()` to convert a float rating to a whole number,
+> this creates a visual star display in just one expression.
+
+> **Python Spotlight: Multi-line f-strings**
+>
+> Also notice how we build HTML inside a **triple-quoted f-string**:
+> ```python
+> popup_html = f"""
+> <b>{place['name']}</b><br>
+> Rating: {'⭐' * int(place['rating'])} {place['rating']}<br>
+> Category: {place['category'].title()}
+> """
+> ```
+> Key points:
+> - `f"""..."""` lets you write multi-line strings with `{expressions}` inside
+> - You can put **any Python expression** inside `{}`  — method calls like `.title()`,
+>   math like `rating * 3`, even string repetition like `'⭐' * int(rating)`
+> - This is very useful for building HTML snippets in Python
+
 ### Color-Coded Markers by Category
 
 ```python
@@ -682,6 +861,84 @@ for place in places:
 
 m.save("categorized_markers.html")
 ```
+
+> **Python Spotlight: Dictionary as a Lookup Table**
+>
+> Instead of a long chain of `if/elif` to map categories to styles:
+> ```python
+> # Repetitive if/elif chain — hard to maintain
+> if place['category'] == 'landmark':
+>     color, icon = 'purple', 'building'
+> elif place['category'] == 'restaurant':
+>     color, icon = 'red', 'cutlery'
+> elif place['category'] == 'market':
+>     color, icon = 'orange', 'shopping-cart'
+> # ... more elif for each category
+> ```
+>
+> We use a **dictionary as a lookup table**:
+> ```python
+> # Clean lookup table — easy to read and extend
+> category_styles = {
+>     "landmark":   {"color": "purple", "icon": "building"},
+>     "restaurant": {"color": "red",    "icon": "cutlery"},
+>     "market":     {"color": "orange", "icon": "shopping-cart"},
+> }
+>
+> style = category_styles[place['category']]  # One-line lookup!
+> ```
+>
+> Benefits:
+> - **Easier to read** — all mappings are in one place
+> - **Easier to extend** — just add a new line to the dictionary
+> - **Separates data from logic** — the mapping is data, the loop is logic
+>
+> Use `.get()` with a default for safety:
+> ```python
+> style = category_styles.get(place['category'], {"color": "gray", "icon": "info"})
+> # Returns the default dict if category is not found, instead of raising KeyError
+> ```
+
+> **Python Spotlight: Dictionary Unpacking with `**`**
+>
+> In the code above, we access dictionary values one by one:
+> ```python
+> style = {"color": "red", "icon": "cutlery"}
+> folium.Icon(color=style['color'], icon=style['icon'], prefix='fa')
+> ```
+>
+> Python's `**` operator can **unpack** a dictionary into keyword arguments:
+> ```python
+> style = {"color": "red", "icon": "cutlery", "prefix": "fa"}
+> folium.Icon(**style)
+> # Same as: folium.Icon(color="red", icon="cutlery", prefix="fa")
+> ```
+>
+> This is especially useful when passing configuration stored in dictionaries:
+> ```python
+> # Store complete icon configs in the lookup table
+> category_styles = {
+>     "landmark":   {"color": "purple", "icon": "building", "prefix": "fa"},
+>     "restaurant": {"color": "red",    "icon": "cutlery",  "prefix": "fa"},
+> }
+>
+> style = category_styles[place['category']]
+> folium.Marker(
+>     location=place['coords'],
+>     popup=place['name'],
+>     icon=folium.Icon(**style)   # Unpack all key-value pairs as arguments
+> ).add_to(m)
+> ```
+>
+> How `**` works:
+> ```python
+> def greet(name, greeting):
+>     print(f"{greeting}, {name}!")
+>
+> info = {"name": "Alice", "greeting": "Hello"}
+> greet(**info)        # Same as greet(name="Alice", greeting="Hello")
+> # Output: Hello, Alice!
+> ```
 
 ### Markers with Rating-Based Size
 
@@ -720,6 +977,177 @@ for place in places:
     ).add_to(m)
 
 m.save("rating_sized_markers.html")
+```
+
+> **Python Spotlight: Conditional Expressions (Ternary Operator)**
+>
+> The code above uses `if/elif/else` to assign a color:
+> ```python
+> if place['rating'] >= 4.5:
+>     color = "green"
+> elif place['rating'] >= 4.0:
+>     color = "orange"
+> else:
+>     color = "red"
+> ```
+>
+> For simple two-way choices, Python has a **conditional expression**
+> (also called the ternary operator):
+> ```python
+> # Syntax: value_if_true if condition else value_if_false
+> color = "green" if place['rating'] >= 4.5 else "red"
+> ```
+>
+> More examples:
+> ```python
+> # Assign label based on a condition
+> label = "High" if score >= 80 else "Low"
+>
+> # Choose icon based on whether a place is open
+> icon = "check" if place['is_open'] else "times"
+>
+> # Set opacity based on selection
+> opacity = 1.0 if place['selected'] else 0.5
+>
+> # Use directly in f-strings
+> popup = f"Status: {'Open' if is_open else 'Closed'}"
+> ```
+>
+> When to use:
+> - **Ternary** `x if cond else y`: simple, two-way choice on one line
+> - **if/elif/else block**: three or more conditions, or complex logic
+
+### Auto-Fit Map to Show All Markers
+
+When placing multiple markers, instead of manually calculating the center and zoom level, use `fit_bounds()` to automatically adjust the map view:
+
+```python
+import folium
+
+places = [
+    {"name": "Taipei 101", "coords": [25.0330, 121.5654]},
+    {"name": "Shilin Night Market", "coords": [25.0878, 121.5241]},
+    {"name": "National Palace Museum", "coords": [25.1024, 121.5485]},
+    {"name": "Longshan Temple", "coords": [25.0372, 121.4999]},
+]
+
+# Create map (initial location doesn't matter much)
+m = folium.Map(location=[25.05, 121.55], zoom_start=12)
+
+# Add markers
+for place in places:
+    folium.Marker(
+        location=place["coords"],
+        popup=place["name"],
+        tooltip=place["name"]
+    ).add_to(m)
+
+# Auto-fit: compute the bounding box of all coordinates
+lats = [p["coords"][0] for p in places]
+lons = [p["coords"][1] for p in places]
+
+# fit_bounds takes [[south, west], [north, east]]
+m.fit_bounds([
+    [min(lats), min(lons)],  # Southwest corner
+    [max(lats), max(lons)]   # Northeast corner
+])
+
+m.save("auto_fit_map.html")
+# The map automatically zooms to show ALL markers!
+```
+
+> **Python Spotlight: Generator Expressions Inside Built-in Functions**
+>
+> In earlier weeks we learned about generator expressions (Week 6) and list
+> comprehensions (Week 2). Here's a powerful pattern — passing a generator
+> expression directly into built-in functions like `sum()`, `min()`, `max()`:
+> ```python
+> places = [
+>     {"name": "Taipei 101", "coords": [25.0330, 121.5654]},
+>     {"name": "Shilin Night Market", "coords": [25.0878, 121.5241]},
+>     {"name": "National Palace Museum", "coords": [25.1024, 121.5485]},
+> ]
+>
+> # List comprehension (creates a full list in memory):
+> lats = [p["coords"][0] for p in places]   # [25.0330, 25.0878, 25.1024]
+> avg_lat = sum(lats) / len(lats)
+>
+> # Generator expression (no intermediate list needed):
+> avg_lat = sum(p["coords"][0] for p in places) / len(places)
+> min_lat = min(p["coords"][0] for p in places)
+> max_lat = max(p["coords"][0] for p in places)
+> ```
+>
+> Notice: when a generator expression is the **only argument** to a function,
+> you don't need extra parentheses:
+> ```python
+> # Both work — the extra () are optional:
+> sum((x * x for x in range(10)))   # with extra parentheses
+> sum(x * x for x in range(10))     # cleaner — no extra parentheses
+> ```
+>
+> This pattern is useful whenever you need a single aggregate value
+> (sum, min, max, any, all) from a collection.
+
+> **Python Spotlight: `set()` — Getting Unique Values**
+>
+> A **set** is a collection that automatically removes duplicates:
+> ```python
+> # Lists can have duplicates:
+> categories = ["restaurant", "landmark", "restaurant", "museum", "landmark"]
+>
+> # Convert to set → duplicates removed:
+> unique = set(categories)   # {'restaurant', 'landmark', 'museum'}
+>
+> # Sort the result into a list:
+> sorted_unique = sorted(unique)   # ['landmark', 'museum', 'restaurant']
+> ```
+>
+> Combined with a generator expression — get all unique categories from our data:
+> ```python
+> places = [
+>     {"name": "Taipei 101", "category": "landmark"},
+>     {"name": "Din Tai Fung", "category": "restaurant"},
+>     {"name": "Shilin Night Market", "category": "market"},
+>     {"name": "Longshan Temple", "category": "landmark"},   # duplicate category!
+> ]
+>
+> # Get sorted unique categories in one line:
+> categories = sorted(set(p["category"] for p in places))
+> # Result: ['landmark', 'market', 'restaurant']
+> ```
+>
+> This is exactly what we use later in the Flask app to build the
+> category filter dropdown — we need each category to appear only once.
+>
+> Key set properties:
+> ```python
+> s = {1, 2, 3, 2, 1}   # {1, 2, 3} — duplicates ignored
+> s.add(4)               # {1, 2, 3, 4}
+> s.add(2)               # {1, 2, 3, 4} — already exists, no change
+> 3 in s                 # True — fast membership check
+> len(s)                 # 4
+> ```
+
+### Manual Center vs fit_bounds
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│              Manual Center vs fit_bounds                         │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│   Manual (what we did before):                                  │
+│   avg_lat = sum(lats) / len(lats)                              │
+│   avg_lon = sum(lons) / len(lons)                              │
+│   → May miss markers if they're spread out                     │
+│   → Need to guess the right zoom level                         │
+│                                                                 │
+│   fit_bounds (better):                                          │
+│   m.fit_bounds([[min_lat, min_lon], [max_lat, max_lon]])       │
+│   → Guarantees ALL markers are visible                         │
+│   → Zoom level is calculated automatically                     │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
 ```
 
 ## 2.4 Feature Groups and Layer Control
@@ -1347,6 +1775,326 @@ HeatMap(heat_data).add_to(m)
 m.save("heatmap.html")
 ```
 
+### Map Enhancement Plugins
+
+Folium includes several one-line plugins that make your maps feel more polished:
+
+#### MiniMap — Overview Navigation
+
+Adds a small overview map in the corner for quick navigation:
+
+```python
+import folium
+from folium.plugins import MiniMap
+
+m = folium.Map(location=[25.0330, 121.5654], zoom_start=14)
+
+folium.Marker([25.0330, 121.5654], popup="Taipei 101").add_to(m)
+
+# Add a mini overview map in the bottom-right corner
+MiniMap(
+    toggle_display=True,   # Allow user to collapse it
+    width=150,
+    height=150
+).add_to(m)
+
+m.save("minimap.html")
+```
+
+#### Fullscreen — Fullscreen Toggle Button
+
+```python
+import folium
+from folium.plugins import Fullscreen
+
+m = folium.Map(location=[25.0330, 121.5654], zoom_start=14)
+
+folium.Marker([25.0330, 121.5654], popup="Taipei 101").add_to(m)
+
+# Add a fullscreen button to the map
+Fullscreen(
+    position="topleft",           # Button position
+    title="Enter Fullscreen",     # Tooltip when not fullscreen
+    title_cancel="Exit Fullscreen"  # Tooltip when fullscreen
+).add_to(m)
+
+m.save("fullscreen_map.html")
+```
+
+#### LocateControl — "Where Am I?" Button
+
+Uses the browser's geolocation to show the user's current position:
+
+```python
+import folium
+from folium.plugins import LocateControl
+
+m = folium.Map(location=[25.0330, 121.5654], zoom_start=14)
+
+folium.Marker([25.0330, 121.5654], popup="Taipei 101").add_to(m)
+
+# Add a "locate me" button
+LocateControl(
+    position="topleft",
+    strings={"title": "Find my location"}
+).add_to(m)
+
+m.save("locate_me.html")
+# Click the button — the browser asks for location permission,
+# then shows your position on the map!
+```
+
+#### Combining Multiple Plugins
+
+You can add all these enhancements together for a polished map:
+
+```python
+import folium
+from folium.plugins import MiniMap, Fullscreen, LocateControl, MousePosition
+
+m = folium.Map(location=[25.0330, 121.5654], zoom_start=14)
+
+folium.Marker([25.0330, 121.5654], popup="Taipei 101").add_to(m)
+
+# Add all enhancements — one line each!
+MiniMap(toggle_display=True).add_to(m)
+Fullscreen().add_to(m)
+LocateControl().add_to(m)
+MousePosition(position="topright", prefix="Coords:").add_to(m)
+
+m.save("enhanced_map.html")
+```
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│              Enhanced Map Layout                                 │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│   ┌─────────────────────────────────────────────────┐          │
+│   │ [⛶] [📍]              Coords: 25.0330 | 121.5654│          │
+│   │ Fullscreen  Locate            MousePosition     │          │
+│   │                                                 │          │
+│   │                                                 │          │
+│   │              MAP CONTENT                        │          │
+│   │                                                 │          │
+│   │                                                 │          │
+│   │                                    ┌───────┐   │          │
+│   │                                    │MiniMap│   │          │
+│   │                                    └───────┘   │          │
+│   └─────────────────────────────────────────────────┘          │
+│                                                                 │
+│   4 lines of code → professional-looking map                   │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+### MeasureControl — Distance Measurement Tool
+
+Lets users measure distances and areas directly on the map:
+
+```python
+import folium
+from folium.plugins import MeasureControl
+
+m = folium.Map(location=[25.0330, 121.5654], zoom_start=14)
+
+folium.Marker([25.0330, 121.5654], popup="Taipei 101").add_to(m)
+folium.Marker([25.0478, 121.5170], popup="Main Station").add_to(m)
+
+# Add measurement tool
+MeasureControl(
+    position="topleft",
+    primary_length_unit="kilometers",
+    secondary_length_unit="meters",
+    primary_area_unit="sqmeters"
+).add_to(m)
+
+m.save("measure_map.html")
+# Click the ruler icon, then click points on the map to measure distance!
+```
+
+### ClickForMarker — Interactive Marker Placement
+
+Lets users click on the map to place new markers:
+
+```python
+import folium
+from folium.plugins import ClickForMarker
+
+m = folium.Map(location=[25.0330, 121.5654], zoom_start=14)
+
+# Existing markers
+folium.Marker([25.0330, 121.5654], popup="Taipei 101").add_to(m)
+
+# Enable click-to-add-marker
+ClickForMarker(
+    popup="New marker at<br>{lat}, {lng}"  # {lat} and {lng} are replaced automatically
+).add_to(m)
+
+m.save("click_marker.html")
+# Click anywhere on the map to drop a new marker!
+```
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│              ClickForMarker Demo                                │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│   ┌─────────────────────────────────────────────────┐          │
+│   │                                                 │          │
+│   │    📍 Taipei 101                                │          │
+│   │                                                 │          │
+│   │              👆 click here                      │          │
+│   │               │                                 │          │
+│   │              📍 New!                            │          │
+│   │         ┌─────────────────┐                     │          │
+│   │         │ New marker at   │                     │          │
+│   │         │ 25.035, 121.560 │                     │          │
+│   │         └─────────────────┘                     │          │
+│   └─────────────────────────────────────────────────┘          │
+│                                                                 │
+│   Users can interactively place markers by clicking             │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+### DivIcon — Custom HTML Markers
+
+Use HTML and CSS to create custom marker icons, such as numbered step markers for a route:
+
+```python
+import folium
+
+m = folium.Map(location=[25.0400, 121.5400], zoom_start=13)
+
+# Route stops with numbered markers
+stops = [
+    {"name": "Taipei 101", "coords": [25.0330, 121.5654]},
+    {"name": "Ximending", "coords": [25.0423, 121.5081]},
+    {"name": "Longshan Temple", "coords": [25.0372, 121.4999]},
+]
+
+for i, stop in enumerate(stops, start=1):
+    # Create a numbered circle using HTML/CSS
+    icon_html = f"""
+    <div style="
+        background-color: #667eea;
+        color: white;
+        border-radius: 50%;
+        width: 30px;
+        height: 30px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        font-size: 14px;
+        border: 2px solid white;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+    ">{i}</div>
+    """
+
+    folium.Marker(
+        location=stop["coords"],
+        popup=f"Stop {i}: {stop['name']}",
+        tooltip=f"Stop {i}: {stop['name']}",
+        icon=folium.DivIcon(
+            html=icon_html,
+            icon_size=(30, 30),
+            icon_anchor=(15, 15)   # Center the icon on the coordinate
+        )
+    ).add_to(m)
+
+m.save("numbered_stops.html")
+```
+
+> **Python Spotlight: `enumerate()` with `start` Parameter**
+>
+> In Week 2, we learned `enumerate()` gives us both the index and value:
+> ```python
+> for i, item in enumerate(["a", "b", "c"]):
+>     print(i, item)
+> # 0 a
+> # 1 b
+> # 2 c
+> ```
+>
+> By default, counting starts at 0. But for numbered markers (Stop 1, Stop 2, ...),
+> we want to start at 1. Use the `start` parameter:
+> ```python
+> for i, stop in enumerate(stops, start=1):
+>     print(f"Stop {i}: {stop['name']}")
+> # Stop 1: Taipei 101
+> # Stop 2: Ximending
+> # Stop 3: Longshan Temple
+> ```
+>
+> Other useful `start` values:
+> ```python
+> # Numbering lines in a file (lines are typically 1-indexed)
+> for line_num, line in enumerate(lines, start=1):
+>     print(f"{line_num}: {line}")
+>
+> # Continuing from a previous count
+> for i, item in enumerate(second_batch, start=len(first_batch) + 1):
+>     print(f"Item #{i}: {item}")
+> ```
+
+### DivIcon — Label Markers
+
+```python
+import folium
+
+m = folium.Map(location=[25.0330, 121.5654], zoom_start=15)
+
+# Marker with a text label underneath
+label_html = """
+<div style="text-align: center;">
+    <div style="font-size: 24px;">📍</div>
+    <div style="
+        background: white;
+        padding: 2px 6px;
+        border-radius: 3px;
+        font-size: 11px;
+        font-weight: bold;
+        white-space: nowrap;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    ">Taipei 101</div>
+</div>
+"""
+
+folium.Marker(
+    location=[25.0330, 121.5654],
+    icon=folium.DivIcon(
+        html=label_html,
+        icon_size=(80, 40),
+        icon_anchor=(40, 40)
+    )
+).add_to(m)
+
+m.save("label_marker.html")
+```
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│              DivIcon Examples                                    │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│   Numbered Stops:                Label Marker:                  │
+│   ┌───────────────┐             ┌───────────────┐              │
+│   │               │             │               │              │
+│   │   ① ── ② ── ③│             │      📍       │              │
+│   │               │             │  [Taipei 101] │              │
+│   └───────────────┘             └───────────────┘              │
+│                                                                 │
+│   DivIcon lets you use any HTML/CSS as a marker!               │
+│   • Numbered route steps                                        │
+│   • Text labels                                                 │
+│   • Custom shapes and colors                                    │
+│   • Emoji markers                                               │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+```
+
 ### Saving Maps as Files
 
 ```python
@@ -1375,21 +2123,36 @@ html_string = m._repr_html_()
 │                                                                 │
 │   MAP CREATION                                                  │
 │   folium.Map(location=[lat, lon], zoom_start=14)               │
+│   m.fit_bounds([[south, west], [north, east]])                 │
 │   m.save("map.html")                                            │
 │                                                                 │
 │   MARKERS                                                       │
 │   folium.Marker(location, popup, tooltip, icon)                │
 │   folium.CircleMarker(location, radius, color)                 │
 │   folium.Icon(color, icon, prefix)                             │
+│   folium.DivIcon(html, icon_size, icon_anchor)                 │
 │                                                                 │
-│   SHAPES                                                        │
+│   SHAPES & ROUTES                                               │
 │   folium.PolyLine(locations, color, weight)                    │
 │   folium.Circle(location, radius, color, fill)                 │
 │   folium.Polygon(locations, color, fill)                       │
+│   AntPath(locations, color, weight, delay)                     │
 │                                                                 │
 │   ORGANIZATION                                                  │
 │   folium.FeatureGroup(name)                                    │
 │   folium.LayerControl()                                         │
+│                                                                 │
+│   PLUGINS (from folium.plugins)                                 │
+│   MousePosition()    — show coordinates on hover               │
+│   LatLngPopup()      — click to see coordinates                │
+│   MiniMap()          — overview navigation                     │
+│   Fullscreen()       — fullscreen toggle                       │
+│   LocateControl()    — "where am I?" button                    │
+│   MeasureControl()   — distance measurement                    │
+│   ClickForMarker()   — click to place markers                  │
+│   MarkerCluster()    — group dense markers                     │
+│   HeatMap()          — density visualization                   │
+│   AntPath()          — animated directional routes             │
 │                                                                 │
 │   FLASK INTEGRATION                                             │
 │   map_html = m._repr_html_()                                   │
@@ -1400,17 +2163,20 @@ html_string = m._repr_html_()
 
 ### Best Practices
 
-1. **Choose appropriate zoom level** based on data density
-2. **Use consistent marker styles** for categories
-3. **Add tooltips** for quick identification
-4. **Use layer control** for complex maps
-5. **Consider marker clustering** for many points
-6. **Test in multiple browsers**
+1. **Use `fit_bounds()`** instead of manually calculating center and zoom
+2. **Choose appropriate zoom level** based on data density
+3. **Use consistent marker styles** for categories
+4. **Add tooltips** for quick identification
+5. **Use layer control** for complex maps
+6. **Consider marker clustering** for many points
+7. **Add map plugins** (MiniMap, Fullscreen, LocateControl) for polished UX
+8. **Test in multiple browsers**
 
 ### Quick Reference
 
 ```python
 import folium
+from folium.plugins import MiniMap, Fullscreen, LocateControl, MousePosition, AntPath
 
 # Create map
 m = folium.Map(location=[lat, lon], zoom_start=14, tiles="CartoDB positron")
@@ -1423,12 +2189,35 @@ folium.Marker(
     icon=folium.Icon(color="red", icon="info-sign")
 ).add_to(m)
 
-# Draw route
+# Draw route (static)
 folium.PolyLine(
     locations=[[lat1, lon1], [lat2, lon2], ...],
     color="blue",
     weight=5
 ).add_to(m)
+
+# Draw route (animated)
+AntPath(
+    locations=[[lat1, lon1], [lat2, lon2], ...],
+    color="blue",
+    weight=5,
+    delay=1000
+).add_to(m)
+
+# Custom HTML marker
+folium.Marker(
+    location=[lat, lon],
+    icon=folium.DivIcon(html="<div>①</div>", icon_size=(30, 30))
+).add_to(m)
+
+# Auto-fit to show all markers
+m.fit_bounds([[min_lat, min_lon], [max_lat, max_lon]])
+
+# Add map enhancements (one line each!)
+MiniMap().add_to(m)
+Fullscreen().add_to(m)
+LocateControl().add_to(m)
+MousePosition(prefix="Coords:").add_to(m)
 
 # Save or embed
 m.save("map.html")
