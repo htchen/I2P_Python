@@ -106,6 +106,25 @@ By the end of this lecture, students will be able to:
 
 ## 1.2 Project Structure
 
+### Why Modularity? Avoiding Spaghetti Code
+
+When building a complex application like the Smart City Navigator, it is
+tempting to put everything—HTML routing, API requests, data processing, and
+map generation—into a single file. This quickly becomes "spaghetti code":
+tangled logic that is hard to read, debug, and scale, where changing one part
+accidentally breaks another.
+
+The fix is **separation of concerns**: divide the system into components based
+on their responsibilities. The Flask app should only *coordinate*—it should not
+handle the messy details of fetching coordinates or calculating routes. This is
+the heart of the **Single Responsibility Principle**: each module should have
+one, and only one, reason to change.
+
+The directory layout below puts this principle into practice, splitting the
+project into three kinds of files: configuration (`config.py`), API modules
+(`utils/geocoding.py`, `utils/routing.py`), and the thin coordinating Flask app
+(`app.py`).
+
 ### Recommended Directory Layout
 
 ```
@@ -167,6 +186,21 @@ class Config:
 ```
 
 ## 1.3 API Wrapper Modules
+
+### What Is an API Wrapper?
+
+An **API wrapper** is a dedicated module whose sole job is to talk to one
+external service and return clean, usable data. It *hides* the raw HTTP requests
+and JSON parsing from the rest of the application, so the caller never sees a
+URL, a query parameter, or a JSON key. If the external service changes its
+response format, only the wrapper needs to change.
+
+We build two wrappers for this project:
+
+| Module | Responsibility | Input | Output |
+|--------|----------------|-------|--------|
+| `geocoding.py` (`Geocoder`) | Talk to the Nominatim API | An address string or search query | Clean lat/lon coordinates, or a list of places |
+| `routing.py` (`Router`) | Talk to the OSRM API | Start and end coordinates | The calculated route and travel duration |
 
 ### Geocoding Module
 
@@ -431,6 +465,23 @@ class Router:
 
         return results
 ```
+
+### Interactive Activity: Divide and Conquer
+
+Modularity lets a team build pieces in parallel and snap them together at the
+end. Try it in class:
+
+1. Split into two groups.
+2. **Group 1** writes the Geocoding wrapper (`Geocoder.geocode`) using Nominatim.
+3. **Group 2** writes the Routing wrapper (`Router.get_route`) using OSRM.
+4. Agree on the *interface* first (method names, inputs, outputs), then each
+   group works independently.
+5. Bring the groups together and plug both modules into `app.py` to render the
+   final Folium map.
+
+When two independently built modules connect without friction, you have seen
+modularity in action—as long as the interface matches, the internals can be
+developed completely separately.
 
 ---
 
@@ -1221,6 +1272,25 @@ def health_check():
 
 ## 3.2 Testing the Application
 
+### Why Automated Tests?
+
+In earlier weeks we verified code by running it and reading the console. For a
+web app, manual testing—clicking through pages, typing addresses, checking the
+map—is slow and error-prone. Automated tests let us catch bugs instantly,
+before deployment, applying the same rigorous checks every time. Moving from
+`print()` debugging to code that tests our code is the biggest step from hobby
+scripts to professional software engineering.
+
+We implement two levels of testing:
+
+| Level | What it tests | Goal |
+|-------|---------------|------|
+| **Unit test** | A single function or module (e.g. an API wrapper, or the `Place` class) | Confirm each small piece works on its own |
+| **Integration test** | How modules interact and the full request flow | Confirm the pieces work together |
+
+Run the suite from the project root with `pytest` (or `python -m unittest`),
+which discovers every `test_*` function automatically.
+
 ### Unit Tests
 
 ```python
@@ -1355,6 +1425,32 @@ class TestFlaskApp(unittest.TestCase):
 if __name__ == "__main__":
     unittest.main()
 ```
+
+### Best Practices: Mocking External APIs
+
+Notice that every unit test above uses `@patch`. When testing our API wrappers
+we do **not** want to ping the real Nominatim or OSRM servers on every run—that
+is slow, violates API rate limits, and makes tests fail whenever the external
+service is down (even if our code is perfect).
+
+**Mocking** means simulating the HTTP response so tests run instantly and
+offline. We replace `requests.get` with a stand-in that returns exactly the
+data we choose:
+
+```python
+@patch('utils.geocoding.requests.get')
+def test_geocode_returns_coordinates(mock_get):
+    mock_get.return_value.json.return_value = [
+        {"lat": "40.7128", "lon": "-74.0060", "display_name": "New York City"}
+    ]
+    mock_get.return_value.raise_for_status = Mock()
+    # Geocoder.geocode() now runs without any network call
+```
+
+This verifies our internal logic regardless of the external API's status.
+Remember: unit tests check *our* code, not someone else's server. The
+graceful-failure case—showing `error.html` instead of crashing when an API
+fails—is exactly what the integration tests guard against.
 
 ## 3.3 Deployment Preparation
 
