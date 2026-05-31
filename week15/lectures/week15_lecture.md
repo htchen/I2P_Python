@@ -483,6 +483,82 @@ When two independently built modules connect without friction, you have seen
 modularity in action—as long as the interface matches, the internals can be
 developed completely separately.
 
+## 1.4 Data Model and Business-Logic Helpers
+
+The wrappers above return plain dictionaries, which keeps them simple and easy
+to test. But once a place has been routed, the rest of the app keeps reaching
+into those dictionaries with string keys (`place["duration_min"]`), which is
+easy to mistype and hard to read.
+
+A small **data model** fixes this. `places.py` holds a `Place` class (clean
+attribute access instead of dictionary keys) plus the **business-logic
+helpers**—filtering and sorting—so that logic lives in one tested place rather
+than being scattered through `app.py`.
+
+```python
+# utils/places.py
+"""Data model and business-logic helpers for places."""
+
+
+class Place:
+    """A single location, optionally annotated with route information.
+
+    The geocoding/routing wrappers work with plain dictionaries so they stay
+    easy to test. Once a place has been routed, ``app.py`` wraps it in a Place
+    object, giving the rest of the app—and the templates—clean attribute access
+    (``place.name``) instead of dictionary keys (``place["name"]``).
+    """
+
+    def __init__(self, name, lat, lon, place_type="place", display_name="",
+                 distance_m=None, duration_min=None, route_geometry=None):
+        self.name = name
+        self.lat = lat
+        self.lon = lon
+        self.type = place_type
+        self.display_name = display_name
+        self.distance_m = distance_m          # walking distance in meters
+        self.duration_min = duration_min      # walking time in minutes
+        self.route_geometry = route_geometry  # list of [lat, lon] points
+
+    @classmethod
+    def from_routed_dict(cls, data):
+        """Build a Place from a routed dict (see Router.get_routes_to_places)."""
+        return cls(
+            name=data.get("name", "Unknown"),
+            lat=data["lat"],
+            lon=data["lon"],
+            place_type=data.get("type", "place"),
+            display_name=data.get("display_name", ""),
+            distance_m=data.get("distance_m"),
+            duration_min=data.get("duration_min"),
+            route_geometry=data.get("route_geometry"),
+        )
+
+    def has_route(self):
+        """True if walking-route information is available."""
+        return self.duration_min is not None and self.route_geometry is not None
+
+    def __repr__(self):
+        return f"Place(name={self.name!r}, lat={self.lat}, lon={self.lon})"
+
+
+def filter_by_walk_time(places, max_minutes):
+    """Keep only places reachable within ``max_minutes`` of walking."""
+    return [
+        p for p in places
+        if p.duration_min is not None and p.duration_min <= max_minutes
+    ]
+
+
+def sort_by_duration(places):
+    """Sort places by walking time, closest first."""
+    return sorted(places, key=lambda p: p.duration_min)
+```
+
+Because `Place` exposes its data as attributes, the Jinja templates can use
+`place.name`, `place.duration_min`, and `place.distance_m` directly, and the
+`Place` class becomes a tidy, isolated target for a unit test (see Hour 3).
+
 ---
 
 # Hour 2: Flask Application Integration
@@ -496,11 +572,11 @@ developed completely separately.
 """Smart City Navigator - Main Flask Application."""
 
 from flask import Flask, render_template, request, flash, redirect, url_for
-import folium
-from folium import plugins
 
 from utils.geocoding import Geocoder, GeocodingError
 from utils.routing import Router, RoutingError
+from utils.places import Place, filter_by_walk_time, sort_by_duration
+from utils.mapping import generate_map
 from config import Config
 
 app = Flask(__name__)
@@ -547,22 +623,20 @@ def search():
             flash(f"No {category}s found near {location}", "warning")
             return redirect(url_for("index"))
 
-        # Step 3: Get walking routes to each place
-        places_with_routes = router.get_routes_to_places(
+        # Step 3: Get walking routes, then wrap each result as a Place object
+        routed = router.get_routes_to_places(
             (start["lat"], start["lon"]),
             places
         )
+        places_with_routes = [Place.from_routed_dict(p) for p in routed]
 
-        # Step 4: Filter by walking time
-        filtered_places = [
-            p for p in places_with_routes
-            if p["duration_min"] <= max_time
-        ]
+        # Step 4: Filter by walking time (helper from utils.places)
+        filtered_places = filter_by_walk_time(places_with_routes, max_time)
 
-        # Step 5: Sort by duration (closest first)
-        filtered_places.sort(key=lambda p: p["duration_min"])
+        # Step 5: Sort by duration, closest first (helper from utils.places)
+        filtered_places = sort_by_duration(filtered_places)
 
-        # Step 6: Generate map
+        # Step 6: Generate map (helper from utils.mapping)
         map_html = generate_map(start, filtered_places, category)
 
         return render_template(
@@ -587,8 +661,41 @@ def search():
         return redirect(url_for("index"))
 
 
+if __name__ == "__main__":
+    app.run(debug=True, port=5000)
+```
+
+Notice how small `app.py` stays: it imports the wrappers and helpers, then just
+*coordinates* the six steps. The map drawing now lives in its own module.
+
+### Map Generation Module
+
+`mapping.py` is the only file that knows how to turn places into a Folium map.
+Keeping it separate means `app.py` never imports `folium` directly, and the map
+styling can change without touching the request-handling code. It receives the
+`Place` objects produced in `app.py` and reads their attributes
+(`place.lat`, `place.duration_min`, …).
+
+```python
+# utils/mapping.py
+"""Folium map generation for the Smart City Navigator."""
+
+import folium
+
+from config import Config
+
+
 def generate_map(start, places, category):
-    """Generate Folium map with places and routes."""
+    """Generate a Folium map with the start marker, place markers, and routes.
+
+    Args:
+        start: dict with 'lat', 'lon', 'display_name' for the origin
+        places: list of Place objects (see utils.places)
+        category: selected category key, used for marker styling
+
+    Returns:
+        HTML string of the rendered map
+    """
     # Create map centered on start location
     m = folium.Map(
         location=[start["lat"], start["lon"]],
@@ -610,41 +717,37 @@ def generate_map(start, places, category):
     # Add place markers and routes
     for i, place in enumerate(places, 1):
         # Add route line
-        if "route_geometry" in place:
+        if place.has_route():
             folium.PolyLine(
-                locations=place["route_geometry"],
+                locations=place.route_geometry,
                 color=style["color"],
                 weight=3,
                 opacity=0.6,
-                popup=f"{place['duration_min']:.1f} min walk"
+                popup=f"{place.duration_min:.1f} min walk"
             ).add_to(m)
 
         # Add place marker
         popup_html = f"""
         <div style="min-width: 150px;">
-            <h4 style="margin: 0 0 5px 0;">#{i} {place['name']}</h4>
-            <p style="margin: 0;"><b>Walk:</b> {place['duration_min']:.1f} min</p>
-            <p style="margin: 0;"><b>Distance:</b> {place['distance_m']:.0f} m</p>
+            <h4 style="margin: 0 0 5px 0;">#{i} {place.name}</h4>
+            <p style="margin: 0;"><b>Walk:</b> {place.duration_min:.1f} min</p>
+            <p style="margin: 0;"><b>Distance:</b> {place.distance_m:.0f} m</p>
         </div>
         """
 
         folium.Marker(
-            location=[place["lat"], place["lon"]],
+            location=[place.lat, place.lon],
             popup=folium.Popup(popup_html, max_width=200),
-            tooltip=f"#{i} {place['name']} ({place['duration_min']:.1f} min)",
+            tooltip=f"#{i} {place.name} ({place.duration_min:.1f} min)",
             icon=folium.Icon(color=style["color"], icon=style["icon"], prefix="fa")
         ).add_to(m)
 
     # Fit map to show all markers
     if places:
-        all_coords = [[start["lat"], start["lon"]]] + [[p["lat"], p["lon"]] for p in places]
+        all_coords = [[start["lat"], start["lon"]]] + [[p.lat, p.lon] for p in places]
         m.fit_bounds(all_coords)
 
     return m._repr_html_()
-
-
-if __name__ == "__main__":
-    app.run(debug=True, port=5000)
 ```
 
 ## 2.2 HTML Templates
@@ -1295,11 +1398,12 @@ which discovers every `test_*` function automatically.
 
 ```python
 # tests/test_geocoding.py
-"""Tests for geocoding module."""
+"""Tests for geocoding, routing, and the Place data model."""
 
 import unittest
 from unittest.mock import patch, Mock
 from utils.geocoding import Geocoder, GeocodingError
+from utils.places import Place, filter_by_walk_time, sort_by_duration
 
 
 class TestGeocoder(unittest.TestCase):
@@ -1374,6 +1478,41 @@ class TestRouter(unittest.TestCase):
 
         self.assertEqual(result["distance"], 1000)
         self.assertEqual(result["duration"], 720)
+
+
+class TestPlace(unittest.TestCase):
+    """Test cases for the Place data model (no network, no mocking needed)."""
+
+    def test_stores_attributes(self):
+        """A Place correctly stores the attributes it is given."""
+        place = Place("Taipei 101", 25.0330, 121.5654, place_type="attraction")
+
+        self.assertEqual(place.name, "Taipei 101")
+        self.assertEqual(place.lat, 25.0330)
+        self.assertEqual(place.lon, 121.5654)
+        self.assertEqual(place.type, "attraction")
+
+    def test_has_route(self):
+        """has_route() reflects whether route info is present."""
+        no_route = Place("A", 25.0, 121.0)
+        routed = Place("B", 25.1, 121.1, duration_min=5.0, route_geometry=[[25.0, 121.0]])
+
+        self.assertFalse(no_route.has_route())
+        self.assertTrue(routed.has_route())
+
+    def test_helpers_filter_and_sort(self):
+        """filter_by_walk_time and sort_by_duration work on Place lists."""
+        places = [
+            Place("Far", 25.0, 121.0, duration_min=20.0),
+            Place("Near", 25.1, 121.1, duration_min=3.0),
+            Place("Mid", 25.2, 121.2, duration_min=8.0),
+        ]
+
+        within_10 = filter_by_walk_time(places, 10)
+        self.assertEqual({p.name for p in within_10}, {"Near", "Mid"})
+
+        ordered = sort_by_duration(places)
+        self.assertEqual([p.name for p in ordered], ["Near", "Mid", "Far"])
 
 
 if __name__ == "__main__":
