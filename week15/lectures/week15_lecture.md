@@ -1605,6 +1605,65 @@ Remember: unit tests check *our* code, not someone else's server. The
 graceful-failure case—showing `error.html` instead of crashing when an API
 fails—is exactly what the integration tests guard against.
 
+### Running the Tests
+
+First install the test runner (and the app's own dependencies if you haven't):
+
+```bash
+pip install pytest flask folium requests
+```
+
+Then **run `pytest` from the project root**—the folder that contains both
+`app.py` and the `tests/` directory:
+
+```bash
+pytest              # discover and run every test
+pytest -v           # verbose: one line per test
+
+# Narrow it down
+pytest tests/test_geocoding.py                          # one file
+pytest tests/test_geocoding.py::TestGeocoder            # one class
+pytest tests/test_geocoding.py::TestPlace::test_has_route   # one test
+pytest -k "geocode and not error"                       # by keyword
+```
+
+Because our tests are written with `unittest.TestCase`, they also run under the
+standard library if you'd rather not install pytest:
+
+```bash
+python -m unittest discover -s tests
+```
+
+A passing run looks like this—note it finishes in well under a second, because
+the network is mocked and nothing actually contacts Nominatim or OSRM:
+
+```
+$ pytest -v
+tests/test_app.py::TestFlaskApp::test_health_check        PASSED
+tests/test_geocoding.py::TestGeocoder::test_geocode_success  PASSED
+...
+============================== 11 passed in 0.52s ==============================
+```
+
+> ⚠️ **Common pitfall — `ModuleNotFoundError: No module named 'app'`**
+> (or `'utils'`). This means Python can't find your modules on its import path.
+> Our tests use top-level imports like `from app import app` and
+> `from utils.geocoding import Geocoder`, so the **project root** must be on
+> `sys.path`. The fixes, easiest first:
+>
+> 1. Run as a module from the root: `python -m pytest -v` (this adds the current
+>    directory to `sys.path`; plain `pytest` started from a sub-folder does not).
+> 2. Set it explicitly for one run: `PYTHONPATH=. pytest -v`.
+> 3. Make it permanent—create a `pytest.ini` at the project root:
+>    ```ini
+>    [pytest]
+>    pythonpath = .
+>    ```
+>
+> If you instead see `No module named 'app'` *because the file genuinely isn't
+> there*, double-check you actually created `app.py` and the `utils/` package at
+> the root—not just the test files.
+
 ## 3.3 Deployment Preparation
 
 ### Requirements File
