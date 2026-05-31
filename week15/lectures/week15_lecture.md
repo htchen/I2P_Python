@@ -571,7 +571,10 @@ Because `Place` exposes its data as attributes, the Jinja templates can use
 # app.py
 """Smart City Navigator - Main Flask Application."""
 
-from flask import Flask, render_template, request, flash, redirect, url_for
+from flask import (
+    Flask, render_template, request, flash, redirect, url_for, jsonify
+)
+import logging
 
 from utils.geocoding import Geocoder, GeocodingError
 from utils.routing import Router, RoutingError
@@ -581,6 +584,10 @@ from config import Config
 
 app = Flask(__name__)
 app.secret_key = "your-secret-key-here"
+
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 # Initialize API clients
 geocoder = Geocoder(user_agent=Config.USER_AGENT)
@@ -661,12 +668,55 @@ def search():
         return redirect(url_for("index"))
 
 
+@app.route("/api/geocode")
+def api_geocode():
+    """JSON endpoint for geocoding (e.g. for AJAX requests)."""
+    address = request.args.get("address", "")
+
+    if not address:
+        return jsonify({"error": "Address required"}), 400
+
+    try:
+        result = geocoder.geocode(address)
+        return jsonify(result)
+    except GeocodingError as e:
+        return jsonify({"error": str(e)}), 404
+    except Exception as e:
+        logger.error(f"Geocoding API error: {e}")
+        return jsonify({"error": "Service unavailable"}), 503
+
+
+@app.route("/health")
+def health_check():
+    """Health check endpoint for monitoring."""
+    return jsonify({"status": "healthy", "version": "1.0.0"})
+
+
+@app.errorhandler(404)
+def page_not_found(e):
+    """Render the custom error page for unknown routes."""
+    return render_template(
+        "error.html", error_code=404, message="Page not found"
+    ), 404
+
+
+@app.errorhandler(500)
+def internal_error(e):
+    """Render the custom error page for server errors."""
+    logger.error(f"Internal error: {e}")
+    return render_template(
+        "error.html", error_code=500, message="Internal server error"
+    ), 500
+
+
 if __name__ == "__main__":
     app.run(debug=True, port=5000)
 ```
 
 Notice how small `app.py` stays: it imports the wrappers and helpers, then just
-*coordinates* the six steps. The map drawing now lives in its own module.
+*coordinates* the work. The search flow is six steps; the extra `/api/geocode`,
+`/health`, and error handlers are a few lines each. The map drawing lives in its
+own module.
 
 ### Map Generation Module
 
@@ -1280,66 +1330,26 @@ def retry_on_failure(max_retries=3, delay=1.0):
     return decorator
 ```
 
-### Enhanced Application with Error Handling
+### Application-Level Error Handling
 
-```python
-# app.py (enhanced version)
-"""Smart City Navigator with comprehensive error handling."""
+The `app.py` above already wires in three more pieces of robustness. They are
+worth calling out, because they are what the integration tests exercise:
 
-from flask import Flask, render_template, request, flash, redirect, url_for, jsonify
-import logging
+- **`@app.errorhandler(404)` / `@app.errorhandler(500)`** render our own
+  `error.html` (shown below) instead of Flask's default white error page. This
+  is the *graceful failure* the integration tests check: when something goes
+  wrong, the user sees a friendly page, not a stack trace.
+- **`/api/geocode`** is a JSON endpoint (for AJAX or other programs). It returns
+  proper HTTP status codes—`400` for a missing address, `404` when the location
+  isn't found, `503` if the upstream service is unavailable—rather than an HTML
+  page.
+- **`/health`** returns a tiny JSON document so a monitoring tool (or our own
+  test suite) can confirm the app is alive.
 
-app = Flask(__name__)
-app.secret_key = "your-secret-key-here"
-
-# Configure logging
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
-
-
-@app.errorhandler(404)
-def page_not_found(e):
-    """Handle 404 errors."""
-    return render_template("error.html",
-                         error_code=404,
-                         message="Page not found"), 404
-
-
-@app.errorhandler(500)
-def internal_error(e):
-    """Handle 500 errors."""
-    logger.error(f"Internal error: {e}")
-    return render_template("error.html",
-                         error_code=500,
-                         message="Internal server error"), 500
-
-
-@app.route("/api/geocode")
-def api_geocode():
-    """API endpoint for geocoding (for AJAX requests)."""
-    address = request.args.get("address", "")
-
-    if not address:
-        return jsonify({"error": "Address required"}), 400
-
-    try:
-        result = geocoder.geocode(address)
-        return jsonify(result)
-    except GeocodingError as e:
-        return jsonify({"error": str(e)}), 404
-    except Exception as e:
-        logger.error(f"Geocoding API error: {e}")
-        return jsonify({"error": "Service unavailable"}), 503
-
-
-@app.route("/health")
-def health_check():
-    """Health check endpoint for monitoring."""
-    return jsonify({
-        "status": "healthy",
-        "version": "1.0.0"
-    })
-```
+Notice the pattern in `/api/geocode`: it catches the wrapper's own
+`GeocodingError` separately from a generic `Exception`, mapping each to the
+*right* status code. Catching the specific error first, then a broad fallback,
+is the same discipline the `Geocoder` wrapper uses internally.
 
 ### Error Page Template
 
@@ -1402,6 +1412,7 @@ which discovers every `test_*` function automatically.
 
 import unittest
 from unittest.mock import patch, Mock
+import requests
 from utils.geocoding import Geocoder, GeocodingError
 from utils.places import Place, filter_by_walk_time, sort_by_duration
 
@@ -1444,8 +1455,11 @@ class TestGeocoder(unittest.TestCase):
 
     @patch('utils.geocoding.requests.get')
     def test_geocode_api_error(self, mock_get):
-        """Test geocoding with API error."""
-        mock_get.side_effect = Exception("Connection failed")
+        """Test that a network failure is wrapped as GeocodingError."""
+        # A real failure from `requests` is always a RequestException
+        # subclass, which is exactly what the wrapper catches. Mock that,
+        # not a bare Exception, or the error would slip past the wrapper.
+        mock_get.side_effect = requests.ConnectionError("Connection failed")
 
         with self.assertRaises(GeocodingError):
             self.geocoder.geocode("Taipei 101")
@@ -1590,6 +1604,65 @@ This verifies our internal logic regardless of the external API's status.
 Remember: unit tests check *our* code, not someone else's server. The
 graceful-failure case—showing `error.html` instead of crashing when an API
 fails—is exactly what the integration tests guard against.
+
+### Running the Tests
+
+First install the test runner (and the app's own dependencies if you haven't):
+
+```bash
+pip install pytest flask folium requests
+```
+
+Then **run `pytest` from the project root**—the folder that contains both
+`app.py` and the `tests/` directory:
+
+```bash
+pytest              # discover and run every test
+pytest -v           # verbose: one line per test
+
+# Narrow it down
+pytest tests/test_geocoding.py                          # one file
+pytest tests/test_geocoding.py::TestGeocoder            # one class
+pytest tests/test_geocoding.py::TestPlace::test_has_route   # one test
+pytest -k "geocode and not error"                       # by keyword
+```
+
+Because our tests are written with `unittest.TestCase`, they also run under the
+standard library if you'd rather not install pytest:
+
+```bash
+python -m unittest discover -s tests
+```
+
+A passing run looks like this—note it finishes in well under a second, because
+the network is mocked and nothing actually contacts Nominatim or OSRM:
+
+```
+$ pytest -v
+tests/test_app.py::TestFlaskApp::test_health_check        PASSED
+tests/test_geocoding.py::TestGeocoder::test_geocode_success  PASSED
+...
+============================== 11 passed in 0.52s ==============================
+```
+
+> ⚠️ **Common pitfall — `ModuleNotFoundError: No module named 'app'`**
+> (or `'utils'`). This means Python can't find your modules on its import path.
+> Our tests use top-level imports like `from app import app` and
+> `from utils.geocoding import Geocoder`, so the **project root** must be on
+> `sys.path`. The fixes, easiest first:
+>
+> 1. Run as a module from the root: `python -m pytest -v` (this adds the current
+>    directory to `sys.path`; plain `pytest` started from a sub-folder does not).
+> 2. Set it explicitly for one run: `PYTHONPATH=. pytest -v`.
+> 3. Make it permanent—create a `pytest.ini` at the project root:
+>    ```ini
+>    [pytest]
+>    pythonpath = .
+>    ```
+>
+> If you instead see `No module named 'app'` *because the file genuinely isn't
+> there*, double-check you actually created `app.py` and the `utils/` package at
+> the root—not just the test files.
 
 ## 3.3 Deployment Preparation
 
