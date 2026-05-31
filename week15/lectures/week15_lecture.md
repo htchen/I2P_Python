@@ -571,7 +571,10 @@ Because `Place` exposes its data as attributes, the Jinja templates can use
 # app.py
 """Smart City Navigator - Main Flask Application."""
 
-from flask import Flask, render_template, request, flash, redirect, url_for
+from flask import (
+    Flask, render_template, request, flash, redirect, url_for, jsonify
+)
+import logging
 
 from utils.geocoding import Geocoder, GeocodingError
 from utils.routing import Router, RoutingError
@@ -581,6 +584,10 @@ from config import Config
 
 app = Flask(__name__)
 app.secret_key = "your-secret-key-here"
+
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 # Initialize API clients
 geocoder = Geocoder(user_agent=Config.USER_AGENT)
@@ -661,12 +668,55 @@ def search():
         return redirect(url_for("index"))
 
 
+@app.route("/api/geocode")
+def api_geocode():
+    """JSON endpoint for geocoding (e.g. for AJAX requests)."""
+    address = request.args.get("address", "")
+
+    if not address:
+        return jsonify({"error": "Address required"}), 400
+
+    try:
+        result = geocoder.geocode(address)
+        return jsonify(result)
+    except GeocodingError as e:
+        return jsonify({"error": str(e)}), 404
+    except Exception as e:
+        logger.error(f"Geocoding API error: {e}")
+        return jsonify({"error": "Service unavailable"}), 503
+
+
+@app.route("/health")
+def health_check():
+    """Health check endpoint for monitoring."""
+    return jsonify({"status": "healthy", "version": "1.0.0"})
+
+
+@app.errorhandler(404)
+def page_not_found(e):
+    """Render the custom error page for unknown routes."""
+    return render_template(
+        "error.html", error_code=404, message="Page not found"
+    ), 404
+
+
+@app.errorhandler(500)
+def internal_error(e):
+    """Render the custom error page for server errors."""
+    logger.error(f"Internal error: {e}")
+    return render_template(
+        "error.html", error_code=500, message="Internal server error"
+    ), 500
+
+
 if __name__ == "__main__":
     app.run(debug=True, port=5000)
 ```
 
 Notice how small `app.py` stays: it imports the wrappers and helpers, then just
-*coordinates* the six steps. The map drawing now lives in its own module.
+*coordinates* the work. The search flow is six steps; the extra `/api/geocode`,
+`/health`, and error handlers are a few lines each. The map drawing lives in its
+own module.
 
 ### Map Generation Module
 
@@ -1280,66 +1330,26 @@ def retry_on_failure(max_retries=3, delay=1.0):
     return decorator
 ```
 
-### Enhanced Application with Error Handling
+### Application-Level Error Handling
 
-```python
-# app.py (enhanced version)
-"""Smart City Navigator with comprehensive error handling."""
+The `app.py` above already wires in three more pieces of robustness. They are
+worth calling out, because they are what the integration tests exercise:
 
-from flask import Flask, render_template, request, flash, redirect, url_for, jsonify
-import logging
+- **`@app.errorhandler(404)` / `@app.errorhandler(500)`** render our own
+  `error.html` (shown below) instead of Flask's default white error page. This
+  is the *graceful failure* the integration tests check: when something goes
+  wrong, the user sees a friendly page, not a stack trace.
+- **`/api/geocode`** is a JSON endpoint (for AJAX or other programs). It returns
+  proper HTTP status codes—`400` for a missing address, `404` when the location
+  isn't found, `503` if the upstream service is unavailable—rather than an HTML
+  page.
+- **`/health`** returns a tiny JSON document so a monitoring tool (or our own
+  test suite) can confirm the app is alive.
 
-app = Flask(__name__)
-app.secret_key = "your-secret-key-here"
-
-# Configure logging
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
-
-
-@app.errorhandler(404)
-def page_not_found(e):
-    """Handle 404 errors."""
-    return render_template("error.html",
-                         error_code=404,
-                         message="Page not found"), 404
-
-
-@app.errorhandler(500)
-def internal_error(e):
-    """Handle 500 errors."""
-    logger.error(f"Internal error: {e}")
-    return render_template("error.html",
-                         error_code=500,
-                         message="Internal server error"), 500
-
-
-@app.route("/api/geocode")
-def api_geocode():
-    """API endpoint for geocoding (for AJAX requests)."""
-    address = request.args.get("address", "")
-
-    if not address:
-        return jsonify({"error": "Address required"}), 400
-
-    try:
-        result = geocoder.geocode(address)
-        return jsonify(result)
-    except GeocodingError as e:
-        return jsonify({"error": str(e)}), 404
-    except Exception as e:
-        logger.error(f"Geocoding API error: {e}")
-        return jsonify({"error": "Service unavailable"}), 503
-
-
-@app.route("/health")
-def health_check():
-    """Health check endpoint for monitoring."""
-    return jsonify({
-        "status": "healthy",
-        "version": "1.0.0"
-    })
-```
+Notice the pattern in `/api/geocode`: it catches the wrapper's own
+`GeocodingError` separately from a generic `Exception`, mapping each to the
+*right* status code. Catching the specific error first, then a broad fallback,
+is the same discipline the `Geocoder` wrapper uses internally.
 
 ### Error Page Template
 
@@ -1402,6 +1412,7 @@ which discovers every `test_*` function automatically.
 
 import unittest
 from unittest.mock import patch, Mock
+import requests
 from utils.geocoding import Geocoder, GeocodingError
 from utils.places import Place, filter_by_walk_time, sort_by_duration
 
@@ -1444,8 +1455,11 @@ class TestGeocoder(unittest.TestCase):
 
     @patch('utils.geocoding.requests.get')
     def test_geocode_api_error(self, mock_get):
-        """Test geocoding with API error."""
-        mock_get.side_effect = Exception("Connection failed")
+        """Test that a network failure is wrapped as GeocodingError."""
+        # A real failure from `requests` is always a RequestException
+        # subclass, which is exactly what the wrapper catches. Mock that,
+        # not a bare Exception, or the error would slip past the wrapper.
+        mock_get.side_effect = requests.ConnectionError("Connection failed")
 
         with self.assertRaises(GeocodingError):
             self.geocoder.geocode("Taipei 101")
