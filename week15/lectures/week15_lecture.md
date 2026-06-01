@@ -1404,6 +1404,10 @@ We implement two levels of testing:
 Run the suite from the project root with `pytest` (or `python -m unittest`),
 which discovers every `test_*` function automatically.
 
+> 📘 **Instructors:** a detailed, teach-from-it walkthrough of every test below
+> (what it checks, the mechanics, and the point to land) is in
+> [`teaching_notes_testing.md`](teaching_notes_testing.md).
+
 ### Unit Tests
 
 ```python
