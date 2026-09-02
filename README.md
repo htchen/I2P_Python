@@ -76,3 +76,39 @@ By Week 16, every student (or group) will have a working Python web application 
 | **Instant Visual Feedback** | Students see a pin drop on a map. It feels "real" compared to printing text to a console. |
 | **Modern Skillset** | They learn JSON and APIs immediately, which are standard in industry. |
 | **Algorithmic Motivation** | They learn sorting because they need to sort restaurants by rating. They learn graphs because they need to find a route. The "Why" is always answered. |
+
+---
+
+## License / 授權
+
+本專案採**雙授權**，因為它同時包含教材與程式碼，而兩者的慣例不同：
+
+| 內容 | 授權 |
+| --- | --- |
+| 教材（`.md` 講義、實驗、小考、說明文件，以及 `week03/data/` 的教學範例資料） | [CC BY 4.0](LICENSE) |
+| 程式碼（所有 `.py` 檔案） | [MIT](LICENSE-CODE) |
+
+程式碼不採用 CC 授權，是因為 Creative Commons 本身即不建議將 CC 授權用於軟體
+（其未處理專利授權、原始碼散布，以及與其他軟體授權的相容性）。
+
+**你可以拿去用。** 修改內容、更換題目、改編為其他課程、印製講義，
+亦得用於商業用途；唯一要求是標示出處：
+
+> 本教材改編自 Hwann-Tzong Chen「CS101 - Building Location-Based Systems
+> with Python」（https://github.com/htchen/I2P_Python），依 CC BY 4.0 授權使用。
+
+### 貢獻
+
+送交本專案的貢獻，均視為依上述對應授權釋出。
+
+本授權於 2026 年 9 月加入。在此之前併入的他人貢獻均為對既有教材的小幅修正
+（講義勘誤、小考 driver function、評分方式與 geocoding 細節更新）；
+若任一貢獻者不同意此授權，請開 issue 告知，該筆改動可依 commit 個別還原。
+
+### 第三方資料
+
+`week03/data/` 之 JSON 檔為**手寫的教學範例**，非自 OpenStreetMap 萃取之資料，
+其中 `sample_api_response.json` 內的 `license` 欄位係模擬真實 API 回應之教學內容。
+
+課程專案於執行時查詢 Nominatim 與 OSRM 等服務。實際顯示地圖資料時，
+須依 ODbL 保留 OpenStreetMap 之姓名標示。
