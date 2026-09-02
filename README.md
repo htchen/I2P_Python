@@ -83,10 +83,13 @@ By Week 16, every student (or group) will have a working Python web application 
 
 本專案採**雙授權**，因為它同時包含教材與程式碼，而兩者的慣例不同：
 
-| 內容 | 授權 |
-| --- | --- |
-| 教材（`.md` 講義、實驗、小考、說明文件，以及 `week03/data/` 的教學範例資料） | [CC BY 4.0](LICENSE) |
-| 程式碼（所有 `.py` 檔案） | [MIT](LICENSE-CODE) |
+| 內容 | 授權 | 授權檔 |
+| --- | --- | --- |
+| 教材：`.md` 講義、實驗、小考、說明文件，以及 `week03/data/` 的教學範例資料 | CC BY 4.0 | [`LICENSE`](LICENSE) |
+| 程式碼：所有 `.py` 檔案 | MIT | [`LICENSE-CODE`](LICENSE-CODE) |
+
+兩個授權檔均為未經改寫的標準全文，以便 GitHub 與各項工具正確辨識；
+適用範圍以本表為準。
 
 程式碼不採用 CC 授權，是因為 Creative Commons 本身即不建議將 CC 授權用於軟體
 （其未處理專利授權、原始碼散布，以及與其他軟體授權的相容性）。
